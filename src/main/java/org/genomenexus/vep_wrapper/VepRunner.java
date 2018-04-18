@@ -13,7 +13,7 @@ public class VepRunner {
         List<String> commands = new ArrayList<String>();
         commands.add("./vep");
         commands.add("--input_data");
-        commands.add("17:g.41242962_41242963insGA");
+        commands.add(hgvsVariant); // 17:g.41242962_41242963insGA
         commands.add("--port");
         commands.add("3337");
         commands.add("--assembly");

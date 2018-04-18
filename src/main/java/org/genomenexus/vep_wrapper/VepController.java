@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.PathVariable;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -17,14 +18,14 @@ import io.swagger.annotations.ApiParam;
 @Api(tags = "vep-controller", description = "VEP Controller")
 public class VepController {
 
-    @RequestMapping(value = "/vep",
+    @RequestMapping(value = "/vep/human/hgvs/{hgvs}",
     method = RequestMethod.GET,
     produces = "application/json")
     @ApiOperation(value = "Retrieves VEP results for single variant",
     nickname = "getVepAnnotationGET")
-    public String greeting(@ApiParam(value="name", required=true) String name) {
+    public String getVepAnnotation(@ApiParam(value="hgvs", required=true) @PathVariable String hgvs) {
         try {
-			return VepRunner.run(name);
+			return VepRunner.run(hgvs);
 		} catch (IOException | InterruptedException e) {
 			// TODO Auto-generated catch block
             e.printStackTrace();
