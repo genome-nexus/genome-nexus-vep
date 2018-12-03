@@ -1,55 +1,75 @@
 package org.genomenexus.vep_wrapper;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.List;
 
 public class VepRunner {
-    public static String run(String hgvsVariant) throws IOException, InterruptedException {
+    public static String run(List<String> regions, Boolean convertToListJSON) throws IOException, InterruptedException {
         //Build command 
         List<String> commands = new ArrayList<String>();
-        commands.add("./vep");
-        commands.add("--input_data");
-        commands.add(hgvsVariant); // 17:g.41242962_41242963insGA
-        commands.add("--port");
-        commands.add("3337");
+        commands.add("vep");
+        commands.add("--cache");
+        commands.add("--offline");
+        //commands.add("--port");
+        //commands.add("3337");
         commands.add("--assembly");
         commands.add("GRCh37");
         commands.add("--format");
-        commands.add("hgvs");
-        commands.add("--database");
+        commands.add("region");
         commands.add("--json");
-        commands.add("--everything");
         commands.add("-o");
         commands.add("STDOUT");
-        commands.add("--force_overwrite");
-        //Add arguments
-        // commands.add("/home/narek/pk.txt");
-        System.out.println(commands);
+        commands.add("--no_stats");
 
         //Run macro on target
         ProcessBuilder pb = new ProcessBuilder(commands);
-        pb.directory(new File("/home/vep/src/ensembl-vep"));
+        pb.directory(new File("/opt/vep/src/ensembl-vep"));
         pb.redirectErrorStream(true);
         Process process = pb.start();
+
+        // send regions to stdin
+        OutputStream stdin = process.getOutputStream();
+        BufferedWriter stdinWriter = new BufferedWriter(new OutputStreamWriter(stdin));
+        for (String region: regions) {
+            stdinWriter.write(region);
+            stdinWriter.write("\n");
+        }
+        stdinWriter.flush();
+        stdinWriter.close();
 
         //Read output
         StringBuilder out = new StringBuilder();
         BufferedReader br = new BufferedReader(new InputStreamReader(process.getInputStream()));
         String line = null, previous = null;
-        while ((line = br.readLine()) != null)
-            if (!line.equals(previous)) {
-                previous = line;
-                out.append(line).append('\n');
-                System.out.println(line);
+        if (convertToListJSON) {
+            out.append('[');
+            out.append('\n');
+        }
+        while ((line = br.readLine()) != null) {
+            if (previous != null && convertToListJSON) {
+                out.append(',');
+                out.append('\n');
             }
+            out.append(line);
+            previous = line;
+        }
+        if (convertToListJSON) {
+            out.append(']');
+            out.append('\n');
+        }
 
         //Check result
         if (process.waitFor() == 0) {
-            System.out.println("Success!");
+            //System.out.println("OK");
+            //System.out.println(out.toString());
             return out.toString();
         }
 
