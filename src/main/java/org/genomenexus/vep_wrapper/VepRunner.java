@@ -18,6 +18,11 @@ public class VepRunner {
         commands.add("vep");
         commands.add("--cache");
         commands.add("--offline");
+        commands.add("--fasta");
+        commands.add("/opt/vep/.vep/homo_sapiens/92_GRCh37/Homo_sapiens.GRCh37.75.dna.primary_assembly.fa.gz");
+        commands.add("--symbol");
+        commands.add("--hgvs");
+        commands.add("--hgvsg");
         //commands.add("--port");
         //commands.add("3337");
         commands.add("--assembly");
