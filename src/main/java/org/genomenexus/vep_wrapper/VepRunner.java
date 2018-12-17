@@ -11,28 +11,36 @@ import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Value;
+
 public class VepRunner {
+    public static final String VEP_DEFAULT_PARAMS = null;
+
     public static String run(List<String> regions, Boolean convertToListJSON) throws IOException, InterruptedException {
+        // get vep pameters (use -Dvep.params to change)
+        String vepParameters = System.getProperty("vep.params", String.join(" ",
+            "--cache",
+            "--offline",
+            "--fasta",
+            "/opt/vep/.vep/homo_sapiens/92_GRCh37/Homo_sapiens.GRCh37.75.dna.primary_assembly.fa.gz",
+            "--everything",
+            "--hgvsg",
+            "--assembly",
+            "GRCh37",
+            "--format",
+            "region",
+            "--json",
+            "-o",
+            "STDOUT",
+            "--no_stats"
+        ));
+
         //Build command 
         List<String> commands = new ArrayList<String>();
         commands.add("vep");
-        commands.add("--cache");
-        commands.add("--offline");
-        commands.add("--fasta");
-        commands.add("/opt/vep/.vep/homo_sapiens/92_GRCh37/Homo_sapiens.GRCh37.75.dna.primary_assembly.fa.gz");
-        commands.add("--symbol");
-        commands.add("--hgvs");
-        commands.add("--hgvsg");
-        //commands.add("--port");
-        //commands.add("3337");
-        commands.add("--assembly");
-        commands.add("GRCh37");
-        commands.add("--format");
-        commands.add("region");
-        commands.add("--json");
-        commands.add("-o");
-        commands.add("STDOUT");
-        commands.add("--no_stats");
+        for (String param : vepParameters.split(" ")) {
+            commands.add(param);
+        }
 
         //Run macro on target
         ProcessBuilder pb = new ProcessBuilder(commands);
@@ -71,7 +79,7 @@ public class VepRunner {
             out.append('\n');
         }
 
-        //Check result
+        // Check result
         if (process.waitFor() == 0) {
             //System.out.println("OK");
             //System.out.println(out.toString());
