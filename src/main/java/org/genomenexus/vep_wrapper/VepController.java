@@ -19,10 +19,12 @@ public class VepController {
     @RequestMapping(value = "/vep/human/region/{region}/{allele}",
         method = RequestMethod.GET,
         produces = "application/json")
-    @ApiOperation(value = "Retrieves VEP results for single variant specified in region syntax e.g. 17:41242962-41242965:1/GA (https://ensembl.org/info/docs/tools/vep/vep_formats.html)",
+    @ApiOperation(value = "Retrieves VEP results for single variant specified in region syntax (https://ensembl.org/info/docs/tools/vep/vep_formats.html)",
         nickname = "fetchVepAnnotationByRegionGET")
-    public String getVepAnnotation(@ApiParam(value="region", required=true) @PathVariable String region,
-                                   @ApiParam(value="allele", required=true) @PathVariable String allele)
+    public String getVepAnnotation(@ApiParam(value="GRCh37: 17:41242962-41242965," +
+                                                   "GRCh38: 1:182712-182712", required=true) @PathVariable String region,
+                                   @ApiParam(value="GRCh37: GA, " +
+                                                   "GRCh38: C", required=true) @PathVariable String allele)
     {
         try {
             return VepRunner.run(Arrays.asList(region + "/" + allele), false);
@@ -39,7 +41,15 @@ public class VepController {
     @ApiOperation(value = "Retrieves VEP annotations for multiple variants specified in region syntax (https://ensembl.org/info/docs/tools/vep/vep_formats.html)",
         nickname = "fetchVepAnnotationByRegionsPOST")
     public String fetchVepAnnotationByRegionsPOST(
-        @ApiParam(value = "List of variants in ensembl region format. For example [\"17:41242962-41242965:1/GA\"]",
+        @ApiParam(value = "List of variants in ENSEMBL region format. For example:\n" +
+                "GRCh37: " +
+                "[\"17:41242962-41242965:1/GA\"], " +
+                "GRCh38: " +
+                "[\"1:182712-182712:1/C\", " +
+                "\"2:265023-265023:1/T\"," +
+                "\"3:319781-319781:1/-\", " +
+                "\"19:110748-110747:1/T\", " +
+                "\"1:1385015-1387562:1/-\"]",
         required = true)
         @RequestBody List<String> regions)
     {
