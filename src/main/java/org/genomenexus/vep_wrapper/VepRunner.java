@@ -21,8 +21,6 @@ public class VepRunner {
         String vepParameters = System.getProperty("vep.params", String.join(" ",
             "--cache",
             "--offline",
-            "--fasta",
-            "/opt/vep/.vep/homo_sapiens/92_GRCh37/Homo_sapiens.GRCh37.75.dna.primary_assembly.fa.gz",
             "--everything",
             "--hgvsg",
             "--assembly",
@@ -40,6 +38,12 @@ public class VepRunner {
         commands.add("vep");
         for (String param : vepParameters.split(" ")) {
             commands.add(param);
+        }
+
+        // Check reference genome environment variable and replace ref genome if necessary
+        String assembly = System.getenv("VEP_ASSEMBLY");
+        if (assembly != null && !"".equals(assembly)) {
+            commands = replaceOptValue(commands, "--assembly", assembly);
         }
 
         //Run macro on target
@@ -88,5 +92,34 @@ public class VepRunner {
 
         //Abnormal termination: Log command parameters and output and throw ExecutionException
         return out.toString();
+    }
+
+    /**
+     * Function to replace a specific value in the VEP parameters list.
+     */
+    private static List<String> replaceOptValue(List<String> commands, String optionName, String newValue) {
+        List<String> result = new ArrayList<String>();
+        boolean substituteNext = false;
+        for (String command : commands) {
+
+            // Find argument to replace
+            if (command.equals(optionName)) {
+                result.add(command);
+
+                // Replace value
+                result.add(newValue);
+                substituteNext = true;
+
+            } else {
+
+                // Skip value if it was replaced in the previous iteration
+                if (substituteNext) {
+                    substituteNext = false;
+                } else {
+                    result.add(command);
+                }
+            }
+        }
+        return result;
     }
 }
