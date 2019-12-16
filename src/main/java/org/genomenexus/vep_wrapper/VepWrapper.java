@@ -9,6 +9,7 @@ import org.springframework.context.annotation.Bean;
 import springfox.documentation.builders.ApiInfoBuilder;
 import springfox.documentation.builders.PathSelectors;
 import springfox.documentation.service.ApiInfo;
+import springfox.documentation.service.Contact;
 import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spring.web.plugins.Docket;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
@@ -17,16 +18,16 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 @EnableSwagger2 // enable swagger2 documentation
 public class VepWrapper {
 
-	public static void main(String[] args) {
-		SpringApplication.run(VepWrapper.class, args);
+    public static void main(String[] args) {
+        SpringApplication.run(VepWrapper.class, args);
     }
 
-	private ApiInfo apiInfo() {
+    private ApiInfo apiInfo() {
         return new ApiInfoBuilder()
             .title("Genome Nexus VEP Wrapper API")
             .description("Genome Nexus Vep Wrapper API")
             //.termsOfServiceUrl("http://terms-of-service-url")
-            .contact("CMO, MSKCC")
+            .contact(new Contact("CMO, MSKCC", "https://www.mskcc.org/research-programs/molecular-oncology", "")) //email left blank for now
             .license("GNU AFFERO GENERAL PUBLIC LICENSE Version 3")
             .licenseUrl("https://github.com/genome-nexus/genome-nexus-vep/blob/master/LICENSE")
             .version("2.0")
