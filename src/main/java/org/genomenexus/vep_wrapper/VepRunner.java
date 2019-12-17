@@ -43,8 +43,6 @@ public class VepRunner {
 
     private static void computeOrders(List<String> requestList, int[] processingOrder, int[] responseOrder) {
         ArrayList<String> workingRequestOrder = new ArrayList<String>();
-        processingOrder = new int[requestList.size()];
-        responseOrder = new int[requestList.size()];
         System.out.println("computing order of input list (list size: " + requestList.size() + ")");
         int index = 0;
         for (String request : requestList) {
@@ -172,9 +170,9 @@ public class VepRunner {
         // compute forward and backword reordering
         printTimestamp();
         System.out.println("computing order..");
-        int[] processingOrder = null; // a reordering of the request to put them into chromosomal order for processing
-        int[] responseOrder = null; // a reordering of the processing output to restore the original request order in our response
-        computeOrders(regions, processingOrder, responseOrder);
+        int[] processingOrder = new int[regions.size()]; // a reordering of the request to put them into chromosomal order for processing
+        int[] responseOrder = new int[regions.size()]; // a reordering of the processing output to restore the original request order in our response
+        computeOrders(regions, processingOrder, responseOrder); // a reordering of the request to put them into chromosomal order for processing
         printTimestamp();
         System.out.println("done computing order");
 
