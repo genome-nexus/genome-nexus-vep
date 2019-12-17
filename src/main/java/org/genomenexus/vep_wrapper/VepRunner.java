@@ -12,6 +12,7 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.sql.Timestamp;
 import java.util.ArrayList;
@@ -21,21 +22,26 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Value;
 
 public class VepRunner {
-    private static int[] processingOrder = null; // a reordering of the request to put them into chromosomal order for processing
-    private static int[] responseOrder = null; // a reordering of the processing output to restore the original request order in our response
-
     private static final String INDEX_DELIMITER = "#";
 
-    private static final boolean sort = false;
-    private static final String CONSTRUCTED_INPUT_FILENAME = "/opt/vep/.vep/input/constructed_input_file.txt";
-    private static final String RESULTS_OUTPUT_FILENAME = "/opt/vep/.vep/output/output_from_constructed_input.txt";
+    private static final String VEP_ROOT_DIRECTORY_PATH = "/opt/vep";
+    private static final String VEP_WORK_DIRECTORY_PATH = VEP_ROOT_DIRECTORY_PATH + "/.vep";
+    private static final String VEP_TMP_DIRECTORY_PATH = VEP_WORK_DIRECTORY_PATH + "/tmp";
+    private static final String VEP_SRC_DIRECTORY_PATH = VEP_ROOT_DIRECTORY_PATH + "/src/ensembl-vep";
 
     private static void printTimestamp() {
         Timestamp timestamp = new Timestamp(System.currentTimeMillis());
         System.out.println(timestamp);
     }
 
-    private static void computeOrders(List<String> requestList) {
+    private static void createTmpDirIfNecessary() throws IOException {
+        Path tmpDirPath = Paths.get(VEP_TMP_DIRECTORY_PATH);
+        if (!Files.exists(tmpDirPath)) {
+            Files.createDirectory(Paths.get(VEP_TMP_DIRECTORY_PATH));
+        }
+    }
+
+    private static void computeOrders(List<String> requestList, int[] processingOrder, int[] responseOrder) {
         ArrayList<String> workingRequestOrder = new ArrayList<String>();
         processingOrder = new int[requestList.size()];
         responseOrder = new int[requestList.size()];
@@ -65,56 +71,75 @@ public class VepRunner {
         }
     }
 
-    private static void writeRegionsToConstructedInput(List<String> regions) throws IOException {
-        try {
-            PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter(CONSTRUCTED_INPUT_FILENAME)));
-            for (String region : regions) {
-                out.println(region);
+    /**
+     * create a "chromosomal order" file containing the regions received in the input query.
+     * Write the user supplied regions from the "regions" argument in the order supplied in the processingOrder argument,
+     * to an output file.
+     *
+     * @param regions - the regions as passed by the user
+     * @param processingOrder - maps the user query index position to the "chromosomal sort" index position for each region.
+     *                          The index of processingOrder is the line you are writing for the vep input file.
+     *                          The value at the index is the index of the record you want on that line from the passed in request.
+     * @param sortedVepInputFile - the file to be written
+     * @return sum of two operands
+
+    **/
+    private static void constructSortedFileForVepProcessing(List<String> regions, int[] processingOrder, Path sortedVepInputFile) throws IOException {
+
+        try (PrintWriter out = new PrintWriter(Files.newBufferedWriter(sortedVepInputFile))) {
+            for (int index = 0; index < regions.size(); index++) {
+                int nextIndexInSortOrder = processingOrder[index];
+                out.println(regions.get(nextIndexInSortOrder));
             }
             out.close();
         } catch (IOException e) {
-            System.err.println("VepRunner : Error - could not construct input file " +  CONSTRUCTED_INPUT_FILENAME);
+            System.err.println("VepRunner : Error - could not construct input file " + sortedVepInputFile);
             throw e;
         }
     }
 
-    public static String readResults(Boolean convertToListJSON) {
-        StringBuilder out = new StringBuilder();
-        try (BufferedReader br = Files.newBufferedReader(Paths.get(RESULTS_OUTPUT_FILENAME))) {
-            if (convertToListJSON) {
-                out.append('[');
-                out.append('\n');
-            }
+    public static void readResults(Boolean convertToListJSON, Path vepOutputFile, OutputStream responseOut) {
+        PrintWriter responseWriter = new PrintWriter(new BufferedWriter(new OutputStreamWriter(responseOut)));
+        if (convertToListJSON) {
+            responseWriter.write("[\n");
+        }
+        //TODO: there is a potential performance gain here if we avoid reading the file line by line and instead use IOUtils.copy(myStream, response.getOutputStream());
+        //      in order to do that, we would need to use an external program to add a trailing comma on the end of every line in the vep output file
+        try (BufferedReader br = Files.newBufferedReader(vepOutputFile)) {
             String line;
             Boolean firstLineWasRead = false;
             while ((line = br.readLine()) != null) {
-                if (!firstLineWasRead && convertToListJSON) {
-                    out.append(',');
-                    out.append('\n');
+                if (firstLineWasRead && convertToListJSON) {
+                    responseWriter.write(",\n");
                 }
-                out.append(line);
+                responseWriter.write(line);
                 firstLineWasRead = true;
             }
-            if (convertToListJSON) {
-                if (!firstLineWasRead) {
-                    // cover the case where the output file is completely empty -- return empty result json
-                    out.append('[');
-                    out.append('\n');
-                }
-                out.append(']');
-                out.append('\n');
-            }
         } catch (IOException e) {
-            // TODO logging?
-            System.err.println("Error - could not read results file " + RESULTS_OUTPUT_FILENAME);
+            System.err.println("Error - could not read results file " + vepOutputFile);
             System.exit(5);
         }
-        return out.toString();
+        if (convertToListJSON) {
+            responseWriter.write("]\n");
+        }
     }
 
-    public static String run(List<String> regions, Boolean convertToListJSON) throws IOException, InterruptedException {
+    private static Path createTempFileForVepInput() throws IOException {
+        return Files.createTempFile(Paths.get(VEP_TMP_DIRECTORY_PATH), "vep_input-", "-sorted.txt");
+    }
+
+    private static Path createTempFileForVepOutput(Path tempFileForVepInput) throws IOException {
+        return Files.createFile(Paths.get(tempFileForVepInput + "_output"));
+    }
+
+    public static void run(List<String> regions, Boolean convertToListJSON, OutputStream responseOut) throws IOException, InterruptedException {
         printTimestamp();
         System.out.println("Running vep");
+
+        createTmpDirIfNecessary();
+        Path constructedInputFile = createTempFileForVepInput();
+        Path vepOutputFile = createTempFileForVepOutput(constructedInputFile);
+
         // get vep pameters (use -Dvep.params to change)
         String vepParameters = System.getProperty("vep.params", String.join(" ",
                 "--cache",
@@ -126,8 +151,8 @@ public class VepRunner {
                 "--fork 4",
                 "--fasta /opt/vep/.vep/homo_sapiens/98_GRCh37/Homo_sapiens.GRCh37.75.dna.primary_assembly.fa.gz",
                 "--json",
-                "-i " + CONSTRUCTED_INPUT_FILENAME,
-                "-o " + RESULTS_OUTPUT_FILENAME,
+                "-i " + constructedInputFile,
+                "-o " + vepOutputFile,
                 "--force_overwrite",
                 "--no_stats"));
 
@@ -144,25 +169,18 @@ public class VepRunner {
             commands = replaceOptValue(commands, "--assembly", assembly);
         }
 
-
-if (sort) {
         // compute forward and backword reordering
         printTimestamp();
         System.out.println("computing order..");
-        computeOrders(regions);
+        int[] processingOrder = null; // a reordering of the request to put them into chromosomal order for processing
+        int[] responseOrder = null; // a reordering of the processing output to restore the original request order in our response
+        computeOrders(regions, processingOrder, responseOrder);
         printTimestamp();
         System.out.println("done computing order");
-}
-
-//if (sort) {
-//        for (int index : processingOrder) {
-//            String region = regions.get(index);
-//        }
-
 
         printTimestamp();
         System.out.println("writing constructed input file");
-        writeRegionsToConstructedInput(regions);
+        constructSortedFileForVepProcessing(regions, processingOrder, constructedInputFile);
 
         printTimestamp();
         System.out.println("processing requests");
@@ -170,7 +188,7 @@ if (sort) {
         System.out.println("running command: " + commands);
         //Run macro on target
         ProcessBuilder pb = new ProcessBuilder(commands);
-        pb.directory(new File("/opt/vep/src/ensembl-vep"));
+        pb.directory(new File(VEP_SRC_DIRECTORY_PATH));
         pb.redirectErrorStream(true);
         printTimestamp();
         System.out.println("starting..");
@@ -196,13 +214,14 @@ if (sort) {
         if (statusCode == 0) {
             printTimestamp();
             System.out.println("OK");
-            return readResults(convertToListJSON);
+            //TODO: constructedInputFile.delete();
+            readResults(convertToListJSON, vepOutputFile, responseOut);
         } else {
             //TODO: Abnormal termination: Log command parameters and output and throw ExecutionException
             System.out.println("abnormal termination");
             System.out.println("exited with status: " + statusCode);
             System.out.println("return empty string to user");
-            return "";
+            Files.deleteIfExists(constructedInputFile);
         }
     }
 
