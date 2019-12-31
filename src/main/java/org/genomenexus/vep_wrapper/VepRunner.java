@@ -28,6 +28,7 @@ public class VepRunner {
     private static final String VEP_WORK_DIRECTORY_PATH = VEP_ROOT_DIRECTORY_PATH + "/.vep";
     private static final String VEP_TMP_DIRECTORY_PATH = VEP_WORK_DIRECTORY_PATH + "/tmp";
     private static final String VEP_SRC_DIRECTORY_PATH = VEP_ROOT_DIRECTORY_PATH + "/src/ensembl-vep";
+    private static final String FASTA_FILE = VEP_WORK_DIRECTORY_PATH + "/homo_sapiens/98_GRCh37/Homo_sapiens.GRCh37.75.dna.primary_assembly.fa.gz";
 
     private static void printTimestamp() {
         Timestamp timestamp = new Timestamp(System.currentTimeMillis());
@@ -41,57 +42,27 @@ public class VepRunner {
         }
     }
 
-    private static void computeOrders(List<String> requestList, int[] processingOrder, int[] responseOrder) {
-        ArrayList<String> workingRequestOrder = new ArrayList<String>();
-        System.out.println("computing order of input list (list size: " + requestList.size() + ")");
-        int index = 0;
-        for (String request : requestList) {
-            workingRequestOrder.add(request + INDEX_DELIMITER + Integer.toString(index));
-            index = index + 1;
-        }
-        Collections.sort(workingRequestOrder);
-        int sortedIndex= 0;
-        for (String request : workingRequestOrder) {
-            String[] parts = request.split(INDEX_DELIMITER);
-            if (parts.length < 2) {
-                System.out.println("something bad happened during split of working order");
-                System.exit(3);
-            }
-            try {
-                int originalIndex = Integer.parseInt(parts[1]);
-                processingOrder[originalIndex] = sortedIndex;
-                responseOrder[sortedIndex] = originalIndex;
-            } catch (NumberFormatException e) {
-                System.out.println("something bad happened during parse of offset of working order");
-                System.exit(3);
-            }
-            sortedIndex = sortedIndex + 1;
-        }
-    }
-
     /**
-     * create a "chromosomal order" file containing the regions received in the input query.
-     * Write the user supplied regions from the "regions" argument in the order supplied in the processingOrder argument,
-     * to an output file.
+     * Create a file containing the regions received in the input query.
+     * Write the user supplied regions from the "regions" argument to an output file.
+     * CAUTION : this function does not sort the regions into chromosomal order. The
+     * VEP command line tool is very slow when the input is not sorted. It is expected
+     * that users of the VepRunner will always send requests that have been pre-sorted.
      *
      * @param regions - the regions as passed by the user
-     * @param processingOrder - maps the user query index position to the "chromosomal sort" index position for each region.
-     *                          The index of processingOrder is the line you are writing for the vep input file.
-     *                          The value at the index is the index of the record you want on that line from the passed in request.
-     * @param sortedVepInputFile - the file to be written
+     * @param vepInputFile - the file to be written
      * @return sum of two operands
 
     **/
-    private static void constructSortedFileForVepProcessing(List<String> regions, int[] processingOrder, Path sortedVepInputFile) throws IOException {
+    private static void constructFileForVepProcessing(List<String> regions, Path vepInputFile) throws IOException {
 
-        try (PrintWriter out = new PrintWriter(Files.newBufferedWriter(sortedVepInputFile))) {
-            for (int index = 0; index < regions.size(); index++) {
-                int nextIndexInSortOrder = processingOrder[index];
-                out.println(regions.get(nextIndexInSortOrder));
+        try (PrintWriter out = new PrintWriter(Files.newBufferedWriter(vepInputFile))) {
+            for (String region : regions) {
+                out.println(region);
             }
             out.close();
         } catch (IOException e) {
-            System.err.println("VepRunner : Error - could not construct input file " + sortedVepInputFile);
+            System.err.println("VepRunner : Error - could not construct input file " + vepInputFile);
             throw e;
         }
     }
@@ -123,7 +94,7 @@ public class VepRunner {
     }
 
     private static Path createTempFileForVepInput() throws IOException {
-        return Files.createTempFile(Paths.get(VEP_TMP_DIRECTORY_PATH), "vep_input-", "-sorted.txt");
+        return Files.createTempFile(Paths.get(VEP_TMP_DIRECTORY_PATH), "vep_input-", ".txt");
     }
 
     private static Path createTempFileForVepOutput(Path tempFileForVepInput) throws IOException {
@@ -147,7 +118,7 @@ public class VepRunner {
                 "--assembly GRCh37",
                 "--format region",
                 "--fork 4",
-                "--fasta /opt/vep/.vep/homo_sapiens/98_GRCh37/Homo_sapiens.GRCh37.75.dna.primary_assembly.fa.gz",
+                "--fasta " + FASTA_FILE,
                 "--json",
                 "-i " + constructedInputFile,
                 "-o " + vepOutputFile,
@@ -167,18 +138,9 @@ public class VepRunner {
             commands = replaceOptValue(commands, "--assembly", assembly);
         }
 
-        // compute forward and backword reordering
-        printTimestamp();
-        System.out.println("computing order..");
-        int[] processingOrder = new int[regions.size()]; // a reordering of the request to put them into chromosomal order for processing
-        int[] responseOrder = new int[regions.size()]; // a reordering of the processing output to restore the original request order in our response
-        computeOrders(regions, processingOrder, responseOrder); // a reordering of the request to put them into chromosomal order for processing
-        printTimestamp();
-        System.out.println("done computing order");
-
         printTimestamp();
         System.out.println("writing constructed input file");
-        constructSortedFileForVepProcessing(regions, processingOrder, constructedInputFile);
+        constructFileForVepProcessing(regions, constructedInputFile);
 
         printTimestamp();
         System.out.println("processing requests");
@@ -212,15 +174,14 @@ public class VepRunner {
         if (statusCode == 0) {
             printTimestamp();
             System.out.println("OK");
-            //TODO: constructedInputFile.delete();
             readResults(convertToListJSON, vepOutputFile, responseOut);
         } else {
             //TODO: Abnormal termination: Log command parameters and output and throw ExecutionException
             System.out.println("abnormal termination");
             System.out.println("exited with status: " + statusCode);
             System.out.println("return empty string to user");
-            Files.deleteIfExists(constructedInputFile);
         }
+        Files.deleteIfExists(constructedInputFile);
     }
 
     /**
@@ -230,7 +191,6 @@ public class VepRunner {
         List<String> result = new ArrayList<String>();
         boolean substituteNext = false;
         for (String command : commands) {
-
             // Find argument to replace
             if (command.equals(optionName)) {
                 result.add(command);
@@ -238,9 +198,7 @@ public class VepRunner {
                 // Replace value
                 result.add(newValue);
                 substituteNext = true;
-
             } else {
-
                 // Skip value if it was replaced in the previous iteration
                 if (substituteNext) {
                     substituteNext = false;
