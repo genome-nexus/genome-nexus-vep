@@ -91,6 +91,7 @@ public class VepRunner {
         if (convertToListJSON) {
             responseWriter.write("]\n");
         }
+        responseWriter.flush();
     }
 
     private static Path createTempFileForVepInput() throws IOException {
