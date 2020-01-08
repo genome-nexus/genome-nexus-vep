@@ -11,9 +11,11 @@ import java.nio.file.Paths;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
 
-//TODO : add "silent" option to inhibit System logging -- or covert to actual logging
-
+@Service
 public class VepRunner {
     private static final String INDEX_DELIMITER = "#";
 
@@ -21,15 +23,36 @@ public class VepRunner {
     private static final String VEP_WORK_DIRECTORY_PATH = VEP_ROOT_DIRECTORY_PATH + "/.vep";
     private static final String VEP_TMP_DIRECTORY_PATH = VEP_WORK_DIRECTORY_PATH + "/tmp";
     private static final String VEP_SRC_DIRECTORY_PATH = VEP_ROOT_DIRECTORY_PATH + "/src/ensembl-vep";
+    private static final Path VEP_WORK_DIRECTORY = Paths.get(VEP_WORK_DIRECTORY_PATH);
     private static final long WAIT_PERIOD_BEFORE_STREAM_CLOSING = 2000L;
-    private static final String FASTA_FILE = VEP_WORK_DIRECTORY_PATH + "/homo_sapiens/98_GRCh37/Homo_sapiens.GRCh37.75.dna.primary_assembly.fa.gz";
 
-    private static void printTimestamp() {
-        Timestamp timestamp = new Timestamp(System.currentTimeMillis());
-        System.out.println(timestamp);
+    @Value("${verbose:false}")
+    private Boolean verbose;
+
+    @Value("${vep.fork_count:4}")
+    private String vepForkCount;
+
+    @Value("${vep.assembly:GRCh37}")
+    private String vepAssembly;
+
+    // Path is relative to the VEP_WORK_DIRECTORY_PATH
+    @Value("${vep.fastaFileRelativePath:homo_sapiens/98_GRCh37/Homo_sapiens.GRCh37.75.dna.primary_assembly.fa.gz}")
+    private String vepFastaFileRelativePath;
+
+    private Path vepFastaFilePath;
+    @Autowired
+    private void setVepFastaFilePath() {
+        vepFastaFilePath = VEP_WORK_DIRECTORY.resolve(vepFastaFileRelativePath);
     }
 
-    private static void createTmpDirIfNecessary() throws IOException {
+    private void printWithTimestamp(String msg) {
+        if (verbose) {
+            Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+            System.out.println(timestamp + ": " + msg);
+        }
+    }
+
+    private void createTmpDirIfNecessary() throws IOException {
         Path tmpDirPath = Paths.get(VEP_TMP_DIRECTORY_PATH);
         if (!Files.exists(tmpDirPath)) {
             Files.createDirectory(Paths.get(VEP_TMP_DIRECTORY_PATH));
@@ -48,7 +71,7 @@ public class VepRunner {
      * @return sum of two operands
 
     **/
-    private static void constructFileForVepProcessing(List<String> regions, Path vepInputFile) throws IOException {
+    private void constructFileForVepProcessing(List<String> regions, Path vepInputFile) throws IOException {
 
         try (PrintWriter out = new PrintWriter(Files.newBufferedWriter(vepInputFile))) {
             for (String region : regions) {
@@ -61,26 +84,38 @@ public class VepRunner {
         }
     }
 
-    private static Path createTempFileForVepInput() throws IOException {
+    private Path createTempFileForVepInput() throws IOException {
         return Files.createTempFile(Paths.get(VEP_TMP_DIRECTORY_PATH), "vep_input-", ".txt");
     }
 
-    private static void forciblyCloseStreamTransfers(StreamTransferrer vepOutputTransferrer, StreamTransferrer vepErrorTransferrer) {
+    private void forciblyCloseStreamTransfers(StreamTransferrer vepOutputTransferrer, StreamTransferrer vepErrorTransferrer) {
+        System.err.println("requesting shutdown");
         vepOutputTransferrer.requestShutdown();
         vepErrorTransferrer.requestShutdown();
-        //TODO : add back interrupts after debugging exception
-        // try {
-        //     Thread.currentThread().wait(WAIT_PERIOD_BEFORE_STREAM_CLOSING);
-        // } catch (InterruptedException e) {
-        //     Thread.currentThread().interrupt();
-        // }
-        // vepOutputTransferrer.interrupt();
-        // vepErrorTransferrer.interrupt();
+        if (vepOutputTransferrer.isAlive() || vepErrorTransferrer.isAlive()) {
+            System.err.println("waiting 2 seconds..");
+            try {
+                Thread.currentThread().sleep(WAIT_PERIOD_BEFORE_STREAM_CLOSING);
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+            }
+            System.err.println("interrupting transferrer threads");
+            vepOutputTransferrer.interrupt();
+            vepErrorTransferrer.interrupt();
+            try {
+                System.err.println("waiting until vep stdout thread dies..");
+                vepOutputTransferrer.join();
+                System.err.println("waiting until vep stderr thread dies..");
+                vepErrorTransferrer.join();
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+            }
+        }
     }
         
-    public static void run(List<String> regions, Boolean convertToListJSON, OutputStream responseOut) throws IOException, InterruptedException {
-        printTimestamp();
-        System.out.println("Running vep");
+    public void run(List<String> regions, Boolean convertToListJSON, OutputStream responseOut) throws IOException, InterruptedException {
+
+        printWithTimestamp("Running vep");
 
         createTmpDirIfNecessary();
         Path constructedInputFile = createTempFileForVepInput();
@@ -91,14 +126,13 @@ public class VepRunner {
                 "--offline",
                 "--everything",
                 "--hgvsg",
-                "--assembly GRCh37",
+                "--assembly " + vepAssembly,
                 "--format region",
-                "--fork 4",
-                "--fasta " + FASTA_FILE,
+                "--fork " + vepForkCount,
+                "--fasta " + vepFastaFilePath,
                 "--json",
                 "-i " + constructedInputFile,
                 "-o STDOUT",
-                "--force_overwrite",
                 "--no_stats"));
 
         // build command
@@ -108,27 +142,16 @@ public class VepRunner {
             commandElements.add(param);
         }
 
-        // check reference genome environment variable and replace ref genome if necessary
-        String assembly = System.getenv("VEP_ASSEMBLY");
-        if (assembly != null && !"".equals(assembly)) {
-            commandElements = replaceOptValue(commandElements, "--assembly", assembly);
-        }
-
-        printTimestamp();
-        System.out.println("writing constructed input file");
+        printWithTimestamp("writing constructed input file");
         constructFileForVepProcessing(regions, constructedInputFile);
 
-        printTimestamp();
-        System.out.println("processing requests");
-        printTimestamp();
-        System.out.println("process command elements: " + commandElements);
+        printWithTimestamp("processing requests");
+        printWithTimestamp("process command elements: " + commandElements);
         
         ProcessBuilder pb = new ProcessBuilder(commandElements);
         pb.directory(new File(VEP_SRC_DIRECTORY_PATH));
-        //TODO : I think maybe this is where the carriage return is coming from !!
-        pb.redirectErrorStream(true);
-        printTimestamp();
-        System.out.println("starting process using command : " + pb.command());
+        pb.redirectErrorStream(false);
+        printWithTimestamp("starting process using command : " + pb.command());
         Process process = pb.start();
         // send standard output from vep process to response
         FilterOutputStream filterResponseOut = null;
@@ -137,56 +160,43 @@ public class VepRunner {
         } else {
             filterResponseOut = new FilterOutputStream(responseOut);
         }
-        StreamTransferrer vepOutputTransferrer = new StreamTransferrer(process.getInputStream(), filterResponseOut, StreamTransferrer.DEFAULT_BUFFERSIZE);
+        StreamTransferrer vepOutputTransferrer = new StreamTransferrer(process.getInputStream(), filterResponseOut, StreamTransferrer.DEFAULT_BUFFERSIZE, "vep stdout");
         vepOutputTransferrer.start();
         // send standard error from vep process to System.err
-        StreamTransferrer vepErrorTransferrer = new StreamTransferrer(process.getErrorStream(), System.err, StreamTransferrer.DEFAULT_BUFFERSIZE);
+        StreamTransferrer vepErrorTransferrer = new StreamTransferrer(process.getErrorStream(), System.err, StreamTransferrer.DEFAULT_BUFFERSIZE, "vep stderr");
         vepErrorTransferrer.start();
 
         // check result
         int statusCode = process.waitFor();
-        printTimestamp();
-        System.out.println("vep command line process is complete");
+        printWithTimestamp("vep command line process is complete");
 
         // close transferrers and output stream
         forciblyCloseStreamTransfers(vepOutputTransferrer, vepErrorTransferrer);
-        filterResponseOut.close();
+        if (vepOutputTransferrer.isAlive()) {
+            System.err.println("vep stdout thread is still alive!");
+        } else {
+            System.err.println("vep stdout thread is dead");
+        }
+        if (vepErrorTransferrer.isAlive()) {
+            System.err.println("vep stderr thread is still alive!");
+        } else {
+            System.err.println("vep stderr thread is dead");
+        }
+        if (convertToListJSON) {
+            filterResponseOut.complete();
+        }
+
 
         if (statusCode == 0) {
-            printTimestamp();
-            System.out.println("OK");
+            printWithTimestamp("OK");
         } else {
             //TODO: Abnormal termination: Log command parameters and output and throw ExecutionException
-            System.out.println("abnormal termination");
-            System.out.println("exited with status: " + statusCode);
-            System.out.println("request response terminated before completion");
+            printWithTimestamp("abnormal termination");
+            System.err.println("abnormal termination");
+            System.err.println("exited with status: " + statusCode);
+            System.err.println("request response terminated before completion");
         }
         Files.deleteIfExists(constructedInputFile);
     }
 
-    /**
-     * Function to replace a specific value in the VEP parameters list.
-     */
-    private static List<String> replaceOptValue(List<String> commandElements, String optionName, String newValue) {
-        List<String> result = new ArrayList<String>();
-        boolean substituteNext = false;
-        for (String commandElement : commandElements) {
-            // Find argument to replace
-            if (commandElement.equals(optionName)) {
-                result.add(commandElement);
-
-                // Replace value
-                result.add(newValue);
-                substituteNext = true;
-            } else {
-                // Skip value if it was replaced in the previous iteration
-                if (substituteNext) {
-                    substituteNext = false;
-                } else {
-                    result.add(commandElement);
-                }
-            }
-        }
-        return result;
-    }
 }

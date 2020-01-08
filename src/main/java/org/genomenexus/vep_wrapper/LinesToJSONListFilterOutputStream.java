@@ -17,16 +17,38 @@ public class LinesToJSONListFilterOutputStream extends FilterOutputStream {
     }
  
     /** Outputs the ending JSON list bracket, then closes
-    */
     @Override
     public void	close() throws IOException {
         if (out != null) {
+            if (!someDataHasBeenWritten) {
+                out.write('[');
+                lastWriteEndedLineWithoutBeginningAnother = true;
+            }
             if (lastWriteEndedLineWithoutBeginningAnother) {
                 out.write('\n'); // write the newline which was held back to determine if a comma was needed
             }
             out.write(']');
             out.write('\n');
+            this.flush();
             super.close();
+        }
+    }
+    */
+
+    /** Outputs the ending JSON list bracket
+    */
+    public void	complete() throws IOException {
+        if (out != null) {
+            if (!someDataHasBeenWritten) {
+                out.write('[');
+                lastWriteEndedLineWithoutBeginningAnother = true;
+            }
+            if (lastWriteEndedLineWithoutBeginningAnother) {
+                out.write('\n'); // write the newline which was held back to determine if a comma was needed
+            }
+            out.write(']');
+            out.write('\n');
+            this.flush();
         }
     }
 

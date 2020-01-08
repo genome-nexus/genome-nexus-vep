@@ -6,22 +6,24 @@ public class StreamTransferrer extends Thread {
     private InputStream in;
     private FilterOutputStream out = null;
     public static final int DEFAULT_BUFFERSIZE = 60 * 1024;
-    private int buffersize = DEFAULT_BUFFERSIZE;
+    private int bufferSize = DEFAULT_BUFFERSIZE;
     private int totalBytesRead = 0;
-    private byte[] bytebuffer = null;
-    private int bytebufferLastReadSize = -1;
+    private byte[] byteBuffer = null;
+    private int byteBufferLastReadSize = -1;
     private boolean shutdownAnticipation = false;
     private boolean shutdownAsSoonAsPossible = false;
+    private String inputStreamName;
 
-    public StreamTransferrer(InputStream inStream, FilterOutputStream outStream, int buffersize) {
+    public StreamTransferrer(InputStream inStream, FilterOutputStream outStream, int bufferSize, String inputStreamName) {
         in = inStream;
         out = outStream;
-        this.buffersize = buffersize;
+        this.bufferSize = bufferSize;
+        this.inputStreamName = inputStreamName;
     }
 
-    public StreamTransferrer(InputStream inStream, int buffersize) {
+    public StreamTransferrer(InputStream inStream, int bufferSize) {
         in = inStream;
-        this.buffersize = buffersize;
+        this.bufferSize = bufferSize;
     }
 
     public StreamTransferrer(InputStream inStream, FilterOutputStream outStream) {
@@ -38,14 +40,14 @@ public class StreamTransferrer extends Thread {
     }
 
     private void readNextChunk() throws IOException {
-        bytebufferLastReadSize = in.read(bytebuffer, 0, buffersize);
-        totalBytesRead = totalBytesRead + bytebufferLastReadSize;
+        byteBufferLastReadSize = in.read(byteBuffer, 0, bufferSize);
+        totalBytesRead = totalBytesRead + byteBufferLastReadSize;
     }
 
     private void consume() throws IOException {
         while (true) {
             readNextChunk();
-            if (bytebufferLastReadSize == -1) return;
+            if (byteBufferLastReadSize == -1) return;
             if (shutdownAsSoonAsPossible) return;
         }
     }
@@ -53,14 +55,14 @@ public class StreamTransferrer extends Thread {
     private void transfer() throws IOException {
         while (true) {
             readNextChunk();
-            if (bytebufferLastReadSize == -1) return;
+            if (byteBufferLastReadSize == -1) return;
             if (shutdownAsSoonAsPossible) return;
-            out.write(bytebuffer,0,bytebufferLastReadSize);
+            out.write(byteBuffer,0,byteBufferLastReadSize);
         }
     }
 
     public void transferOrConsume() throws IOException {
-        bytebuffer = new byte[buffersize];
+        byteBuffer = new byte[bufferSize];
         if (out == null) {
             consume();
         } else {
@@ -80,6 +82,8 @@ public class StreamTransferrer extends Thread {
             }
         } catch (Throwable e) {
             if (shutdownAsSoonAsPossible) return;
+        } finally {
+            System.out.println("StreamTransferrer for stream " + inputStreamName + " exited");
         }
     }
 

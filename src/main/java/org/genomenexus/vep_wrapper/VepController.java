@@ -10,6 +10,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 @RestController 
@@ -17,6 +18,9 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping(value= "/")
 @Api(tags = "vep-controller", description = "VEP Controller")
 public class VepController {
+
+    @Autowired
+    private VepRunner vepRunner;
 
     @RequestMapping(value = "/vep/human/region/{region}/{allele}",
         method = RequestMethod.GET,
@@ -36,7 +40,7 @@ public class VepController {
         try {
             out = response.getOutputStream();
             response.setContentType("application/json");
-            VepRunner.run(Arrays.asList(region + "/" + allele), false, out);
+            vepRunner.run(Arrays.asList(region + "/" + allele), false, out);
         } catch (IOException | InterruptedException e) {
             e.printStackTrace();
             // TODO: throw and handle errors with global exception handler
@@ -70,7 +74,7 @@ public class VepController {
         try {
             out = response.getOutputStream();
             response.setContentType("application/json");
-            VepRunner.run(regions, true, out);
+            vepRunner.run(regions, true, out);
         } catch (IOException | InterruptedException e) {
             e.printStackTrace();
             // TODO: throw and handle errors with global exception handler
