@@ -27,20 +27,24 @@ public class VepController {
         produces = "application/json")
     @ApiOperation(value = "Retrieves VEP results for single variant specified in region syntax (https://ensembl.org/info/docs/tools/vep/vep_formats.html)",
         nickname = "fetchVepAnnotationByRegionGET")
-    public void getVepAnnotation(@ApiParam(value="GRCh37: 17:41242962-41242965," +
-                                                   "GRCh38: 1:182712-182712", required=true)
-                                   @PathVariable
-                                   String region,
-                                   @ApiParam(value="GRCh37: GA, " +
-                                                   "GRCh38: C", required=true)
-                                   @PathVariable
-                                   String allele,
-                                   HttpServletResponse response) {
+    public void getVepAnnotation(
+            @ApiParam(value="GRCh37: 17:41242962-41242965," +
+                    "GRCh38: 1:182712-182712", required=true)
+            @PathVariable
+            String region,
+            @ApiParam(value="GRCh37: GA, " +
+                    "GRCh38: C", required=true)
+            @PathVariable
+            String allele,
+            @ApiParam("Maximum time (in seconds) to let VEP construct a response (0 = no limit)")
+            @RequestParam(defaultValue = "0")
+            Integer responseTimeout,
+            HttpServletResponse response) {
         OutputStream out = null;
         try {
             out = response.getOutputStream();
             response.setContentType("application/json");
-            vepRunner.run(Arrays.asList(region + "/" + allele), false, out);
+            vepRunner.run(Arrays.asList(region + "/" + allele), false, responseTimeout, out);
         } catch (IOException | InterruptedException e) {
             e.printStackTrace();
             // TODO: throw and handle errors with global exception handler
@@ -59,22 +63,27 @@ public class VepController {
     @ApiOperation(value = "Retrieves VEP annotations for multiple variants specified in region syntax (https://ensembl.org/info/docs/tools/vep/vep_formats.html)",
         nickname = "fetchVepAnnotationByRegionsPOST")
     public void fetchVepAnnotationByRegionsPOST(
-        @ApiParam(value = "List of variants in ENSEMBL region format. For example:\n" +
-                "GRCh37: " +
-                "[\"17:41242962-41242965:1/GA\"], " +
-                "GRCh38: " +
-                "[\"1:182712-182712:1/C\", " +
-                "\"2:265023-265023:1/T\"," +
-                "\"3:319781-319781:1/-\", " +
-                "\"19:110748-110747:1/T\", " +
-                "\"1:1385015-1387562:1/-\"]",
-        required = true)
-        @RequestBody List<String> regions, HttpServletResponse response) {
+            @ApiParam(value = "List of variants in ENSEMBL region format. For example:\n" +
+                    "GRCh37: " +
+                    "[\"17:41242962-41242965:1/GA\"], " +
+                    "GRCh38: " +
+                    "[\"1:182712-182712:1/C\", " +
+                    "\"2:265023-265023:1/T\"," +
+                    "\"3:319781-319781:1/-\", " +
+                    "\"19:110748-110747:1/T\", " +
+                    "\"1:1385015-1387562:1/-\"]",
+                    required = true)
+            @RequestBody
+            List<String> regions,
+            @ApiParam("Maximum time (in seconds) to let VEP construct a response (0 = no limit)")
+            @RequestParam(defaultValue = "0")
+            Integer responseTimeout,
+            HttpServletResponse response) {
         OutputStream out = null;
         try {
             out = response.getOutputStream();
             response.setContentType("application/json");
-            vepRunner.run(regions, true, out);
+            vepRunner.run(regions, true, responseTimeout, out);
         } catch (IOException | InterruptedException e) {
             e.printStackTrace();
             // TODO: throw and handle errors with global exception handler

@@ -113,7 +113,7 @@ public class VepRunner {
         }
     }
         
-    public void run(List<String> regions, Boolean convertToListJSON, OutputStream responseOut) throws IOException, InterruptedException {
+    public void run(List<String> regions, Boolean convertToListJSON, Integer responseTimeout, OutputStream responseOut) throws IOException, InterruptedException {
 
         printWithTimestamp("Running vep");
 
@@ -147,6 +147,8 @@ public class VepRunner {
 
         printWithTimestamp("processing requests");
         printWithTimestamp("process command elements: " + commandElements);
+
+        System.err.println("argument for repsoneTimeout: " + Integer.toString(responseTimeout));
         
         ProcessBuilder pb = new ProcessBuilder(commandElements);
         pb.directory(new File(VEP_SRC_DIRECTORY_PATH));
@@ -169,6 +171,9 @@ public class VepRunner {
         vepErrorTransferrer.start();
 
         // check result
+        // TODO : we think we can use a waitFor(timeout, unit) call here ... and periodically wake up and check status:
+        //        - if request has been closed / disconnected we can shut down perl
+        //        - if response timeout has passed we can also shutdown and return a partial response
         int statusCode = process.waitFor();
         printWithTimestamp("vep command line process is complete");
 
