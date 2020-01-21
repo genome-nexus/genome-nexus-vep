@@ -155,8 +155,10 @@ public class VepRunner {
         Process process = pb.start();
         // send standard output from vep process to response
         FilterOutputStream filterResponseOut = null;
+        LinesToJSONListFilterOutputStream completableFilterOutputStream = null; // when formatting JSON list output, this type allows the completion of the list without closing the stream
         if (convertToListJSON) {
-            filterResponseOut = new LinesToJSONListFilterOutputStream(responseOut);
+            completableFilterOutputStream = new LinesToJSONListFilterOutputStream(responseOut);
+            filterResponseOut = completableFilterOutputStream;
         } else {
             filterResponseOut = new FilterOutputStream(responseOut);
         }
@@ -183,9 +185,8 @@ public class VepRunner {
             System.err.println("vep stderr thread is dead");
         }
         if (convertToListJSON) {
-            filterResponseOut.complete();
+            completableFilterOutputStream.complete();
         }
-
 
         if (statusCode == 0) {
             printWithTimestamp("OK");
