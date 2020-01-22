@@ -9,7 +9,10 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.sql.Timestamp;
+import java.time.Instant;
+import java.time.Duration;
 import java.util.ArrayList;
+import java.util.concurrent.TimeUnit;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -25,6 +28,7 @@ public class VepRunner {
     private static final String VEP_SRC_DIRECTORY_PATH = VEP_ROOT_DIRECTORY_PATH + "/src/ensembl-vep";
     private static final Path VEP_WORK_DIRECTORY = Paths.get(VEP_WORK_DIRECTORY_PATH);
     private static final long WAIT_PERIOD_BEFORE_STREAM_CLOSING = 2000L;
+    private static final Integer MAIN_PROCESS_WAIT_PERIOD = 1;
 
     @Value("${verbose:false}")
     private Boolean verbose;
@@ -79,7 +83,7 @@ public class VepRunner {
             }
             out.close();
         } catch (IOException e) {
-            System.err.println("VepRunner : Error - could not construct input file " + vepInputFile);
+            printWithTimestamp("VepRunner : Error - could not construct input file " + vepInputFile);
             throw e;
         }
     }
@@ -89,23 +93,23 @@ public class VepRunner {
     }
 
     private void forciblyCloseStreamTransfers(StreamTransferrer vepOutputTransferrer, StreamTransferrer vepErrorTransferrer) {
-        System.err.println("requesting shutdown");
+        printWithTimestamp("requesting shutdown");
         vepOutputTransferrer.requestShutdown();
         vepErrorTransferrer.requestShutdown();
         if (vepOutputTransferrer.isAlive() || vepErrorTransferrer.isAlive()) {
-            System.err.println("waiting 2 seconds..");
+            printWithTimestamp("waiting 2 seconds..");
             try {
                 Thread.currentThread().sleep(WAIT_PERIOD_BEFORE_STREAM_CLOSING);
             } catch (InterruptedException e) {
                 Thread.currentThread().interrupt();
             }
-            System.err.println("interrupting transferrer threads");
+            printWithTimestamp("interrupting transferrer threads");
             vepOutputTransferrer.interrupt();
             vepErrorTransferrer.interrupt();
             try {
-                System.err.println("waiting until vep stdout thread dies..");
+                printWithTimestamp("waiting until vep stdout thread dies..");
                 vepOutputTransferrer.join();
-                System.err.println("waiting until vep stderr thread dies..");
+                printWithTimestamp("waiting until vep stderr thread dies..");
                 vepErrorTransferrer.join();
             } catch (InterruptedException e) {
                 Thread.currentThread().interrupt();
@@ -113,6 +117,14 @@ public class VepRunner {
         }
     }
         
+    public Instant computeTimeToKillProcess(Integer responseTimeout) {
+        return Instant.now().plusSeconds(responseTimeout);
+    }
+
+    public boolean timeIsExpired(Instant timeToKillProcess) {
+        return Instant.now().isAfter(timeToKillProcess);
+    }
+
     public void run(List<String> regions, Boolean convertToListJSON, Integer responseTimeout, OutputStream responseOut) throws IOException, InterruptedException {
 
         printWithTimestamp("Running vep");
@@ -172,35 +184,45 @@ public class VepRunner {
 
         // check result
         // TODO : we think we can use a waitFor(timeout, unit) call here ... and periodically wake up and check status:
-        //        - if request has been closed / disconnected we can shut down perl
         //        - if response timeout has passed we can also shutdown and return a partial response
-        int statusCode = process.waitFor();
+        Instant timeToKillProcess = computeTimeToKillProcess(responseTimeout);
+        boolean processCompletedNaturally = false;
+        while (!timeIsExpired(timeToKillProcess) && !processCompletedNaturally) {
+            // wait briefly while process is running
+            processCompletedNaturally = process.waitFor(MAIN_PROCESS_WAIT_PERIOD, TimeUnit.SECONDS);
+        }
+
+        if (!processCompletedNaturally) {
+            System.err.println("destroying process which did not complete naturally");
+            // TODO : cleanup output and shutdown transferrer threads
+            process.destroy();
+        }
+            
         printWithTimestamp("vep command line process is complete");
 
         // close transferrers and output stream
         forciblyCloseStreamTransfers(vepOutputTransferrer, vepErrorTransferrer);
         if (vepOutputTransferrer.isAlive()) {
-            System.err.println("vep stdout thread is still alive!");
+            printWithTimestamp("vep stdout thread is still alive!");
         } else {
-            System.err.println("vep stdout thread is dead");
+            printWithTimestamp("vep stdout thread is dead");
         }
         if (vepErrorTransferrer.isAlive()) {
-            System.err.println("vep stderr thread is still alive!");
+            printWithTimestamp("vep stderr thread is still alive!");
         } else {
-            System.err.println("vep stderr thread is dead");
+            printWithTimestamp("vep stderr thread is dead");
         }
         if (convertToListJSON) {
             completableFilterOutputStream.complete();
         }
 
-        if (statusCode == 0) {
+        if (process.exitValue() == 0) {
             printWithTimestamp("OK");
         } else {
             //TODO: Abnormal termination: Log command parameters and output and throw ExecutionException
             printWithTimestamp("abnormal termination");
-            System.err.println("abnormal termination");
-            System.err.println("exited with status: " + statusCode);
-            System.err.println("request response terminated before completion");
+            printWithTimestamp("exited with status: " + process.exitValue());
+            printWithTimestamp("request response terminated before completion");
         }
         Files.deleteIfExists(constructedInputFile);
     }
