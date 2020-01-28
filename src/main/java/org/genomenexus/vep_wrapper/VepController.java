@@ -13,7 +13,7 @@ import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-@RestController 
+@RestController
 @CrossOrigin(origins="*") // allow all cross-domain requests
 @RequestMapping(value= "/")
 @Api(tags = "vep-controller", description = "VEP Controller")

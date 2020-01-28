@@ -29,6 +29,7 @@ public class VepRunner {
     private static final Path VEP_WORK_DIRECTORY = Paths.get(VEP_WORK_DIRECTORY_PATH);
     private static final long WAIT_PERIOD_BEFORE_STREAM_CLOSING = 2000L;
     private static final Integer MAIN_PROCESS_WAIT_PERIOD = 1;
+    private static final int MAX_VEP_OUTPUT_RECORD_SIZE = 384 * 1024;
 
     @Value("${verbose:false}")
     private Boolean verbose;
@@ -76,7 +77,6 @@ public class VepRunner {
 
     **/
     private void constructFileForVepProcessing(List<String> regions, Path vepInputFile) throws IOException {
-
         try (PrintWriter out = new PrintWriter(Files.newBufferedWriter(vepInputFile))) {
             for (String region : regions) {
                 out.println(region);
@@ -106,6 +106,8 @@ public class VepRunner {
             printWithTimestamp("interrupting transferrer threads");
             vepOutputTransferrer.interrupt();
             vepErrorTransferrer.interrupt();
+            // TODO: when the destroy of the vep process is made to destory all forked processes as well as the parent process, the code below can be tested/used:
+            /*
             try {
                 printWithTimestamp("waiting until vep stdout thread dies..");
                 vepOutputTransferrer.join();
@@ -114,9 +116,10 @@ public class VepRunner {
             } catch (InterruptedException e) {
                 Thread.currentThread().interrupt();
             }
+            */
         }
     }
-        
+
     public Instant computeTimeToKillProcess(Integer responseTimeout) {
         return Instant.now().plusSeconds(responseTimeout);
     }
@@ -161,20 +164,21 @@ public class VepRunner {
         printWithTimestamp("process command elements: " + commandElements);
 
         System.err.println("argument for repsoneTimeout: " + Integer.toString(responseTimeout));
-        
+
         ProcessBuilder pb = new ProcessBuilder(commandElements);
         pb.directory(new File(VEP_SRC_DIRECTORY_PATH));
         pb.redirectErrorStream(false);
         printWithTimestamp("starting process using command : " + pb.command());
         Process process = pb.start();
         // send standard output from vep process to response
+        CompleteLineBufferedOutputStream completeLineResponseOut = new CompleteLineBufferedOutputStream(responseOut, MAX_VEP_OUTPUT_RECORD_SIZE);
         FilterOutputStream filterResponseOut = null;
         LinesToJSONListFilterOutputStream completableFilterOutputStream = null; // when formatting JSON list output, this type allows the completion of the list without closing the stream
         if (convertToListJSON) {
-            completableFilterOutputStream = new LinesToJSONListFilterOutputStream(responseOut);
+            completableFilterOutputStream = new LinesToJSONListFilterOutputStream(completeLineResponseOut);
             filterResponseOut = completableFilterOutputStream;
         } else {
-            filterResponseOut = new FilterOutputStream(responseOut);
+            filterResponseOut = new FilterOutputStream(completeLineResponseOut);
         }
         StreamTransferrer vepOutputTransferrer = new StreamTransferrer(process.getInputStream(), filterResponseOut, StreamTransferrer.DEFAULT_BUFFERSIZE, "vep stdout");
         vepOutputTransferrer.start();
@@ -185,9 +189,10 @@ public class VepRunner {
         // check result
         // TODO : we think we can use a waitFor(timeout, unit) call here ... and periodically wake up and check status:
         //        - if response timeout has passed we can also shutdown and return a partial response
+        boolean responseTimeoutSupplied = responseTimeout != 0;
         Instant timeToKillProcess = computeTimeToKillProcess(responseTimeout);
         boolean processCompletedNaturally = false;
-        while (!timeIsExpired(timeToKillProcess) && !processCompletedNaturally) {
+        while ((!responseTimeoutSupplied || !timeIsExpired(timeToKillProcess)) && !processCompletedNaturally) {
             // wait briefly while process is running
             processCompletedNaturally = process.waitFor(MAIN_PROCESS_WAIT_PERIOD, TimeUnit.SECONDS);
         }
@@ -196,24 +201,28 @@ public class VepRunner {
             System.err.println("destroying process which did not complete naturally");
             // TODO : cleanup output and shutdown transferrer threads
             process.destroy();
+            // close transferrers and output stream
+            forciblyCloseStreamTransfers(vepOutputTransferrer, vepErrorTransferrer);
+            if (vepOutputTransferrer.isAlive()) {
+                printWithTimestamp("vep stdout thread is still alive!");
+            } else {
+                printWithTimestamp("vep stdout thread is dead");
+            }
+            if (vepErrorTransferrer.isAlive()) {
+                printWithTimestamp("vep stderr thread is still alive!");
+            } else {
+                printWithTimestamp("vep stderr thread is dead");
+            }
+            completeLineResponseOut.purge(); // drop any partial record in buffer
+        } else {
+            printWithTimestamp("vep command line process is complete");
+            // wait for all stream output to be transferred to destination
+            vepOutputTransferrer.join();
+            vepErrorTransferrer.join();
         }
-            
-        printWithTimestamp("vep command line process is complete");
 
-        // close transferrers and output stream
-        forciblyCloseStreamTransfers(vepOutputTransferrer, vepErrorTransferrer);
-        if (vepOutputTransferrer.isAlive()) {
-            printWithTimestamp("vep stdout thread is still alive!");
-        } else {
-            printWithTimestamp("vep stdout thread is dead");
-        }
-        if (vepErrorTransferrer.isAlive()) {
-            printWithTimestamp("vep stderr thread is still alive!");
-        } else {
-            printWithTimestamp("vep stderr thread is dead");
-        }
         if (convertToListJSON) {
-            completableFilterOutputStream.complete();
+            completableFilterOutputStream.complete(); // close an open JSON list
         }
 
         if (process.exitValue() == 0) {

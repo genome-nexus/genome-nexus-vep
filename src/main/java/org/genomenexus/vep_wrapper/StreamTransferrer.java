@@ -92,7 +92,7 @@ public class StreamTransferrer extends Thread {
     }
 
     public void requestShutdown() {
-        shutdownAsSoonAsPossible = true;        
+        shutdownAsSoonAsPossible = true;
     }
 
 }

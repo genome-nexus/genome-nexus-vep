@@ -9,35 +9,15 @@ public class LinesToJSONListFilterOutputStream extends FilterOutputStream {
     private boolean someDataHasBeenWritten = false;
     private boolean lastWriteEndedLineWithoutBeginningAnother = true;
 
-    /** Creates an output stream filter built on top of the specified underlying output stream,
-      * also write the starting JSON list bracket
+    /** Creates an output stream filter built on top of the specified underlying output stream
     */
     public LinesToJSONListFilterOutputStream(OutputStream out) {
         super(out);
     }
- 
-    /** Outputs the ending JSON list bracket, then closes
-    @Override
-    public void	close() throws IOException {
-        if (out != null) {
-            if (!someDataHasBeenWritten) {
-                out.write('[');
-                lastWriteEndedLineWithoutBeginningAnother = true;
-            }
-            if (lastWriteEndedLineWithoutBeginningAnother) {
-                out.write('\n'); // write the newline which was held back to determine if a comma was needed
-            }
-            out.write(']');
-            out.write('\n');
-            this.flush();
-            super.close();
-        }
-    }
-    */
 
     /** Outputs the ending JSON list bracket
     */
-    public void	complete() throws IOException {
+    public void complete() throws IOException {
         if (out != null) {
             if (!someDataHasBeenWritten) {
                 out.write('[');
