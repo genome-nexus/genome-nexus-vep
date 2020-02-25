@@ -175,8 +175,8 @@ public class VepRunner {
         FilterOutputStream filterResponseOut = null;
         LinesToJSONListFilterOutputStream completableFilterOutputStream = null; // when formatting JSON list output, this type allows the completion of the list without closing the stream
         if (convertToListJSON) {
-            completableFilterOutputStream = new LinesToJSONListFilterOutputStream(completeLineResponseOut);
-            filterResponseOut = completableFilterOutputStream;
+            completableFilterOutputStream = new LinesToJSONListFilterOutputStream(responseOut);
+            filterResponseOut = new CompleteLineBufferedOutputStream(completableFilterOutputStream, MAX_VEP_OUTPUT_RECORD_SIZE);
         } else {
             filterResponseOut = new FilterOutputStream(completeLineResponseOut);
         }

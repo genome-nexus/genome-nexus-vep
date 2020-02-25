@@ -34,6 +34,7 @@ public class CompleteLineBufferedOutputStream extends BufferedOutputStream {
     */
     @Override
     public void flush() throws IOException {
+        out.flush();
     }
 
     /** Writes b.length bytes to this output stream.
@@ -88,6 +89,7 @@ public class CompleteLineBufferedOutputStream extends BufferedOutputStream {
                 count = 0;
             }
             out.write(b, off, next_newline_index - off + 1); // write next complete line
+            out.flush();
             len = len - next_newline_index + off - 1; // reset args for remainder of b
             off = ++next_newline_index;
             // scan for the next newline position
