@@ -29,8 +29,9 @@ public class CompleteLineBufferedOutputStream extends BufferedOutputStream {
         count = 0;
     }
 
-    /** Flush does nothing; completed lines are written as soon as they are available, so the
-     *  only content in the buffer is uncompleted lines, which are not written.
+    /** Flush only flushes the underlying stream; completed lines are written as soon as
+     *  they are available, so the only content in the buffer is uncompleted lines, which
+     *  are not written.
     */
     @Override
     public void flush() throws IOException {
@@ -38,7 +39,7 @@ public class CompleteLineBufferedOutputStream extends BufferedOutputStream {
     }
 
     /** Writes b.length bytes to this output stream.
-      * Any complete lines present (considering the buffer as well) are flushed to the
+      * Any complete lines present (considering the buffer as well) are written to the
       * underlying OutputStream. Any trailing bytes are stored in the buffer.
     */
     @Override
@@ -50,7 +51,8 @@ public class CompleteLineBufferedOutputStream extends BufferedOutputStream {
     }
 
     /** Writes len bytes to this output stream starting at offset off.
-      * each line which is output (except the final one) have an added comma suffix.
+      * Any complete lines present (considering the buffer as well) are written to the
+      * underlying OutputStream. Any trailing bytes are stored in the buffer.
     */
     @Override
     public void write(byte[] b, int off, int len) throws IOException {

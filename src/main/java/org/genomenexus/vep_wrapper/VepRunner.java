@@ -187,8 +187,6 @@ public class VepRunner {
         vepErrorTransferrer.start();
 
         // check result
-        // TODO : we think we can use a waitFor(timeout, unit) call here ... and periodically wake up and check status:
-        //        - if response timeout has passed we can also shutdown and return a partial response
         boolean responseTimeoutSupplied = responseTimeout != 0;
         Instant timeToKillProcess = computeTimeToKillProcess(responseTimeout);
         boolean processCompletedNaturally = false;
@@ -199,7 +197,6 @@ public class VepRunner {
 
         if (!processCompletedNaturally) {
             System.err.println("destroying process which did not complete naturally");
-            // TODO : cleanup output and shutdown transferrer threads
             process.destroy();
             // close transferrers and output stream
             forciblyCloseStreamTransfers(vepOutputTransferrer, vepErrorTransferrer);
