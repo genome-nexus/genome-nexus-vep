@@ -18,7 +18,7 @@ VEP_ASSEMBLY=GRCh38
 docker build -t genome-nexus_vep .
 
 # Run Genome-Nexus-VEP on port 8889 and point it to local cache
-docker run -d --name genome-nexus_vep -p 8889:8080 -e VEP_ASSEMBLY=$VEP_ASSEMBLY -v $VEP_CACHE:/opt/vep/.vep/:ro genome-nexus_vep:latest
+docker run -d --name genome-nexus_vep -p 8889:8080 -e vep.assembly=$VEP_ASSEMBLY -v $VEP_CACHE:/opt/vep/.vep/:ro genome-nexus_vep:latest
 ```
 
 Genome Nexus VEP is now running at http://localhost:8889

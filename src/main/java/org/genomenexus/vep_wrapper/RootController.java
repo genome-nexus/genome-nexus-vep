@@ -10,9 +10,9 @@ import java.io.IOException;
 @RestController
 public class RootController {
 
-	@RequestMapping(path = "/", method = RequestMethod.GET)
-	public void getRoot(HttpServletResponse response) throws IOException {
-		response.sendRedirect("swagger-ui.html");
-	}
+    @RequestMapping(path = "/", method = RequestMethod.GET)
+    public void getRoot(HttpServletResponse response) throws IOException {
+        response.sendRedirect("swagger-ui.html");
+    }
 
 }
