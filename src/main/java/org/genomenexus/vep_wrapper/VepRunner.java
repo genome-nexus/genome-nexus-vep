@@ -141,6 +141,7 @@ public class VepRunner {
                 "--offline",
                 "--everything",
                 "--hgvsg",
+                "--xref_refseq",
                 "--assembly " + vepAssembly,
                 "--format region",
                 "--fork " + vepForkCount,
