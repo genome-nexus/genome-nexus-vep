@@ -2,8 +2,10 @@ package org.genomenexus.vep_wrapper;
 
 import com.google.common.base.Predicates;
 
+import javax.servlet.ServletContextListener;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.web.servlet.ServletListenerRegistrationBean;
 import org.springframework.context.annotation.Bean;
 
 import springfox.documentation.builders.ApiInfoBuilder;
@@ -43,5 +45,13 @@ public class VepWrapper {
             .paths(Predicates.not(PathSelectors.regex("/actuator.*"))) // Exclude Actuator controllers
             .paths(Predicates.not(PathSelectors.regex("/"))) // Exclude Root redirect
             .build();
+    }
+
+    @Bean
+    ServletListenerRegistrationBean<ServletContextListener> servletListener() {
+        // shuts down the orphan perl process / zombie reaper thread
+        ServletListenerRegistrationBean<ServletContextListener> slrb = new ServletListenerRegistrationBean<>();
+        slrb.setListener(new SystemProcessManagerShutdownBean());
+        return slrb;
     }
 }

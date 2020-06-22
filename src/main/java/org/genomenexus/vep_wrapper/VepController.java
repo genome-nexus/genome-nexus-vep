@@ -45,7 +45,7 @@ public class VepController {
             out = response.getOutputStream();
             response.setContentType("application/json");
             vepRunner.run(Arrays.asList(region + "/" + allele), false, responseTimeout, out);
-        } catch (IOException | InterruptedException e) {
+        } catch (IOException | InterruptedException | VepLaunchFailureException e) {
             e.printStackTrace();
             // TODO: throw and handle errors with global exception handler
         } finally {
@@ -84,7 +84,7 @@ public class VepController {
             out = response.getOutputStream();
             response.setContentType("application/json");
             vepRunner.run(regions, true, responseTimeout, out);
-        } catch (IOException | InterruptedException e) {
+        } catch (IOException | InterruptedException | VepLaunchFailureException e) {
             e.printStackTrace();
             // TODO: throw and handle errors with global exception handler
         } finally {

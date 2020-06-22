@@ -10,7 +10,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.sql.Timestamp;
 import java.time.Instant;
-import java.time.Duration;
 import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 import java.util.List;
@@ -92,31 +91,15 @@ public class VepRunner {
         return Files.createTempFile(Paths.get(VEP_TMP_DIRECTORY_PATH), "vep_input-", ".txt");
     }
 
-    private void forciblyCloseStreamTransfers(StreamTransferrer vepOutputTransferrer, StreamTransferrer vepErrorTransferrer) {
-        printWithTimestamp("requesting shutdown");
+    private void closeStreamTransfers(StreamTransferrer vepOutputTransferrer, StreamTransferrer vepErrorTransferrer) {
+        printWithTimestamp("requesting stream transfer shutdown");
         vepOutputTransferrer.requestShutdown();
         vepErrorTransferrer.requestShutdown();
-        if (vepOutputTransferrer.isAlive() || vepErrorTransferrer.isAlive()) {
-            printWithTimestamp("waiting 2 seconds..");
-            try {
-                Thread.currentThread().sleep(WAIT_PERIOD_BEFORE_STREAM_CLOSING);
-            } catch (InterruptedException e) {
-                Thread.currentThread().interrupt();
-            }
-            printWithTimestamp("interrupting transferrer threads");
-            vepOutputTransferrer.interrupt();
-            vepErrorTransferrer.interrupt();
-            // TODO: when the destroy of the vep process is made to destory all forked processes as well as the parent process, the code below can be tested/used:
-            /*
-            try {
-                printWithTimestamp("waiting until vep stdout thread dies..");
-                vepOutputTransferrer.join();
-                printWithTimestamp("waiting until vep stderr thread dies..");
-                vepErrorTransferrer.join();
-            } catch (InterruptedException e) {
-                Thread.currentThread().interrupt();
-            }
-            */
+        try {
+            vepOutputTransferrer.join();
+            vepErrorTransferrer.join();
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
         }
     }
 
@@ -128,14 +111,15 @@ public class VepRunner {
         return Instant.now().isAfter(timeToKillProcess);
     }
 
-    public void run(List<String> regions, Boolean convertToListJSON, Integer responseTimeout, OutputStream responseOut) throws IOException, InterruptedException {
+    public void run(List<String> regions, Boolean convertToListJSON, Integer responseTimeout, OutputStream responseOut)
+            throws IOException, InterruptedException, VepLaunchFailureException {
 
         printWithTimestamp("Running vep");
 
         createTmpDirIfNecessary();
         Path constructedInputFile = createTempFileForVepInput();
 
-        // get vep pameters (use -Dvep.params to change)
+        // get vep parameters (use -Dvep.params to change)
         String vepParameters = System.getProperty("vep.params", String.join(" ",
                 "--cache",
                 "--offline",
@@ -154,7 +138,7 @@ public class VepRunner {
         // build command
         List<String> commandElements = new ArrayList<String>();
         commandElements.add("vep");
-        for (String param : vepParameters.split(" ")) {
+        for (String param : vepParameters.split(" ")) { // warning -- spaces in paths will break this code
             commandElements.add(param);
         }
 
@@ -164,13 +148,19 @@ public class VepRunner {
         printWithTimestamp("processing requests");
         printWithTimestamp("process command elements: " + commandElements);
 
-        System.err.println("argument for repsoneTimeout: " + Integer.toString(responseTimeout));
+        System.err.println("argument for responseTimeout: " + Integer.toString(responseTimeout));
 
         ProcessBuilder pb = new ProcessBuilder(commandElements);
         pb.directory(new File(VEP_SRC_DIRECTORY_PATH));
         pb.redirectErrorStream(false);
         printWithTimestamp("starting process using command : " + pb.command());
-        Process process = pb.start();
+        // SystemProcessManager will handle proper tracking and cleanup of vep jobs
+        Process process = SystemProcessManager.launchVepProcess(pb);
+        if (process == null) {
+            printWithTimestamp("could not create process: " + String.join(" ", commandElements));
+            Files.deleteIfExists(constructedInputFile);
+            throw new VepLaunchFailureException("unable to process request");
+        }
         // send standard output from vep process to response
         CompleteLineBufferedOutputStream completeLineResponseOut = new CompleteLineBufferedOutputStream(responseOut, MAX_VEP_OUTPUT_RECORD_SIZE);
         FilterOutputStream filterResponseOut = null;
@@ -198,19 +188,8 @@ public class VepRunner {
 
         if (!processCompletedNaturally) {
             System.err.println("destroying process which did not complete naturally");
-            process.destroy();
-            // close transferrers and output stream
-            forciblyCloseStreamTransfers(vepOutputTransferrer, vepErrorTransferrer);
-            if (vepOutputTransferrer.isAlive()) {
-                printWithTimestamp("vep stdout thread is still alive!");
-            } else {
-                printWithTimestamp("vep stdout thread is dead");
-            }
-            if (vepErrorTransferrer.isAlive()) {
-                printWithTimestamp("vep stderr thread is still alive!");
-            } else {
-                printWithTimestamp("vep stderr thread is dead");
-            }
+            SystemProcessManager.destroyVepProcess(process);
+            closeStreamTransfers(vepOutputTransferrer, vepErrorTransferrer);
             completeLineResponseOut.purge(); // drop any partial record in buffer
         } else {
             printWithTimestamp("vep command line process is complete");
