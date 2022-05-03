@@ -1,4 +1,4 @@
-FROM maven:3.5.4
+FROM maven:3.8.5
 RUN mkdir /genome-nexus-vep
 ADD . /genome-nexus-vep
 WORKDIR /genome-nexus-vep
