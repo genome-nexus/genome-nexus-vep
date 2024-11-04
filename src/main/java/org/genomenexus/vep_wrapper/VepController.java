@@ -44,7 +44,7 @@ public class VepController {
         try {
             out = response.getOutputStream();
             response.setContentType("application/json");
-            vepRunner.run(Arrays.asList(region + "/" + allele), false, responseTimeout, out);
+            vepRunner.run(Arrays.asList(region + "/" + allele), false, responseTimeout, out, false);
         } catch (IOException | InterruptedException | VepLaunchFailureException e) {
             e.printStackTrace();
             // TODO: throw and handle errors with global exception handler
@@ -83,7 +83,7 @@ public class VepController {
         try {
             out = response.getOutputStream();
             response.setContentType("application/json");
-            vepRunner.run(regions, true, responseTimeout, out);
+            vepRunner.run(regions, true, responseTimeout, out, false);
         } catch (IOException | InterruptedException | VepLaunchFailureException e) {
             e.printStackTrace();
             // TODO: throw and handle errors with global exception handler
@@ -98,4 +98,67 @@ public class VepController {
         return;
     }
 
+    @RequestMapping(value = "/vep/human/hgvsc/{hgvsc}",
+        method = RequestMethod.GET,
+        produces = "application/json")
+    @ApiOperation(value = "Retrieves VEP results for single c. variant specified in hgvs syntax (https://ensembl.org/info/docs/tools/vep/vep_formats.html)",
+        nickname = "fetchVepHgvscAnnotationByGET")
+    public void getVepHgvscAnnotation(
+            @ApiParam(value="ENST00000618231.3:c.9G>C", required=true)
+            @PathVariable
+            String hgvsc,
+            @ApiParam("Maximum time (in seconds) to let VEP construct a response (0 = no limit)")
+            @RequestParam(defaultValue = "0")
+            Integer responseTimeout,
+            HttpServletResponse response) {
+        OutputStream out = null;
+        try {
+            out = response.getOutputStream();
+            response.setContentType("application/json");
+            vepRunner.run(Arrays.asList(hgvsc), false, responseTimeout, out, true);
+        } catch (IOException | InterruptedException | VepLaunchFailureException e) {
+            e.printStackTrace();
+            // TODO: throw and handle errors with global exception handler
+        } finally {
+            try {
+                response.flushBuffer();
+            } catch (Throwable e) {
+                e.printStackTrace();
+                // TODO: throw and handle errors with global exception handler
+            }
+        }
+    }
+
+    @RequestMapping(value = "/vep/human/hgvsc",
+        method = RequestMethod.POST)
+    @ApiOperation(value = "Retrieves VEP results for multiple c. variants specified in hgvs syntax (https://ensembl.org/info/docs/tools/vep/vep_formats.html)",
+        nickname = "fetchVepHgvscAnnotationsByPOST")
+    public void fetchVepHgvscAnnotationsPOST(
+            @ApiParam(value = "List of variants in ENSEMBL hgvsc format. For example:\n" +
+                    "[\"ENST00000618231.3:c.9G>C\", \"ENST00000471631.1:c.28_33delTCGCGG\"]",
+                    required = true)
+            @RequestBody
+            List<String> hgvscStrings,
+            @ApiParam("Maximum time (in seconds) to let VEP construct a response (0 = no limit)")
+            @RequestParam(defaultValue = "0")
+            Integer responseTimeout,
+            HttpServletResponse response) {
+        OutputStream out = null;
+        try {
+            out = response.getOutputStream();
+            response.setContentType("application/json");
+            vepRunner.run(hgvscStrings, true, responseTimeout, out, true);
+        } catch (IOException | InterruptedException | VepLaunchFailureException e) {
+            e.printStackTrace();
+            // TODO: throw and handle errors with global exception handler
+        } finally {
+            try {
+                response.flushBuffer();
+            } catch (Throwable e) {
+                e.printStackTrace();
+                // TODO: throw and handle errors with global exception handler
+            }
+        }
+        return;
+    }
 }

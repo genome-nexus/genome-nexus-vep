@@ -43,6 +43,18 @@ public class VepRunner {
     @Value("${vep.fastaFileRelativePath:homo_sapiens/98_GRCh37/Homo_sapiens.GRCh37.75.dna.primary_assembly.fa.gz}")
     private String vepFastaFileRelativePath;
 
+    @Value("${database.host}")
+    private String databaseHost;
+
+    @Value("${database.port}")
+    private String databasePort;
+
+    @Value("${database.user}")
+    private String databaseUser;
+
+    @Value("${database.password}")
+    private String databasePassword;
+
     private Path vepFastaFilePath;
     @Autowired
     private void setVepFastaFilePath() {
@@ -64,21 +76,21 @@ public class VepRunner {
     }
 
     /**
-     * Create a file containing the regions received in the input query.
-     * Write the user supplied regions from the "regions" argument to an output file.
-     * CAUTION : this function does not sort the regions into chromosomal order. The
+     * Create a file containing the variants received in the input query.
+     * Write the user supplied variants from the "variants" argument to an output file.
+     * CAUTION : this function does not sort the variants into chromosomal order. The
      * VEP command line tool is very slow when the input is not sorted. It is expected
      * that users of the VepRunner will always send requests that have been pre-sorted.
      *
-     * @param regions - the regions as passed by the user
+     * @param variants - the variants as passed by the user
      * @param vepInputFile - the file to be written
      * @return sum of two operands
 
     **/
-    private void constructFileForVepProcessing(List<String> regions, Path vepInputFile) throws IOException {
+    private void constructFileForVepProcessing(List<String> variants, Path vepInputFile) throws IOException {
         try (PrintWriter out = new PrintWriter(Files.newBufferedWriter(vepInputFile))) {
-            for (String region : regions) {
-                out.println(region);
+            for (String variant : variants) {
+                out.println(variant);
             }
             out.close();
         } catch (IOException e) {
@@ -111,7 +123,7 @@ public class VepRunner {
         return Instant.now().isAfter(timeToKillProcess);
     }
 
-    public void run(List<String> regions, Boolean convertToListJSON, Integer responseTimeout, OutputStream responseOut)
+    public void run(List<String> variants, Boolean convertToListJSON, Integer responseTimeout, OutputStream responseOut, boolean useDatabase)
             throws IOException, InterruptedException, VepLaunchFailureException {
 
         printWithTimestamp("Running vep");
@@ -120,7 +132,26 @@ public class VepRunner {
         Path constructedInputFile = createTempFileForVepInput();
 
         // get vep parameters (use -Dvep.params to change)
-        String vepParameters = System.getProperty("vep.params", String.join(" ",
+        String vepParameters;
+        if (useDatabase) {
+            vepParameters = System.getProperty("vep.params", String.join(" ",
+            "--database",
+                "--host " + databaseHost,
+                "--user " + databaseUser,
+                "--password " + databasePassword,
+                "--port " + databasePort,
+                "--everything",
+                "--hgvsg",
+                "--xref_refseq",
+                "--format hgvs",
+                "--fork " + vepForkCount,
+                "--fasta " + vepFastaFilePath,
+                "--json",
+                "-i " + constructedInputFile,
+                "-o STDOUT",
+                "--no_stats"));
+        } else {
+            vepParameters = System.getProperty("vep.params", String.join(" ",
                 "--cache",
                 "--offline",
                 "--everything",
@@ -134,6 +165,7 @@ public class VepRunner {
                 "-i " + constructedInputFile,
                 "-o STDOUT",
                 "--no_stats"));
+        }
 
         // build command
         List<String> commandElements = new ArrayList<String>();
@@ -143,7 +175,7 @@ public class VepRunner {
         }
 
         printWithTimestamp("writing constructed input file");
-        constructFileForVepProcessing(regions, constructedInputFile);
+        constructFileForVepProcessing(variants, constructedInputFile);
 
         printWithTimestamp("processing requests");
         printWithTimestamp("process command elements: " + commandElements);
