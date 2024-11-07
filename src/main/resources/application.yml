@@ -1,0 +1,11 @@
+database:
+  grch37:
+    host: ensembldb.ensembl.org
+    port: 3306
+    user: anonymous
+    password:
+  grch38:
+    host: ensembldb.ensembl.org
+    port: 5306
+    user: anonymous
+    password:

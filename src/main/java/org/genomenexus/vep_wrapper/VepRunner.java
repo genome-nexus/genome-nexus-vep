@@ -36,24 +36,36 @@ public class VepRunner {
     @Value("${vep.fork_count:4}")
     private String vepForkCount;
 
-    @Value("${vep.assembly:GRCh37}")
+    @Value("${vep.assembly:GRCh38}")
     private String vepAssembly;
 
     // Path is relative to the VEP_WORK_DIRECTORY_PATH
-    @Value("${vep.fastaFileRelativePath:homo_sapiens/98_GRCh37/Homo_sapiens.GRCh37.75.dna.primary_assembly.fa.gz}")
+    @Value("${vep.fastaFileRelativePath:homo_sapiens/112_GRCh37/Homo_sapiens.GRCh37.dna.primary_assembly.fa.gz}")
     private String vepFastaFileRelativePath;
 
-    @Value("${database.host}")
-    private String databaseHost;
+    @Value("${database.grch37.host}")
+    private String grch37DatabaseHost;
 
-    @Value("${database.port}")
-    private String databasePort;
+    @Value("${database.grch37.port}")
+    private String grch37DatabasePort;
 
-    @Value("${database.user}")
-    private String databaseUser;
+    @Value("${database.grch37.user}")
+    private String grch37DatabaseUser;
 
-    @Value("${database.password}")
-    private String databasePassword;
+    @Value("${database.grch37.password}")
+    private String grch37DatabasePassword;
+
+    @Value("${database.grch38.host}")
+    private String grch38DatabaseHost;
+    
+    @Value("${database.grch38.port}")
+    private String grch38DatabasePort;
+
+    @Value("${database.grch38.user}")
+    private String grch38DatabaseUser;
+
+    @Value("${database.grch38.password}")
+    private String grch38DatabasePassword;
 
     private Path vepFastaFilePath;
     @Autowired
@@ -134,6 +146,23 @@ public class VepRunner {
         // get vep parameters (use -Dvep.params to change)
         String vepParameters;
         if (useDatabase) {
+            String databaseHost = "";
+            String databasePort = "";
+            String databaseUser = "";
+            String databasePassword = "";
+
+            if (vepAssembly.equals("GRCh38")) {
+                databaseHost = grch38DatabaseHost;
+                databasePort = grch38DatabasePort;
+                databaseUser = grch38DatabaseUser;
+                databasePassword = grch38DatabasePassword;
+            } else {
+                databaseHost = grch37DatabaseHost;
+                databasePort = grch37DatabasePort;
+                databaseUser = grch37DatabaseUser;
+                databasePassword = grch37DatabasePassword;
+            }
+
             vepParameters = System.getProperty("vep.params", String.join(" ",
             "--database",
                 "--host " + databaseHost,

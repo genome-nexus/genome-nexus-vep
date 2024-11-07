@@ -74,3 +74,5 @@ database.password =
 
 However, Ensembl does not recommend connecting to their public database (as it is very slow), so it is recommended to set up a local copy of their database by following
 the [instructions](https://useast.ensembl.org/info/docs/webcode/mirror/install/ensembl-data.html) on the Ensembl website.
+
+**IMPORTANT: Make sure the ensembl-vep docker image, the cache files, and the MySQL database are all using the same version.**
