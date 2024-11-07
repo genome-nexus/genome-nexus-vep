@@ -61,16 +61,8 @@ Installation instructions:
 
 ## Connect an Ensembl database
 
-In order to annotate c. alterations, you must connect to a MySQL database. For an example of connecting to Ensembl's public database, you would set the following 
-in [application.properties](target/classes/application.properties):
-
-```
-database.host = ensembldb.ensembl.org
-database.port = 5306
-database.user = anonymous
-# password is not used when connecting to ensembl
-database.password =                   
-```
+In order to annotate c. alterations, you must connect to a MySQL database. For an example of connecting to Ensembl's public database, you would use the defaults 
+show in [application.properties](target/classes/application.properties):
 
 However, Ensembl does not recommend connecting to their public database (as it is very slow), so it is recommended to set up a local copy of their database by following
 the [instructions](https://useast.ensembl.org/info/docs/webcode/mirror/install/ensembl-data.html) on the Ensembl website.
