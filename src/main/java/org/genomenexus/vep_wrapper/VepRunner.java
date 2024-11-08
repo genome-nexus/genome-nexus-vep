@@ -36,7 +36,7 @@ public class VepRunner {
     @Value("${vep.fork_count:4}")
     private String vepForkCount;
 
-    @Value("${vep.assembly:GRCh38}")
+    @Value("${vep.assembly:GRCh37}")
     private String vepAssembly;
 
     // Path is relative to the VEP_WORK_DIRECTORY_PATH

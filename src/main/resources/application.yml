@@ -1,11 +1,12 @@
 database:
+  enabled: true
   grch37:
-    host: ensembldb.ensembl.org
+    host: host.docker.internal
     port: 3306
-    user: anonymous
-    password:
+    user: root
+    password: AlphaMale1987!!
   grch38:
-    host: ensembldb.ensembl.org
-    port: 5306
-    user: anonymous
-    password:
+    host: host.docker.internal
+    port: 3307
+    user: root
+    password: my-secret-pw
