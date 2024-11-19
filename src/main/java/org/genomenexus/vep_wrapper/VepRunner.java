@@ -40,7 +40,7 @@ public class VepRunner {
     private String vepAssembly;
 
     // Path is relative to the VEP_WORK_DIRECTORY_PATH
-    @Value("${vep.fastaFileRelativePath:homo_sapiens/112_GRCh37/Homo_sapiens.GRCh37.dna.primary_assembly.fa.gz}")
+    @Value("${vep.fastaFileRelativePath:homo_sapiens/98_GRCh37/Homo_sapiens.GRCh37.dna.primary_assembly.fa.gz}")
     private String vepFastaFileRelativePath;
 
     @Value("${database.host}")

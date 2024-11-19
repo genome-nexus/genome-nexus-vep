@@ -1,6 +1,6 @@
 database:
   enabled: true
-  host: ensembldb.ensembl.org
+  host: host.docker.internal
   port: 3306
-  user: anonymous
-  password:
+  user: root
+  password: AlphaMale1987!!
