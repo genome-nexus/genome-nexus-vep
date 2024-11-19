@@ -3,4 +3,4 @@ database:
   host: host.docker.internal
   port: 3306
   user: root
-  password: AlphaMale1987!!
+  password:
