@@ -1,60 +1,53 @@
-# genome-nexus-vep
-Spring boot minimal REST wrapper service for
-[VEP](https://github.com/Ensembl/ensembl-vep). This allows us to deploy a web
-service containing VEP without any other components of Ensembl REST API. The
-Ensembl VEP docker image has been extended to include the java runtime
-environment and this jar.
+# Genome Nexus VEP
 
-## Compile and run
-
-```bash
-# Point to VEP cache directory. If you don't have this cache, see section "Create VEP cache"
-VEP_CACHE=<local_vep_cache_directory_path>
-
-# Set VEP assembly, for example GRCh37 or GRCh38
-VEP_ASSEMBLY=GRCh38
-
-# Create docker image
-docker build -t genome-nexus_vep .
-
-# Run Genome-Nexus-VEP on port 8889 and point it to local cache
-docker run -d --name genome-nexus_vep -p 8889:8080 -e vep.assembly=$VEP_ASSEMBLY -v $VEP_CACHE:/opt/vep/.vep/:ro genome-nexus_vep:latest
-```
-
-Genome Nexus VEP is now running at http://localhost:8889
-
-## Create VEP cache
-If you don't have a prepared VEP cache directory, start the container with the folder mounted with ":rw" (read&write) and install the VEP cache using INSTALL.pl. Downloading and optimizing the cache will take several hours.
-
-```bash
-# Point this to your preferred directory
-VEP_CACHE=<local_vep_cache_directory_path>
-
-# Ideally this is added to ~/.bashrc or ~/.bash_profile:
-# export VEP_CACHE=<local_vep_cache_directory_path>
-# And reload this file with:
-# 'source ~/.bashrc' or 'source ~/.bash_profile'
-
-# Create docker image
-docker build -t genome-nexus_vep .
-
-# Run Genome-Nexus-VEP on port 8889 and mount cache directory with write access.
-docker run -d --name genome-nexus_vep_cache -p 8890:8080 -v $VEP_CACHE:/opt/vep/.vep/:rw genome-nexus_vep:latest
-
-# Go into the docker container
-docker exec -it genome-nexus_vep_cache bash
-
-# Run the VEP installer and follow the instructions
-# Suggested installation settings can be found below this code block
-./INSTALL.pl
-
-# When done, exit and remove the container
-exit
-docker stop genome-nexus_vep_cache; docker rm genome-nexus_vep_cache;
+Genome Nexus VEP is a small REST wrapper around the [Ensembl Variant Effect Predictor (VEP)]((https://useast.ensembl.org/info/docs/tools/vep/index.html)) command line interface. It exposes the following endpoints to interface with VEP:
 
 ```
-Installation instructions:
-- Do you want to continue installing the API (y/n)? -> n
-- Do you want to install any cache files (y/n)? -> y, install GRCh37 or GRCh38 cache
-- Do you want to install any FASTA files (y/n)? -> y, install GRCh37 or GRCh38 FASTA
-- Do you want to install any plugins (y/n)? -> n
+GET /vep/human/hgvs/{variant}
+POST /vep/human/hgvs
+```
+
+Each endpoint expects variant(s) to be in [HGVS format](https://hgvs-nomenclature.org/stable/background/simple/). See the implementation [here](/src/main/java/org/genomenexus/vep_wrapper/HGVSController.java).
+
+# Software Requirements
+
+Make sure you fave the following installed
+
+- **Java version: 21**
+- **Maven version: >= 3.6.3**
+- **Docker**
+
+# Download the Ensembl Data
+
+## Download the core database (Required)
+
+1. Download the core database for the ensembl data version you wish to install. The URL containing the data files should be of the format `https://ftp.ensembl.org/pub/release-112/mysql/homo_sapiens_core_XXX_<ASSEMBLY_VERSION>/`.
+2. Follow the [installation instructions](https://useast.ensembl.org/info/docs/webcode/mirror/install/ensembl-data.html#:~:text=To%20install%20the%20Ensembl%20Data,separate%20directories%20for%20each%20database.) to set up your database.
+3. Point the VEP at your database in your application properties.
+
+## Supporting Polyphen & Sift Predictions (Optional)
+
+1. Download the SQLite database corresponding to the data version pointed to by your application properties. The URL containing the database should be of the format `https://ftp.ensembl.org/pub/release-XXX/`. 
+2. Download the PolyPhen_SIFT Perl Module corresponding to the data version pointed to by your application properties. The URL containing the file should be of the format `https://github.com/Ensembl/VEP_plugins/blob/release/XXX/PolyPhen_SIFT.pm`.
+3. Place both your installed database and the PolyPhen_SIFT Perl Module in the [plugin-data](/plugin-data) directory.
+4. Set the `polyphen-sift-filename` property in your application properties to the name of the installed database file.
+
+## Supporting AlphaMissense Pathogenicity Scores (Optional)
+
+1. Download the [prediction score file](https://console.cloud.google.com/storage/browser/dm_alphamissense) corresponding to your assembly version (`AlphaMissense_hg19.tsv.gz` for GRCh37 or `AlphaMissense_hg38.tsv.gz` for GRCh38).
+2. Place the file in the [plugin-data](/plugin-data) directory.
+3. Run `tabix -s 1 -b 2 -e 2 -f <PREDICTION_SCORE_FILE>`.
+4. Set the `alpha-missense-filename` property in your application properties to the name of the installed file (not the generated tabix file).
+
+# Development
+
+1. Run `./scripts/init_vep.sh <ensemblorg/ensembl-vep:tag>` to install and run a VEP docker image, specifying the tag you wish to use. This will also generate a script to be used by the application, `./scripts/vep`, which should not be modified.
+2. Set your VEP configuration in [application-dev.yaml](/src/main/resources/application-dev.yaml).
+3. Run `mvn spring-boot:run -Dspring-boot.run.profiles=dev`
+
+# Building for Production
+
+1. Make sure the VEP version is correct in the [Dockerfile](/Dockerfile).
+2. Set your VEP configuration in [application-prod.yaml](/src/main/resources/application-dev.yaml).\
+**IMPORTANT**: Make sure `vep.version` is the same as the version used in the [Dockerfile](/Dockerfile). This version will be attached to all responses from the server.
+3. Run `docker build <DOCKER_ARGS> .` to build the production image.
