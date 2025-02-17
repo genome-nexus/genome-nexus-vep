@@ -1,0 +1,11 @@
+app:
+  version: "@project.version@"
+vep:
+  port: 3306
+  forks: 4
+  host: host.docker.internal
+  username: root
+  password: AlphaMale1987!!
+  hgvs-max-threads: 75
+  polyphen-sift-filename: homo_sapiens_pangenome_PolyPhen_SIFT_20240502.db
+  alpha-missense-filename: AlphaMissense_hg19.tsv.gz 
