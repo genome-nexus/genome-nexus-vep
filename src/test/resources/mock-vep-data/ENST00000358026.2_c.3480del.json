@@ -1,0 +1,789 @@
+{
+    "transcript_consequences": [
+        {
+            "hgvsc": "ENST00000344626.4:c.3480del",
+            "protein_start": 1160,
+            "cdna_start": 3685,
+            "consequence_terms": [
+                "frameshift_variant"
+            ],
+            "trembl": [
+                "B4DSI8_HUMAN",
+                "A7E2E1_HUMAN"
+            ],
+            "ccds": "CCDS12253.1",
+            "cds_end": 3480,
+            "protein_id": "ENSP00000343896",
+            "codons": "ggG/gg",
+            "transcript_id": "ENST00000344626",
+            "impact": "HIGH",
+            "biotype": "protein_coding",
+            "uniparc": [
+                "UPI000006F973"
+            ],
+            "refseq_transcript_ids": [
+                "NM_003072.3"
+            ],
+            "exon": "25/35",
+            "domains": [
+                {
+                    "db": "SMART",
+                    "name": "SM00490"
+                },
+                {
+                    "name": "PF00271",
+                    "db": "Pfam"
+                },
+                {
+                    "name": "PS51194",
+                    "db": "PROSITE_profiles"
+                },
+                {
+                    "name": 3,
+                    "db": "Gene3D"
+                },
+                {
+                    "db": "Superfamily",
+                    "name": "SSF52540"
+                },
+                {
+                    "name": "PTHR10799",
+                    "db": "PANTHER"
+                },
+                {
+                    "name": "PTHR10799",
+                    "db": "PANTHER"
+                }
+            ],
+            "strand": 1,
+            "swissprot": [
+                "SMCA4_HUMAN"
+            ],
+            "gene_symbol": "SMARCA4",
+            "gene_symbol_source": "HGNC",
+            "gene_id": "ENSG00000127616",
+            "variant_allele": "-",
+            "protein_end": 1160,
+            "hgnc_id": 11100,
+            "cdna_end": 3685,
+            "cds_start": 3480,
+            "hgvsp": "ENSP00000343896.4:p.Leu1161SerfsTer3",
+            "amino_acids": "G/X",
+            "hgvsg": "19:g.11141503del"
+        },
+        {
+            "protein_start": 1160,
+            "hgvsc": "ENST00000358026.2:c.3480del",
+            "consequence_terms": [
+                "frameshift_variant"
+            ],
+            "trembl": [
+                "Q9HBD4_HUMAN"
+            ],
+            "cdna_start": 3764,
+            "cds_end": 3480,
+            "protein_id": "ENSP00000350720",
+            "codons": "ggG/gg",
+            "transcript_id": "ENST00000358026",
+            "impact": "HIGH",
+            "refseq_transcript_ids": [
+                "NM_001128849.1"
+            ],
+            "uniparc": [
+                "UPI000006FF7A"
+            ],
+            "biotype": "protein_coding",
+            "exon": "25/36",
+            "domains": [
+                {
+                    "name": 3,
+                    "db": "Gene3D"
+                },
+                {
+                    "name": "PF00271",
+                    "db": "Pfam"
+                },
+                {
+                    "name": "PS51194",
+                    "db": "PROSITE_profiles"
+                },
+                {
+                    "db": "PANTHER",
+                    "name": "PTHR10799"
+                },
+                {
+                    "name": "PTHR10799",
+                    "db": "PANTHER"
+                },
+                {
+                    "name": "SM00490",
+                    "db": "SMART"
+                },
+                {
+                    "name": "SSF52540",
+                    "db": "Superfamily"
+                }
+            ],
+            "strand": 1,
+            "gene_symbol": "SMARCA4",
+            "gene_symbol_source": "HGNC",
+            "gene_id": "ENSG00000127616",
+            "hgnc_id": 11100,
+            "protein_end": 1160,
+            "variant_allele": "-",
+            "cds_start": 3480,
+            "cdna_end": 3764,
+            "amino_acids": "G/X",
+            "hgvsg": "19:g.11141503del",
+            "hgvsp": "ENSP00000350720.2:p.Leu1161SerfsTer3"
+        },
+        {
+            "cdna_end": 3480,
+            "cds_start": 3480,
+            "hgvsp": "ENSP00000414727.2:p.Leu1161SerfsTer3",
+            "amino_acids": "G/X",
+            "hgvsg": "19:g.11141503del",
+            "gene_symbol_source": "HGNC",
+            "gene_id": "ENSG00000127616",
+            "variant_allele": "-",
+            "protein_end": 1160,
+            "hgnc_id": 11100,
+            "swissprot": [
+                "SMCA4_HUMAN"
+            ],
+            "gene_symbol": "SMARCA4",
+            "domains": [
+                {
+                    "db": "Gene3D",
+                    "name": 3
+                },
+                {
+                    "db": "Pfam",
+                    "name": "PF00271"
+                },
+                {
+                    "name": "PS51194",
+                    "db": "PROSITE_profiles"
+                },
+                {
+                    "name": "PTHR10799",
+                    "db": "PANTHER"
+                },
+                {
+                    "name": "PTHR10799",
+                    "db": "PANTHER"
+                },
+                {
+                    "db": "SMART",
+                    "name": "SM00490"
+                },
+                {
+                    "db": "Superfamily",
+                    "name": "SSF52540"
+                }
+            ],
+            "strand": 1,
+            "biotype": "protein_coding",
+            "uniparc": [
+                "UPI000165D5FB"
+            ],
+            "refseq_transcript_ids": [
+                "NM_001128845.1",
+                "NM_001128847.1"
+            ],
+            "exon": "24/33",
+            "codons": "ggG/gg",
+            "transcript_id": "ENST00000413806",
+            "impact": "HIGH",
+            "cds_end": 3480,
+            "ccds": "CCDS45972.1",
+            "protein_id": "ENSP00000414727",
+            "hgvsc": "ENST00000413806.3:c.3480del",
+            "protein_start": 1160,
+            "cdna_start": 3480,
+            "consequence_terms": [
+                "frameshift_variant"
+            ]
+        },
+        {
+            "gene_symbol_source": "HGNC",
+            "gene_id": "ENSG00000127616",
+            "hgnc_id": 11100,
+            "variant_allele": "-",
+            "protein_end": 1160,
+            "cds_start": 3480,
+            "cdna_end": 3761,
+            "amino_acids": "G/X",
+            "hgvsg": "19:g.11141503del",
+            "hgvsp": "ENSP00000395654.1:p.Leu1161SerfsTer3",
+            "domains": [
+                {
+                    "db": "Superfamily",
+                    "name": "SSF52540"
+                },
+                {
+                    "db": "SMART",
+                    "name": "SM00490"
+                },
+                {
+                    "name": 3,
+                    "db": "Gene3D"
+                },
+                {
+                    "name": "PF00271",
+                    "db": "Pfam"
+                },
+                {
+                    "db": "PANTHER",
+                    "name": "PTHR10799"
+                },
+                {
+                    "name": "PTHR10799",
+                    "db": "PANTHER"
+                },
+                {
+                    "name": "PS51194",
+                    "db": "PROSITE_profiles"
+                }
+            ],
+            "canonical": 1,
+            "strand": 1,
+            "swissprot": [
+                "SMCA4_HUMAN"
+            ],
+            "gene_symbol": "SMARCA4",
+            "codons": "ggG/gg",
+            "transcript_id": "ENST00000429416",
+            "impact": "HIGH",
+            "refseq_transcript_ids": [
+                "NM_001128844.1"
+            ],
+            "uniparc": [
+                "UPI000006F973"
+            ],
+            "biotype": "protein_coding",
+            "exon": "26/36",
+            "protein_start": 1160,
+            "hgvsc": "ENST00000429416.3:c.3480del",
+            "consequence_terms": [
+                "frameshift_variant"
+            ],
+            "trembl": [
+                "B4DSI8_HUMAN",
+                "A7E2E1_HUMAN"
+            ],
+            "cdna_start": 3761,
+            "cds_end": 3480,
+            "ccds": "CCDS12253.1",
+            "protein_id": "ENSP00000395654"
+        },
+        {
+            "swissprot": [
+                "SMCA4_HUMAN"
+            ],
+            "gene_symbol": "SMARCA4",
+            "domains": [
+                {
+                    "name": 3,
+                    "db": "Gene3D"
+                },
+                {
+                    "db": "Pfam",
+                    "name": "PF00271"
+                },
+                {
+                    "db": "PROSITE_profiles",
+                    "name": "PS51194"
+                },
+                {
+                    "name": "PTHR10799",
+                    "db": "PANTHER"
+                },
+                {
+                    "name": "PTHR10799",
+                    "db": "PANTHER"
+                },
+                {
+                    "name": "SM00490",
+                    "db": "SMART"
+                },
+                {
+                    "db": "Superfamily",
+                    "name": "SSF52540"
+                }
+            ],
+            "strand": 1,
+            "cdna_end": 3576,
+            "cds_start": 3480,
+            "hgvsp": "ENSP00000392837.2:p.Leu1161SerfsTer3",
+            "hgvsg": "19:g.11141503del",
+            "amino_acids": "G/X",
+            "gene_id": "ENSG00000127616",
+            "gene_symbol_source": "HGNC",
+            "variant_allele": "-",
+            "protein_end": 1160,
+            "hgnc_id": 11100,
+            "ccds": "CCDS54218.1",
+            "cds_end": 3480,
+            "protein_id": "ENSP00000392837",
+            "hgvsc": "ENST00000444061.3:c.3480del",
+            "protein_start": 1160,
+            "cdna_start": 3576,
+            "consequence_terms": [
+                "frameshift_variant"
+            ],
+            "biotype": "protein_coding",
+            "uniparc": [
+                "UPI000165D5FA"
+            ],
+            "exon": "26/35",
+            "transcript_id": "ENST00000444061",
+            "codons": "ggG/gg",
+            "impact": "HIGH"
+        },
+        {
+            "biotype": "protein_coding",
+            "refseq_transcript_ids": [
+                "NM_001128846.1",
+                "NM_001128848.1"
+            ],
+            "uniparc": [
+                "UPI000165D5FC"
+            ],
+            "exon": "24/33",
+            "transcript_id": "ENST00000450717",
+            "codons": "ggG/gg",
+            "impact": "HIGH",
+            "ccds": "CCDS45973.1",
+            "cds_end": 3480,
+            "protein_id": "ENSP00000397783",
+            "hgvsc": "ENST00000450717.3:c.3480del",
+            "protein_start": 1160,
+            "cdna_start": 3480,
+            "consequence_terms": [
+                "frameshift_variant"
+            ],
+            "cdna_end": 3480,
+            "cds_start": 3480,
+            "hgvsp": "ENSP00000397783.2:p.Leu1161SerfsTer3",
+            "hgvsg": "19:g.11141503del",
+            "amino_acids": "G/X",
+            "gene_id": "ENSG00000127616",
+            "gene_symbol_source": "HGNC",
+            "variant_allele": "-",
+            "protein_end": 1160,
+            "hgnc_id": 11100,
+            "swissprot": [
+                "SMCA4_HUMAN"
+            ],
+            "gene_symbol": "SMARCA4",
+            "domains": [
+                {
+                    "name": "PS51194",
+                    "db": "PROSITE_profiles"
+                },
+                {
+                    "name": "PTHR10799",
+                    "db": "PANTHER"
+                },
+                {
+                    "name": "PTHR10799",
+                    "db": "PANTHER"
+                },
+                {
+                    "name": 3,
+                    "db": "Gene3D"
+                },
+                {
+                    "name": "PF00271",
+                    "db": "Pfam"
+                },
+                {
+                    "name": "SM00490",
+                    "db": "SMART"
+                },
+                {
+                    "db": "Superfamily",
+                    "name": "SSF52540"
+                }
+            ],
+            "strand": 1
+        },
+        {
+            "hgvsg": "19:g.11141503del",
+            "biotype": "processed_transcript",
+            "variant_allele": "-",
+            "impact": "MODIFIER",
+            "hgnc_id": 11100,
+            "gene_id": "ENSG00000127616",
+            "gene_symbol_source": "HGNC",
+            "transcript_id": "ENST00000538456",
+            "gene_symbol": "SMARCA4",
+            "strand": 1,
+            "consequence_terms": [
+                "upstream_gene_variant"
+            ],
+            "distance": 2609
+        },
+        {
+            "protein_id": "ENSP00000445036",
+            "cds_end": 3480,
+            "ccds": "CCDS45972.1",
+            "consequence_terms": [
+                "frameshift_variant"
+            ],
+            "cdna_start": 3765,
+            "protein_start": 1160,
+            "hgvsc": "ENST00000541122.2:c.3480del",
+            "exon": "26/35",
+            "uniparc": [
+                "UPI000165D5FB"
+            ],
+            "biotype": "protein_coding",
+            "impact": "HIGH",
+            "transcript_id": "ENST00000541122",
+            "codons": "ggG/gg",
+            "gene_symbol": "SMARCA4",
+            "swissprot": [
+                "SMCA4_HUMAN"
+            ],
+            "strand": 1,
+            "domains": [
+                {
+                    "db": "Superfamily",
+                    "name": "SSF52540"
+                },
+                {
+                    "db": "SMART",
+                    "name": "SM00490"
+                },
+                {
+                    "name": "PF00271",
+                    "db": "Pfam"
+                },
+                {
+                    "name": 3,
+                    "db": "Gene3D"
+                },
+                {
+                    "name": "PTHR10799",
+                    "db": "PANTHER"
+                },
+                {
+                    "name": "PTHR10799",
+                    "db": "PANTHER"
+                },
+                {
+                    "name": "PS51194",
+                    "db": "PROSITE_profiles"
+                }
+            ],
+            "hgvsg": "19:g.11141503del",
+            "amino_acids": "G/X",
+            "hgvsp": "ENSP00000445036.2:p.Leu1161SerfsTer3",
+            "cds_start": 3480,
+            "cdna_end": 3765,
+            "hgnc_id": 11100,
+            "protein_end": 1160,
+            "variant_allele": "-",
+            "gene_id": "ENSG00000127616",
+            "gene_symbol_source": "HGNC"
+        },
+        {
+            "hgvsg": "19:g.11141503del",
+            "exon": "7/16",
+            "biotype": "retained_intron",
+            "cdna_end": 2008,
+            "impact": "MODIFIER",
+            "hgnc_id": 11100,
+            "variant_allele": "-",
+            "transcript_id": "ENST00000585799",
+            "gene_id": "ENSG00000127616",
+            "gene_symbol_source": "HGNC",
+            "gene_symbol": "SMARCA4",
+            "consequence_terms": [
+                "non_coding_transcript_exon_variant"
+            ],
+            "strand": 1,
+            "cdna_start": 2008,
+            "hgvsc": "ENST00000585799.1:n.2008del"
+        },
+        {
+            "gene_symbol": "SMARCA4",
+            "distance": 2255,
+            "strand": 1,
+            "consequence_terms": [
+                "upstream_gene_variant"
+            ],
+            "biotype": "retained_intron",
+            "hgvsg": "19:g.11141503del",
+            "gene_id": "ENSG00000127616",
+            "gene_symbol_source": "HGNC",
+            "transcript_id": "ENST00000586892",
+            "variant_allele": "-",
+            "impact": "MODIFIER",
+            "hgnc_id": 11100
+        },
+        {
+            "cdna_start": 3810,
+            "consequence_terms": [
+                "frameshift_variant"
+            ],
+            "hgvsc": "ENST00000589677.1:c.3480del",
+            "protein_start": 1160,
+            "protein_id": "ENSP00000464778",
+            "ccds": "CCDS45973.1",
+            "cds_end": 3480,
+            "impact": "HIGH",
+            "codons": "ggG/gg",
+            "transcript_id": "ENST00000589677",
+            "exon": "26/35",
+            "biotype": "protein_coding",
+            "uniparc": [
+                "UPI000165D5FC"
+            ],
+            "strand": 1,
+            "domains": [
+                {
+                    "name": 3,
+                    "db": "Gene3D"
+                },
+                {
+                    "name": "PF00271",
+                    "db": "Pfam"
+                },
+                {
+                    "db": "PROSITE_profiles",
+                    "name": "PS51194"
+                },
+                {
+                    "name": "PTHR10799",
+                    "db": "PANTHER"
+                },
+                {
+                    "name": "PTHR10799",
+                    "db": "PANTHER"
+                },
+                {
+                    "name": "SM00490",
+                    "db": "SMART"
+                },
+                {
+                    "name": "SSF52540",
+                    "db": "Superfamily"
+                }
+            ],
+            "gene_symbol": "SMARCA4",
+            "swissprot": [
+                "SMCA4_HUMAN"
+            ],
+            "protein_end": 1160,
+            "variant_allele": "-",
+            "hgnc_id": 11100,
+            "gene_symbol_source": "HGNC",
+            "gene_id": "ENSG00000127616",
+            "hgvsp": "ENSP00000464778.1:p.Leu1161SerfsTer3",
+            "amino_acids": "G/X",
+            "hgvsg": "19:g.11141503del",
+            "cdna_end": 3810,
+            "cds_start": 3480
+        },
+        {
+            "domains": [
+                {
+                    "name": 3,
+                    "db": "Gene3D"
+                },
+                {
+                    "name": "PF00271",
+                    "db": "Pfam"
+                },
+                {
+                    "db": "PROSITE_profiles",
+                    "name": "PS51194"
+                },
+                {
+                    "name": "PTHR10799",
+                    "db": "PANTHER"
+                },
+                {
+                    "name": "PTHR10799",
+                    "db": "PANTHER"
+                },
+                {
+                    "db": "SMART",
+                    "name": "SM00490"
+                },
+                {
+                    "db": "Superfamily",
+                    "name": "SSF52540"
+                }
+            ],
+            "strand": 1,
+            "swissprot": [
+                "SMCA4_HUMAN"
+            ],
+            "gene_symbol": "SMARCA4",
+            "gene_id": "ENSG00000127616",
+            "gene_symbol_source": "HGNC",
+            "hgnc_id": 11100,
+            "protein_end": 1160,
+            "variant_allele": "-",
+            "cds_start": 3480,
+            "cdna_end": 3917,
+            "hgvsg": "19:g.11141503del",
+            "amino_acids": "G/X",
+            "hgvsp": "ENSP00000466963.1:p.Leu1161SerfsTer3",
+            "protein_start": 1160,
+            "hgvsc": "ENST00000590574.1:c.3480del",
+            "trembl": [
+                "B3KNW7_HUMAN"
+            ],
+            "consequence_terms": [
+                "frameshift_variant"
+            ],
+            "cdna_start": 3917,
+            "ccds": "CCDS54217.1",
+            "cds_end": 3480,
+            "protein_id": "ENSP00000466963",
+            "transcript_id": "ENST00000590574",
+            "codons": "ggG/gg",
+            "impact": "HIGH",
+            "uniparc": [
+                "UPI0000EE5FF6"
+            ],
+            "biotype": "protein_coding",
+            "exon": "25/34"
+        },
+        {
+            "gene_symbol": "SMARCA4",
+            "strand": 1,
+            "cdna_start": 3354,
+            "consequence_terms": [
+                "non_coding_transcript_exon_variant"
+            ],
+            "hgvsc": "ENST00000591545.1:n.3354del",
+            "exon": "24/24",
+            "hgvsg": "19:g.11141503del",
+            "cdna_end": 3354,
+            "biotype": "retained_intron",
+            "variant_allele": "-",
+            "hgnc_id": 11100,
+            "impact": "MODIFIER",
+            "gene_symbol_source": "HGNC",
+            "gene_id": "ENSG00000127616",
+            "transcript_id": "ENST00000591545"
+        },
+        {
+            "exon": "8/17",
+            "hgvsg": "19:g.11141503del",
+            "cdna_end": 1552,
+            "biotype": "retained_intron",
+            "hgnc_id": 11100,
+            "impact": "MODIFIER",
+            "variant_allele": "-",
+            "transcript_id": "ENST00000591595",
+            "gene_symbol_source": "HGNC",
+            "gene_id": "ENSG00000127616",
+            "gene_symbol": "SMARCA4",
+            "consequence_terms": [
+                "non_coding_transcript_exon_variant"
+            ],
+            "cdna_start": 1552,
+            "strand": 1,
+            "hgvsc": "ENST00000591595.1:n.1552del"
+        },
+        {
+            "hgvsp": "ENSP00000467200.1:p.Leu6SerfsTer3",
+            "hgvsg": "19:g.11141503del",
+            "amino_acids": "G/X",
+            "cdna_end": 15,
+            "cds_start": 15,
+            "protein_end": 5,
+            "variant_allele": "-",
+            "hgnc_id": 11100,
+            "gene_id": "ENSG00000127616",
+            "gene_symbol_source": "HGNC",
+            "gene_symbol": "SMARCA4",
+            "strand": 1,
+            "domains": [
+                {
+                    "db": "Gene3D",
+                    "name": 3
+                },
+                {
+                    "db": "Pfam",
+                    "name": "PF00271"
+                },
+                {
+                    "db": "PROSITE_profiles",
+                    "name": "PS51194"
+                },
+                {
+                    "db": "PANTHER",
+                    "name": "PTHR10799"
+                },
+                {
+                    "name": "PTHR10799",
+                    "db": "PANTHER"
+                },
+                {
+                    "db": "Superfamily",
+                    "name": "SSF52540"
+                }
+            ],
+            "exon": "1/4",
+            "biotype": "protein_coding",
+            "uniparc": [
+                "UPI00028408E0"
+            ],
+            "impact": "HIGH",
+            "transcript_id": "ENST00000592158",
+            "codons": "ggG/gg",
+            "flags": [
+                "cds_start_NF",
+                "cds_end_NF"
+            ],
+            "protein_id": "ENSP00000467200",
+            "cds_end": 15,
+            "cdna_start": 15,
+            "trembl": [
+                "K7EP28_HUMAN"
+            ],
+            "consequence_terms": [
+                "frameshift_variant"
+            ],
+            "hgvsc": "ENST00000592158.1:c.15del",
+            "protein_start": 5
+        },
+        {
+            "hgvsg": "19:g.11141503del",
+            "exon": "10/19",
+            "biotype": "retained_intron",
+            "cdna_end": 1393,
+            "impact": "MODIFIER",
+            "hgnc_id": 11100,
+            "variant_allele": "-",
+            "transcript_id": "ENST00000592604",
+            "gene_id": "ENSG00000127616",
+            "gene_symbol_source": "HGNC",
+            "gene_symbol": "SMARCA4",
+            "consequence_terms": [
+                "non_coding_transcript_exon_variant"
+            ],
+            "cdna_start": 1393,
+            "strand": 1,
+            "hgvsc": "ENST00000592604.1:n.1393del"
+        }
+    ],
+    "strand": 1,
+    "allele_string": "G/-",
+    "variant_class": "deletion",
+    "id": "ENST00000358026.2:c.3480del",
+    "most_severe_consequence": "frameshift_variant",
+    "input": "ENST00000358026.2:c.3480del",
+    "assembly_name": "GRCh37",
+    "start": 11141503,
+    "end": 11141503,
+    "seq_region_name": "19"
+}

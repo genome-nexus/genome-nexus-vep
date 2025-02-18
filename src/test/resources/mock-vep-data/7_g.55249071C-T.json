@@ -1,0 +1,330 @@
+{
+    "start": 55249071,
+    "input": "7:g.55249071C>T",
+    "id": "7:g.55249071C>T",
+    "seq_region_name": "7",
+    "variant_class": "SNV",
+    "assembly_name": "GRCh37",
+    "strand": 1,
+    "most_severe_consequence": "missense_variant",
+    "allele_string": "C/T",
+    "end": 55249071,
+    "transcript_consequences": [
+        {
+            "polyphen_humdiv_pred": "probably_damaging",
+            "cdna_start": 2546,
+            "gene_symbol": "EGFR",
+            "polyphen_humdiv_score": 1,
+            "cds_start": 2369,
+            "polyphen_prediction": "probably_damaging",
+            "exon": "20/28",
+            "biotype": "protein_coding",
+            "hgvsg": "7:g.55249071C>T",
+            "hgvsc": "ENST00000275493.2:c.2369C>T",
+            "polyphen_score": 1,
+            "variant_allele": "T",
+            "trembl": [
+                "Q75MF2_HUMAN",
+                "I3WA73_HUMAN",
+                "I3WA72_HUMAN",
+                "G9MC81_HUMAN",
+                "F1JTL6_HUMAN",
+                "E9PFD7_HUMAN",
+                "C9JYS6_HUMAN",
+                "A7VN06_HUMAN"
+            ],
+            "canonical": 1,
+            "sift_score": 0,
+            "cdna_end": 2546,
+            "gene_id": "ENSG00000146648",
+            "transcript_id": "ENST00000275493",
+            "cds_end": 2369,
+            "impact": "MODERATE",
+            "strand": 1,
+            "consequence_terms": [
+                "missense_variant"
+            ],
+            "hgnc_id": 3236,
+            "protein_end": 790,
+            "alphamissense": {
+                "am_pathogenicity": 0.966,
+                "am_class": "pathogenic"
+            },
+            "hgvsp": "ENSP00000275493.2:p.Thr790Met",
+            "codons": "aCg/aTg",
+            "ccds": "CCDS5514.1",
+            "uniparc": [
+                "UPI000003E750"
+            ],
+            "domains": [
+                {
+                    "name": "PR00109",
+                    "db": "Prints"
+                },
+                {
+                    "name": "SSF56112",
+                    "db": "Superfamily"
+                },
+                {
+                    "db": "PIRSF",
+                    "name": "PIRSF000619"
+                },
+                {
+                    "db": "SMART",
+                    "name": "SM00219"
+                },
+                {
+                    "name": 3,
+                    "db": "Gene3D"
+                },
+                {
+                    "db": "Pfam",
+                    "name": "PF07714"
+                },
+                {
+                    "name": "PTHR24416",
+                    "db": "PANTHER"
+                },
+                {
+                    "db": "PANTHER",
+                    "name": "PTHR24416"
+                },
+                {
+                    "name": "PS50011",
+                    "db": "PROSITE_profiles"
+                },
+                {
+                    "db": "Transmembrane_helices",
+                    "name": "TMhelix"
+                }
+            ],
+            "amino_acids": "T/M",
+            "protein_id": "ENSP00000275493",
+            "sift_prediction": "deleterious_low_confidence",
+            "protein_start": 790,
+            "refseq_transcript_ids": [
+                "NM_005228.3"
+            ],
+            "gene_symbol_source": "HGNC",
+            "swissprot": [
+                "EGFR_HUMAN"
+            ]
+        },
+        {
+            "consequence_terms": [
+                "non_coding_transcript_exon_variant"
+            ],
+            "hgnc_id": 40207,
+            "strand": -1,
+            "hgvsc": "ENST00000442411.1:n.1178G>A",
+            "biotype": "antisense",
+            "exon": "2/2",
+            "hgvsg": "7:g.55249071C>T",
+            "impact": "MODIFIER",
+            "gene_symbol": "EGFR-AS1",
+            "cdna_start": 1178,
+            "cdna_end": 1178,
+            "gene_id": "ENSG00000224057",
+            "gene_symbol_source": "HGNC",
+            "transcript_id": "ENST00000442411",
+            "canonical": 1,
+            "variant_allele": "T"
+        },
+        {
+            "transcript_id": "ENST00000442591",
+            "gene_symbol_source": "HGNC",
+            "gene_id": "ENSG00000146648",
+            "trembl": [
+                "Q9H3D0_HUMAN",
+                "F1JTL6_HUMAN",
+                "C9JYS6_HUMAN"
+            ],
+            "protein_id": "ENSP00000410031",
+            "variant_allele": "T",
+            "intron": "17/17",
+            "uniparc": [
+                "UPI000011F91B"
+            ],
+            "hgvsc": "ENST00000442591.1:c.*28+8450C>T",
+            "biotype": "protein_coding",
+            "hgvsg": "7:g.55249071C>T",
+            "consequence_terms": [
+                "intron_variant"
+            ],
+            "hgnc_id": 3236,
+            "strand": 1,
+            "gene_symbol": "EGFR",
+            "impact": "MODIFIER"
+        },
+        {
+            "protein_id": "ENSP00000395243",
+            "sift_prediction": "deleterious_low_confidence",
+            "protein_start": 737,
+            "uniparc": [
+                "UPI00020655C0"
+            ],
+            "domains": [
+                {
+                    "db": "Prints",
+                    "name": "PR00109"
+                },
+                {
+                    "name": "SSF56112",
+                    "db": "Superfamily"
+                },
+                {
+                    "name": "SM00219",
+                    "db": "SMART"
+                },
+                {
+                    "name": "PIRSF000619",
+                    "db": "PIRSF"
+                },
+                {
+                    "db": "Pfam",
+                    "name": "PF07714"
+                },
+                {
+                    "name": 3,
+                    "db": "Gene3D"
+                },
+                {
+                    "db": "PANTHER",
+                    "name": "PTHR24416"
+                },
+                {
+                    "db": "PANTHER",
+                    "name": "PTHR24416"
+                },
+                {
+                    "name": "PS50011",
+                    "db": "PROSITE_profiles"
+                },
+                {
+                    "name": "TMhelix",
+                    "db": "Transmembrane_helices"
+                }
+            ],
+            "amino_acids": "T/M",
+            "gene_symbol_source": "HGNC",
+            "impact": "MODERATE",
+            "codons": "aCg/aTg",
+            "hgvsp": "ENSP00000395243.2:p.Thr737Met",
+            "strand": 1,
+            "consequence_terms": [
+                "missense_variant"
+            ],
+            "protein_end": 737,
+            "hgnc_id": 3236,
+            "variant_allele": "T",
+            "trembl": [
+                "Q75MF2_HUMAN",
+                "I3WA73_HUMAN",
+                "I3WA72_HUMAN",
+                "G9MC81_HUMAN",
+                "F1JTL6_HUMAN",
+                "E9PFD7_HUMAN",
+                "C9JYS6_HUMAN",
+                "A7VN06_HUMAN"
+            ],
+            "transcript_id": "ENST00000454757",
+            "cds_end": 2210,
+            "sift_score": 0,
+            "cdna_end": 2393,
+            "gene_id": "ENSG00000146648",
+            "cdna_start": 2393,
+            "gene_symbol": "EGFR",
+            "polyphen_humdiv_score": 1,
+            "polyphen_humdiv_pred": "probably_damaging",
+            "biotype": "protein_coding",
+            "exon": "20/28",
+            "hgvsg": "7:g.55249071C>T",
+            "polyphen_score": 1,
+            "hgvsc": "ENST00000454757.2:c.2210C>T",
+            "cds_start": 2210,
+            "polyphen_prediction": "probably_damaging"
+        },
+        {
+            "variant_allele": "T",
+            "trembl": [
+                "Q504U8_HUMAN",
+                "I3WA73_HUMAN",
+                "I3WA72_HUMAN",
+                "G9MC81_HUMAN",
+                "F1JTL6_HUMAN",
+                "A7VN06_HUMAN"
+            ],
+            "transcript_id": "ENST00000455089",
+            "cds_end": 2234,
+            "sift_score": 0,
+            "cdna_end": 2491,
+            "gene_id": "ENSG00000146648",
+            "cdna_start": 2491,
+            "gene_symbol": "EGFR",
+            "polyphen_humdiv_score": 0.986,
+            "polyphen_humdiv_pred": "probably_damaging",
+            "exon": "19/26",
+            "biotype": "protein_coding",
+            "hgvsg": "7:g.55249071C>T",
+            "hgvsc": "ENST00000455089.1:c.2234C>T",
+            "polyphen_score": 0.727,
+            "cds_start": 2234,
+            "polyphen_prediction": "possibly_damaging",
+            "protein_id": "ENSP00000415559",
+            "sift_prediction": "deleterious_low_confidence",
+            "protein_start": 745,
+            "uniparc": [
+                "UPI000050D030"
+            ],
+            "amino_acids": "T/M",
+            "domains": [
+                {
+                    "db": "Gene3D",
+                    "name": 3
+                },
+                {
+                    "name": "SSF56112",
+                    "db": "Superfamily"
+                },
+                {
+                    "name": "PTHR24416",
+                    "db": "PANTHER"
+                },
+                {
+                    "name": "PTHR24416",
+                    "db": "PANTHER"
+                },
+                {
+                    "name": "PIRSF000619",
+                    "db": "PIRSF"
+                },
+                {
+                    "db": "Prints",
+                    "name": "PR00109"
+                },
+                {
+                    "name": "SM00219",
+                    "db": "SMART"
+                },
+                {
+                    "name": "PS50011",
+                    "db": "PROSITE_profiles"
+                },
+                {
+                    "db": "Pfam",
+                    "name": "PF07714"
+                }
+            ],
+            "gene_symbol_source": "HGNC",
+            "impact": "MODERATE",
+            "codons": "aCg/aTg",
+            "hgvsp": "ENSP00000415559.1:p.Thr745Met",
+            "strand": 1,
+            "protein_end": 745,
+            "consequence_terms": [
+                "missense_variant"
+            ],
+            "hgnc_id": 3236
+        }
+    ]
+}

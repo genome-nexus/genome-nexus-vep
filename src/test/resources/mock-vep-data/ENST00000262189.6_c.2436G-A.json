@@ -1,0 +1,187 @@
+{
+    "most_severe_consequence": "missense_variant",
+    "start": 151945083,
+    "assembly_name": "GRCh37",
+    "allele_string": "G/A",
+    "transcript_consequences": [
+        {
+            "cds_start": 2436,
+            "transcript_id": "ENST00000262189",
+            "ccds": "CCDS5931.1",
+            "variant_allele": "A",
+            "amino_acids": "M/I",
+            "polyphen_humdiv_pred": "benign",
+            "consequence_terms": [
+                "missense_variant"
+            ],
+            "hgvsp": "ENSP00000262189.6:p.Met812Ile",
+            "sift_score": 0,
+            "exon": "14/59",
+            "hgvsc": "ENST00000262189.6:c.2436G>A",
+            "protein_id": "ENSP00000262189",
+            "canonical": 1,
+            "protein_start": 812,
+            "polyphen_score": 0.007,
+            "sift_prediction": "deleterious_low_confidence",
+            "cdna_start": 2655,
+            "biotype": "protein_coding",
+            "hgnc_id": 13726,
+            "strand": -1,
+            "cdna_end": 2655,
+            "alphamissense": {
+                "am_class": "benign",
+                "am_pathogenicity": 0.174
+            },
+            "codons": "atG/atA",
+            "gene_symbol": "KMT2C",
+            "impact": "MODERATE",
+            "polyphen_prediction": "benign",
+            "refseq_transcript_ids": [
+                "NM_170606.2"
+            ],
+            "cds_end": 2436,
+            "protein_end": 812,
+            "hgvsg": "7:g.151945083C>T",
+            "gene_symbol_source": "HGNC",
+            "polyphen_humdiv_score": 0.051,
+            "swissprot": [
+                "KMT2C_HUMAN"
+            ],
+            "gene_id": "ENSG00000055609",
+            "trembl": [
+                "Q6N019_HUMAN",
+                "Q75MN6_HUMAN",
+                "H0YMU7_HUMAN"
+            ],
+            "uniparc": [
+                "UPI0000141B9F"
+            ]
+        },
+        {
+            "hgnc_id": 13726,
+            "biotype": "protein_coding",
+            "cdna_start": 2655,
+            "polyphen_score": 0.04,
+            "sift_prediction": "deleterious_low_confidence",
+            "hgvsc": "ENST00000355193.2:c.2436G>A",
+            "protein_id": "ENSP00000347325",
+            "protein_start": 812,
+            "exon": "14/60",
+            "hgvsp": "ENSP00000347325.2:p.Met812Ile",
+            "sift_score": 0,
+            "consequence_terms": [
+                "missense_variant"
+            ],
+            "polyphen_humdiv_pred": "benign",
+            "variant_allele": "A",
+            "amino_acids": "M/I",
+            "cds_start": 2436,
+            "transcript_id": "ENST00000355193",
+            "uniparc": [
+                "UPI0001884460"
+            ],
+            "gene_id": "ENSG00000055609",
+            "trembl": [
+                "Q6N019_HUMAN",
+                "Q75MN6_HUMAN",
+                "H0YMU7_HUMAN"
+            ],
+            "polyphen_humdiv_score": 0.11,
+            "swissprot": [
+                "KMT2C_HUMAN"
+            ],
+            "gene_symbol_source": "HGNC",
+            "hgvsg": "7:g.151945083C>T",
+            "protein_end": 812,
+            "cds_end": 2436,
+            "polyphen_prediction": "benign",
+            "gene_symbol": "KMT2C",
+            "impact": "MODERATE",
+            "alphamissense": {
+                "am_class": "benign",
+                "am_pathogenicity": 0.174
+            },
+            "codons": "atG/atA",
+            "strand": -1,
+            "cdna_end": 2655
+        },
+        {
+            "codons": "atG/atA",
+            "cdna_end": 22,
+            "strand": -1,
+            "flags": [
+                "cds_start_NF",
+                "cds_end_NF"
+            ],
+            "impact": "MODERATE",
+            "gene_symbol": "KMT2C",
+            "protein_end": 8,
+            "cds_end": 24,
+            "hgvsg": "7:g.151945083C>T",
+            "gene_symbol_source": "HGNC",
+            "uniparc": [
+                "UPI000198CFFA"
+            ],
+            "gene_id": "ENSG00000055609",
+            "variant_allele": "A",
+            "amino_acids": "M/I",
+            "cds_start": 24,
+            "transcript_id": "ENST00000418673",
+            "consequence_terms": [
+                "missense_variant"
+            ],
+            "exon": "1/6",
+            "hgvsp": "ENSP00000403483.1:p.Met8Ile",
+            "protein_start": 8,
+            "protein_id": "ENSP00000403483",
+            "hgvsc": "ENST00000418673.1:c.24G>A",
+            "cdna_start": 22,
+            "hgnc_id": 13726,
+            "biotype": "protein_coding"
+        },
+        {
+            "gene_symbol": "KMT2C",
+            "impact": "MODERATE",
+            "cdna_end": 2655,
+            "strand": -1,
+            "alphamissense": {
+                "am_pathogenicity": 0.174,
+                "am_class": "benign"
+            },
+            "codons": "atG/atA",
+            "gene_id": "ENSG00000055609",
+            "trembl": [
+                "H0YMU7_HUMAN"
+            ],
+            "uniparc": [
+                "UPI00022F8436"
+            ],
+            "gene_symbol_source": "HGNC",
+            "hgvsg": "7:g.151945083C>T",
+            "protein_end": 812,
+            "cds_end": 2436,
+            "hgvsc": "ENST00000558084.1:c.2436G>A",
+            "protein_start": 812,
+            "protein_id": "ENSP00000453752",
+            "hgvsp": "ENSP00000453752.1:p.Met812Ile",
+            "exon": "14/59",
+            "consequence_terms": [
+                "missense_variant",
+                "NMD_transcript_variant"
+            ],
+            "transcript_id": "ENST00000558084",
+            "cds_start": 2436,
+            "variant_allele": "A",
+            "amino_acids": "M/I",
+            "biotype": "nonsense_mediated_decay",
+            "hgnc_id": 13726,
+            "cdna_start": 2655
+        }
+    ],
+    "id": "ENST00000262189.6:c.2436G>A",
+    "seq_region_name": "7",
+    "input": "ENST00000262189.6:c.2436G>A",
+    "variant_class": "SNV",
+    "end": 151945083,
+    "strand": -1
+}

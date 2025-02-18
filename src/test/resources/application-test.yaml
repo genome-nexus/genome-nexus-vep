@@ -1,9 +1,11 @@
+app:
+  version: ""
 vep:
-  port: 8080
-  forks: 4
-  host: host.docker.internal
-  username: root
-  password: root
-  version: 112
-  polyphen-sift-filename: homo_sapiens_pangenome_PolyPhen_SIFT_20240502.db
-  alpha-missense-filename: AlphaMissense_hg19.tsv.gz 
+  port: 0
+  forks: 0
+  host: ""
+  username: ""
+  password: ""
+  hgvs-max-threads: 75
+  polyphen-sift-filename: ""
+  alpha-missense-filename: ""

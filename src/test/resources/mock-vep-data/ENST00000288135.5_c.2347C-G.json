@@ -1,0 +1,204 @@
+{
+    "allele_string": "C/G",
+    "strand": 1,
+    "variant_class": "SNV",
+    "most_severe_consequence": "missense_variant",
+    "end": 55598150,
+    "input": "ENST00000288135.5:c.2347C>G",
+    "id": "ENST00000288135.5:c.2347C>G",
+    "assembly_name": "GRCh37",
+    "seq_region_name": "4",
+    "start": 55598150,
+    "transcript_consequences": [
+        {
+            "cdna_end": 2444,
+            "refseq_transcript_ids": [
+                "NM_000222.2",
+                "NM_001093772.1"
+            ],
+            "protein_start": 783,
+            "hgnc_id": 6342,
+            "codons": "Ctc/Gtc",
+            "transcript_id": "ENST00000288135",
+            "amino_acids": "L/V",
+            "trembl": [
+                "Q8TCG9_HUMAN"
+            ],
+            "impact": "MODERATE",
+            "swissprot": [
+                "KIT_HUMAN"
+            ],
+            "cds_start": 2347,
+            "alphamissense": {
+                "am_pathogenicity": 0.8476,
+                "am_class": "pathogenic"
+            },
+            "gene_symbol_source": "HGNC",
+            "hgvsg": "4:g.55598150C>G",
+            "uniparc": [
+                "UPI000003F17D"
+            ],
+            "consequence_terms": [
+                "missense_variant"
+            ],
+            "hgvsp": "ENSP00000288135.5:p.Leu783Val",
+            "biotype": "protein_coding",
+            "strand": 1,
+            "variant_allele": "G",
+            "sift_prediction": "deleterious",
+            "protein_end": 783,
+            "polyphen_humdiv_score": 0.997,
+            "hgvsc": "ENST00000288135.5:c.2347C>G",
+            "exon": "16/21",
+            "polyphen_prediction": "probably_damaging",
+            "gene_id": "ENSG00000157404",
+            "canonical": 1,
+            "polyphen_score": 0.986,
+            "polyphen_humdiv_pred": "probably_damaging",
+            "domains": [
+                {
+                    "name": "PS50011",
+                    "db": "PROSITE_profiles"
+                },
+                {
+                    "name": "PTHR24416",
+                    "db": "PANTHER"
+                },
+                {
+                    "name": "PTHR24416",
+                    "db": "PANTHER"
+                },
+                {
+                    "db": "Pfam",
+                    "name": "PF07714"
+                },
+                {
+                    "name": 1,
+                    "db": "Gene3D"
+                },
+                {
+                    "db": "PIRSF",
+                    "name": "PIRSF000615"
+                },
+                {
+                    "db": "SMART",
+                    "name": "SM00219"
+                },
+                {
+                    "name": "PIRSF500951",
+                    "db": "PIRSF"
+                },
+                {
+                    "name": "SSF56112",
+                    "db": "Superfamily"
+                }
+            ],
+            "ccds": "CCDS3496.1",
+            "protein_id": "ENSP00000288135",
+            "cdna_start": 2444,
+            "sift_score": 0.01,
+            "cds_end": 2347,
+            "gene_symbol": "KIT"
+        },
+        {
+            "hgnc_id": 6342,
+            "cdna_end": 2432,
+            "protein_start": 779,
+            "codons": "Ctc/Gtc",
+            "cds_start": 2335,
+            "swissprot": [
+                "KIT_HUMAN"
+            ],
+            "amino_acids": "L/V",
+            "transcript_id": "ENST00000412167",
+            "trembl": [
+                "Q8TCG9_HUMAN"
+            ],
+            "impact": "MODERATE",
+            "strand": 1,
+            "biotype": "protein_coding",
+            "polyphen_humdiv_score": 0.998,
+            "exon": "16/21",
+            "protein_end": 779,
+            "polyphen_prediction": "probably_damaging",
+            "hgvsc": "ENST00000412167.2:c.2335C>G",
+            "sift_prediction": "deleterious",
+            "variant_allele": "G",
+            "gene_symbol_source": "HGNC",
+            "uniparc": [
+                "UPI000006D0DC"
+            ],
+            "consequence_terms": [
+                "missense_variant"
+            ],
+            "hgvsp": "ENSP00000390987.2:p.Leu779Val",
+            "hgvsg": "4:g.55598150C>G",
+            "protein_id": "ENSP00000390987",
+            "cdna_start": 2432,
+            "sift_score": 0.01,
+            "cds_end": 2335,
+            "ccds": "CCDS47058.1",
+            "gene_symbol": "KIT",
+            "polyphen_humdiv_pred": "probably_damaging",
+            "polyphen_score": 0.957,
+            "gene_id": "ENSG00000157404",
+            "domains": [
+                {
+                    "db": "PIRSF",
+                    "name": "PIRSF000615"
+                },
+                {
+                    "name": "PIRSF500951",
+                    "db": "PIRSF"
+                },
+                {
+                    "name": 1,
+                    "db": "Gene3D"
+                },
+                {
+                    "name": "SM00219",
+                    "db": "SMART"
+                },
+                {
+                    "name": "SSF56112",
+                    "db": "Superfamily"
+                },
+                {
+                    "name": "PF07714",
+                    "db": "Pfam"
+                },
+                {
+                    "name": "PTHR24416",
+                    "db": "PANTHER"
+                },
+                {
+                    "db": "PANTHER",
+                    "name": "PTHR24416"
+                },
+                {
+                    "name": "PS50011",
+                    "db": "PROSITE_profiles"
+                }
+            ]
+        },
+        {
+            "consequence_terms": [
+                "non_coding_transcript_exon_variant"
+            ],
+            "hgvsg": "4:g.55598150C>G",
+            "gene_symbol_source": "HGNC",
+            "exon": "3/4",
+            "hgvsc": "ENST00000512959.1:n.400C>G",
+            "variant_allele": "G",
+            "hgnc_id": 6342,
+            "strand": 1,
+            "cdna_end": 400,
+            "biotype": "retained_intron",
+            "impact": "MODIFIER",
+            "gene_id": "ENSG00000157404",
+            "transcript_id": "ENST00000512959",
+            "gene_symbol": "KIT",
+            "cdna_start": 400
+        }
+    ]
+}

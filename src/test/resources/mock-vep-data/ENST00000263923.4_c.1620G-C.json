@@ -1,0 +1,110 @@
+{
+    "seq_region_name": "4",
+    "allele_string": "G/C",
+    "assembly_name": "GRCh37",
+    "variant_class": "SNV",
+    "input": "ENST00000263923.4:c.1620G>C",
+    "strand": -1,
+    "most_severe_consequence": "missense_variant",
+    "id": "ENST00000263923.4:c.1620G>C",
+    "transcript_consequences": [
+        {
+            "canonical": 1,
+            "exon": "12/30",
+            "hgvsg": "4:g.55972024C>G",
+            "polyphen_score": 0.899,
+            "cds_end": 1620,
+            "alphamissense": {
+                "am_pathogenicity": 0.1939,
+                "am_class": "benign"
+            },
+            "protein_id": "ENSP00000263923",
+            "amino_acids": "E/D",
+            "strand": -1,
+            "sift_prediction": "tolerated",
+            "cdna_start": 1916,
+            "cds_start": 1620,
+            "polyphen_humdiv_score": 0.995,
+            "refseq_transcript_ids": [
+                "NM_002253.2"
+            ],
+            "impact": "MODERATE",
+            "domains": [
+                {
+                    "name": "SM00409",
+                    "db": "SMART"
+                },
+                {
+                    "name": "PS50835",
+                    "db": "PROSITE_profiles"
+                },
+                {
+                    "name": "PTHR24416",
+                    "db": "PANTHER"
+                },
+                {
+                    "name": "PTHR24416",
+                    "db": "PANTHER"
+                },
+                {
+                    "db": "Gene3D",
+                    "name": 2
+                },
+                {
+                    "db": "Superfamily",
+                    "name": "SSF48726"
+                }
+            ],
+            "gene_symbol_source": "HGNC",
+            "protein_start": 540,
+            "gene_id": "ENSG00000128052",
+            "swissprot": [
+                "VGFR2_HUMAN"
+            ],
+            "variant_allele": "C",
+            "polyphen_humdiv_pred": "probably_damaging",
+            "ccds": "CCDS3497.1",
+            "hgvsp": "ENSP00000263923.4:p.Glu540Asp",
+            "gene_symbol": "KDR",
+            "transcript_id": "ENST00000263923",
+            "consequence_terms": [
+                "missense_variant"
+            ],
+            "uniparc": [
+                "UPI000003AE04"
+            ],
+            "sift_score": 0.08,
+            "biotype": "protein_coding",
+            "polyphen_prediction": "possibly_damaging",
+            "protein_end": 540,
+            "trembl": [
+                "B4DEK3_HUMAN"
+            ],
+            "codons": "gaG/gaC",
+            "hgvsc": "ENST00000263923.4:c.1620G>C",
+            "cdna_end": 1916,
+            "hgnc_id": 6307
+        },
+        {
+            "strand": -1,
+            "gene_symbol": "KDR",
+            "transcript_id": "ENST00000512566",
+            "consequence_terms": [
+                "non_coding_transcript_exon_variant"
+            ],
+            "biotype": "retained_intron",
+            "cdna_start": 1620,
+            "hgvsc": "ENST00000512566.1:n.1620G>C",
+            "cdna_end": 1620,
+            "hgnc_id": 6307,
+            "impact": "MODIFIER",
+            "gene_symbol_source": "HGNC",
+            "gene_id": "ENSG00000128052",
+            "hgvsg": "4:g.55972024C>G",
+            "exon": "12/13",
+            "variant_allele": "C"
+        }
+    ],
+    "start": 55972024,
+    "end": 55972024
+}

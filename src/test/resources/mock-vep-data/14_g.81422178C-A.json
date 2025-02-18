@@ -1,0 +1,599 @@
+{
+    "most_severe_consequence": "missense_variant",
+    "transcript_consequences": [
+        {
+            "codons": "Ccc/Acc",
+            "protein_id": "ENSP00000298171",
+            "alphamissense": {
+                "am_class": "benign",
+                "am_pathogenicity": 0.0805
+            },
+            "trembl": [
+                "Q0VAP8_HUMAN",
+                "F5GYU5_HUMAN"
+            ],
+            "impact": "MODERATE",
+            "consequence_terms": [
+                "missense_variant"
+            ],
+            "gene_symbol": "TSHR",
+            "cdna_end": 310,
+            "strand": 1,
+            "polyphen_score": 0.001,
+            "polyphen_prediction": "benign",
+            "protein_end": 52,
+            "hgvsc": "ENST00000298171.2:c.154C>A",
+            "uniparc": [
+                "UPI000013E4A2"
+            ],
+            "gene_id": "ENSG00000165409",
+            "sift_prediction": "tolerated",
+            "hgnc_id": 12373,
+            "cds_start": 154,
+            "variant_allele": "A",
+            "biotype": "protein_coding",
+            "transcript_id": "ENST00000298171",
+            "domains": [
+                {
+                    "name": "PR01145",
+                    "db": "Prints"
+                },
+                {
+                    "name": "SSF52058",
+                    "db": "Superfamily"
+                },
+                {
+                    "db": "Gene3D",
+                    "name": 3
+                },
+                {
+                    "db": "Pfam",
+                    "name": "PF13855"
+                },
+                {
+                    "name": "PTHR24372",
+                    "db": "PANTHER"
+                },
+                {
+                    "db": "PANTHER",
+                    "name": "PTHR24372"
+                }
+            ],
+            "sift_score": 0.57,
+            "cds_end": 154,
+            "gene_symbol_source": "HGNC",
+            "hgvsp": "ENSP00000298171.2:p.Pro52Thr",
+            "cdna_start": 310,
+            "ccds": "CCDS9872.1",
+            "exon": "1/10",
+            "hgvsg": "14:g.81422178C>A",
+            "amino_acids": "P/T",
+            "refseq_transcript_ids": [
+                "NM_000369.2"
+            ],
+            "protein_start": 52
+        },
+        {
+            "cdna_end": 404,
+            "polyphen_score": 0.005,
+            "strand": 1,
+            "polyphen_prediction": "benign",
+            "protein_end": 52,
+            "hgvsc": "ENST00000342443.6:c.154C>A",
+            "uniparc": [
+                "UPI000006E162"
+            ],
+            "codons": "Ccc/Acc",
+            "protein_id": "ENSP00000340113",
+            "alphamissense": {
+                "am_pathogenicity": 0.0805,
+                "am_class": "benign"
+            },
+            "trembl": [
+                "Q0VAP8_HUMAN"
+            ],
+            "impact": "MODERATE",
+            "consequence_terms": [
+                "missense_variant"
+            ],
+            "gene_symbol": "TSHR",
+            "transcript_id": "ENST00000342443",
+            "cds_end": 154,
+            "domains": [
+                {
+                    "name": "PR01145",
+                    "db": "Prints"
+                },
+                {
+                    "name": "SSF52058",
+                    "db": "Superfamily"
+                },
+                {
+                    "db": "Pfam",
+                    "name": "PF13855"
+                },
+                {
+                    "db": "Gene3D",
+                    "name": 3
+                },
+                {
+                    "name": "PTHR24372",
+                    "db": "PANTHER"
+                },
+                {
+                    "name": "PTHR24372",
+                    "db": "PANTHER"
+                }
+            ],
+            "swissprot": [
+                "TSHR_HUMAN"
+            ],
+            "sift_score": 0.23,
+            "gene_symbol_source": "HGNC",
+            "hgvsp": "ENSP00000340113.6:p.Pro52Thr",
+            "cdna_start": 404,
+            "exon": "1/9",
+            "ccds": "CCDS32131.1",
+            "amino_acids": "P/T",
+            "polyphen_humdiv_score": 0.003,
+            "hgvsg": "14:g.81422178C>A",
+            "polyphen_humdiv_pred": "benign",
+            "refseq_transcript_ids": [
+                "NM_001142626.2",
+                "NM_001018036.2"
+            ],
+            "protein_start": 52,
+            "gene_id": "ENSG00000165409",
+            "sift_prediction": "tolerated",
+            "hgnc_id": 12373,
+            "cds_start": 154,
+            "variant_allele": "A",
+            "biotype": "protein_coding"
+        },
+        {
+            "protein_start": 52,
+            "cdna_start": 476,
+            "exon": "2/11",
+            "ccds": "CCDS9872.1",
+            "amino_acids": "P/T",
+            "hgvsg": "14:g.81422178C>A",
+            "hgvsp": "ENSP00000441235.2:p.Pro52Thr",
+            "transcript_id": "ENST00000541158",
+            "sift_score": 0.57,
+            "cds_end": 154,
+            "domains": [
+                {
+                    "name": "PTHR24372",
+                    "db": "PANTHER"
+                },
+                {
+                    "name": "PTHR24372",
+                    "db": "PANTHER"
+                },
+                {
+                    "db": "Pfam",
+                    "name": "PF13855"
+                },
+                {
+                    "name": "PR01145",
+                    "db": "Prints"
+                },
+                {
+                    "name": "SSF52058",
+                    "db": "Superfamily"
+                },
+                {
+                    "db": "Gene3D",
+                    "name": 3
+                }
+            ],
+            "gene_symbol_source": "HGNC",
+            "variant_allele": "A",
+            "biotype": "protein_coding",
+            "hgnc_id": 12373,
+            "cds_start": 154,
+            "gene_id": "ENSG00000165409",
+            "sift_prediction": "tolerated",
+            "uniparc": [
+                "UPI000013E4A2"
+            ],
+            "protein_end": 52,
+            "hgvsc": "ENST00000541158.2:c.154C>A",
+            "cdna_end": 476,
+            "strand": 1,
+            "polyphen_score": 0.001,
+            "polyphen_prediction": "benign",
+            "impact": "MODERATE",
+            "consequence_terms": [
+                "missense_variant"
+            ],
+            "gene_symbol": "TSHR",
+            "trembl": [
+                "Q0VAP8_HUMAN",
+                "F5GYU5_HUMAN"
+            ],
+            "canonical": 1,
+            "alphamissense": {
+                "am_pathogenicity": 0.0805,
+                "am_class": "benign"
+            },
+            "protein_id": "ENSP00000441235",
+            "codons": "Ccc/Acc"
+        },
+        {
+            "hgnc_id": 12373,
+            "gene_id": "ENSG00000165409",
+            "impact": "MODIFIER",
+            "gene_symbol": "TSHR",
+            "consequence_terms": [
+                "non_coding_transcript_exon_variant"
+            ],
+            "variant_allele": "A",
+            "biotype": "retained_intron",
+            "hgvsc": "ENST00000553763.1:n.254C>A",
+            "transcript_id": "ENST00000553763",
+            "cdna_end": 254,
+            "gene_symbol_source": "HGNC",
+            "strand": 1,
+            "exon": "1/3",
+            "cdna_start": 254,
+            "hgvsg": "14:g.81422178C>A"
+        },
+        {
+            "biotype": "protein_coding",
+            "variant_allele": "A",
+            "sift_prediction": "tolerated",
+            "gene_id": "ENSG00000165409",
+            "cds_start": 154,
+            "hgnc_id": 12373,
+            "amino_acids": "P/T",
+            "hgvsg": "14:g.81422178C>A",
+            "cdna_start": 180,
+            "exon": "1/8",
+            "protein_start": 52,
+            "domains": [
+                {
+                    "db": "PANTHER",
+                    "name": "PTHR24372"
+                },
+                {
+                    "name": "PTHR24372",
+                    "db": "PANTHER"
+                },
+                {
+                    "name": "PF13855",
+                    "db": "Pfam"
+                },
+                {
+                    "name": 3,
+                    "db": "Gene3D"
+                },
+                {
+                    "db": "Superfamily",
+                    "name": "SSF52058"
+                },
+                {
+                    "name": "PR01145",
+                    "db": "Prints"
+                }
+            ],
+            "sift_score": 0.37,
+            "cds_end": 154,
+            "gene_symbol_source": "HGNC",
+            "transcript_id": "ENST00000554263",
+            "hgvsp": "ENSP00000451202.1:p.Pro52Thr",
+            "trembl": [
+                "Q0VAP8_HUMAN"
+            ],
+            "consequence_terms": [
+                "missense_variant"
+            ],
+            "gene_symbol": "TSHR",
+            "impact": "MODERATE",
+            "protein_id": "ENSP00000451202",
+            "codons": "Ccc/Acc",
+            "alphamissense": {
+                "am_pathogenicity": 0.0805,
+                "am_class": "benign"
+            },
+            "uniparc": [
+                "UPI0000DBDD6F"
+            ],
+            "strand": 1,
+            "polyphen_score": 0.001,
+            "polyphen_prediction": "benign",
+            "cdna_end": 180,
+            "hgvsc": "ENST00000554263.1:c.154C>A",
+            "protein_end": 52
+        },
+        {
+            "biotype": "processed_transcript",
+            "variant_allele": "A",
+            "consequence_terms": [
+                "intron_variant",
+                "non_coding_transcript_variant"
+            ],
+            "gene_symbol": "CEP128",
+            "intron": "2/2",
+            "impact": "MODIFIER",
+            "gene_id": "ENSG00000100629",
+            "hgnc_id": 20359,
+            "hgvsg": "14:g.81422178C>A",
+            "strand": -1,
+            "gene_symbol_source": "HGNC",
+            "transcript_id": "ENST00000554368",
+            "hgvsc": "ENST00000554368.1:n.194+2344G>T"
+        },
+        {
+            "polyphen_humdiv_pred": "benign",
+            "amino_acids": "P/T",
+            "polyphen_humdiv_score": 0.01,
+            "hgvsg": "14:g.81422178C>A",
+            "exon": "1/9",
+            "ccds": "CCDS55935.1",
+            "cdna_start": 180,
+            "protein_start": 52,
+            "gene_symbol_source": "HGNC",
+            "domains": [
+                {
+                    "db": "PANTHER",
+                    "name": "PTHR24372"
+                },
+                {
+                    "name": "PTHR24372",
+                    "db": "PANTHER"
+                },
+                {
+                    "name": "PF13855",
+                    "db": "Pfam"
+                },
+                {
+                    "name": 3,
+                    "db": "Gene3D"
+                },
+                {
+                    "db": "Superfamily",
+                    "name": "SSF52058"
+                },
+                {
+                    "name": "PR01145",
+                    "db": "Prints"
+                }
+            ],
+            "cds_end": 154,
+            "swissprot": [
+                "TSHR_HUMAN"
+            ],
+            "sift_score": 0.16,
+            "transcript_id": "ENST00000554435",
+            "hgvsp": "ENSP00000450549.1:p.Pro52Thr",
+            "biotype": "protein_coding",
+            "variant_allele": "A",
+            "sift_prediction": "tolerated",
+            "gene_id": "ENSG00000165409",
+            "cds_start": 154,
+            "hgnc_id": 12373,
+            "uniparc": [
+                "UPI00018830B9"
+            ],
+            "polyphen_prediction": "benign",
+            "polyphen_score": 0.005,
+            "strand": 1,
+            "cdna_end": 180,
+            "hgvsc": "ENST00000554435.1:c.154C>A",
+            "protein_end": 52,
+            "trembl": [
+                "Q0VAP8_HUMAN"
+            ],
+            "gene_symbol": "TSHR",
+            "consequence_terms": [
+                "missense_variant"
+            ],
+            "impact": "MODERATE",
+            "codons": "Ccc/Acc",
+            "protein_id": "ENSP00000450549",
+            "alphamissense": {
+                "am_class": "benign",
+                "am_pathogenicity": 0.0805
+            }
+        },
+        {
+            "consequence_terms": [
+                "missense_variant",
+                "NMD_transcript_variant"
+            ],
+            "gene_symbol": "TSHR",
+            "impact": "MODERATE",
+            "trembl": [
+                "G3V381_HUMAN"
+            ],
+            "alphamissense": {
+                "am_class": "benign",
+                "am_pathogenicity": 0.0805
+            },
+            "codons": "Ccc/Acc",
+            "protein_id": "ENSP00000451092",
+            "uniparc": [
+                "UPI00021CF30D"
+            ],
+            "hgvsc": "ENST00000555326.1:c.154C>A",
+            "protein_end": 52,
+            "polyphen_score": 0.201,
+            "strand": 1,
+            "polyphen_prediction": "benign",
+            "cdna_end": 206,
+            "biotype": "nonsense_mediated_decay",
+            "variant_allele": "A",
+            "cds_start": 154,
+            "hgnc_id": 12373,
+            "sift_prediction": "tolerated",
+            "gene_id": "ENSG00000165409",
+            "protein_start": 52,
+            "hgvsg": "14:g.81422178C>A",
+            "amino_acids": "P/T",
+            "polyphen_humdiv_score": 0.529,
+            "polyphen_humdiv_pred": "possibly_damaging",
+            "cdna_start": 206,
+            "exon": "1/5",
+            "hgvsp": "ENSP00000451092.1:p.Pro52Thr",
+            "domains": [
+                {
+                    "db": "PANTHER",
+                    "name": "PTHR24372"
+                },
+                {
+                    "name": "PTHR24372",
+                    "db": "PANTHER"
+                },
+                {
+                    "name": 3,
+                    "db": "Gene3D"
+                },
+                {
+                    "db": "Pfam",
+                    "name": "PF13855"
+                },
+                {
+                    "name": "SSF52058",
+                    "db": "Superfamily"
+                },
+                {
+                    "db": "Prints",
+                    "name": "PR01145"
+                }
+            ],
+            "cds_end": 154,
+            "sift_score": 0.42,
+            "gene_symbol_source": "HGNC",
+            "transcript_id": "ENST00000555326"
+        },
+        {
+            "uniparc": [
+                "UPI000000CC8C"
+            ],
+            "hgvsg": "14:g.81422178C>A",
+            "hgvsc": "ENST00000555529.1:c.-172+2344G>T",
+            "transcript_id": "ENST00000555529",
+            "strand": -1,
+            "gene_symbol_source": "HGNC",
+            "impact": "MODIFIER",
+            "intron": "2/7",
+            "consequence_terms": [
+                "intron_variant"
+            ],
+            "gene_symbol": "CEP128",
+            "trembl": [
+                "Q86TS1_HUMAN",
+                "G3V3U2_HUMAN",
+                "G3V3F4_HUMAN"
+            ],
+            "flags": [
+                "cds_end_NF"
+            ],
+            "variant_allele": "A",
+            "biotype": "protein_coding",
+            "hgnc_id": 20359,
+            "gene_id": "ENSG00000100629",
+            "protein_id": "ENSP00000451137"
+        },
+        {
+            "hgnc_id": 20359,
+            "gene_id": "ENSG00000100629",
+            "protein_id": "ENSP00000451214",
+            "intron": "2/5",
+            "impact": "MODIFIER",
+            "consequence_terms": [
+                "intron_variant"
+            ],
+            "gene_symbol": "CEP128",
+            "trembl": [
+                "G3V3U2_HUMAN",
+                "G3V3F4_HUMAN"
+            ],
+            "flags": [
+                "cds_end_NF"
+            ],
+            "variant_allele": "A",
+            "biotype": "protein_coding",
+            "hgvsc": "ENST00000556042.1:c.-16+2344G>T",
+            "transcript_id": "ENST00000556042",
+            "strand": -1,
+            "gene_symbol_source": "HGNC",
+            "uniparc": [
+                "UPI00021CF30A"
+            ],
+            "hgvsg": "14:g.81422178C>A"
+        },
+        {
+            "hgnc_id": 20359,
+            "gene_id": "ENSG00000100629",
+            "gene_symbol": "CEP128",
+            "consequence_terms": [
+                "downstream_gene_variant"
+            ],
+            "impact": "MODIFIER",
+            "biotype": "retained_intron",
+            "variant_allele": "A",
+            "distance": 1964,
+            "gene_symbol_source": "HGNC",
+            "strand": -1,
+            "transcript_id": "ENST00000556800",
+            "hgvsg": "14:g.81422178C>A"
+        },
+        {
+            "consequence_terms": [
+                "intron_variant"
+            ],
+            "gene_symbol": "CEP128",
+            "intron": "2/4",
+            "impact": "MODIFIER",
+            "biotype": "protein_coding",
+            "trembl": [
+                "G3V3U2_HUMAN"
+            ],
+            "variant_allele": "A",
+            "flags": [
+                "cds_end_NF"
+            ],
+            "hgnc_id": 20359,
+            "protein_id": "ENSP00000451428",
+            "gene_id": "ENSG00000100629",
+            "uniparc": [
+                "UPI00021CF30C"
+            ],
+            "hgvsg": "14:g.81422178C>A",
+            "hgvsc": "ENST00000556981.1:c.-269+2344G>T",
+            "strand": -1,
+            "gene_symbol_source": "HGNC",
+            "transcript_id": "ENST00000556981"
+        },
+        {
+            "transcript_id": "ENST00000557096",
+            "cdna_end": 530,
+            "gene_symbol_source": "HGNC",
+            "strand": 1,
+            "hgvsc": "ENST00000557096.1:n.530C>A",
+            "exon": "2/2",
+            "cdna_start": 530,
+            "hgvsg": "14:g.81422178C>A",
+            "gene_id": "ENSG00000165409",
+            "hgnc_id": 12373,
+            "variant_allele": "A",
+            "biotype": "processed_transcript",
+            "impact": "MODIFIER",
+            "gene_symbol": "TSHR",
+            "consequence_terms": [
+                "non_coding_transcript_exon_variant"
+            ]
+        }
+    ],
+    "start": 81422178,
+    "strand": 1,
+    "seq_region_name": "14",
+    "variant_class": "SNV",
+    "id": "14:g.81422178C>A",
+    "input": "14:g.81422178C>A",
+    "end": 81422178,
+    "assembly_name": "GRCh37",
+    "allele_string": "C/A"
+}

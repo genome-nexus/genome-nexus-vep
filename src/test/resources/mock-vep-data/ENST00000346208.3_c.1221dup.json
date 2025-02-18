@@ -1,0 +1,145 @@
+{
+    "transcript_consequences": [
+        {
+            "strand": 1,
+            "uniparc": [
+                "UPI000004904B"
+            ],
+            "protein_start": 407,
+            "consequence_terms": [
+                "frameshift_variant"
+            ],
+            "cds_start": 1220,
+            "cdna_end": 1676,
+            "impact": "HIGH",
+            "ccds": "CCDS7083.1",
+            "cdna_start": 1675,
+            "variant_allele": "G",
+            "gene_symbol_source": "HGNC",
+            "hgvsg": "10:g.8115875dup",
+            "hgnc_id": 4172,
+            "hgvsp": "ENSP00000341619.3:p.Pro408AlafsTer99",
+            "hgvsc": "ENST00000346208.3:c.1221dup",
+            "cds_end": 1221,
+            "gene_symbol": "GATA3",
+            "exon": "6/6",
+            "gene_id": "ENSG00000107485",
+            "swissprot": [
+                "GATA3_HUMAN"
+            ],
+            "transcript_id": "ENST00000346208",
+            "protein_id": "ENSP00000341619",
+            "codons": "tcg/tcGg",
+            "protein_end": 407,
+            "domains": [
+                {
+                    "name": "PIRSF003027",
+                    "db": "PIRSF"
+                },
+                {
+                    "db": "PANTHER",
+                    "name": "PTHR10071"
+                },
+                {
+                    "name": "PTHR10071",
+                    "db": "PANTHER"
+                },
+                {
+                    "name": "PTHR10071",
+                    "db": "PANTHER"
+                }
+            ],
+            "amino_acids": "S/SX",
+            "biotype": "protein_coding",
+            "hgvs_offset": 1
+        },
+        {
+            "refseq_transcript_ids": [
+                "NM_001002295.1",
+                "NM_002051.2"
+            ],
+            "swissprot": [
+                "GATA3_HUMAN"
+            ],
+            "transcript_id": "ENST00000379328",
+            "canonical": 1,
+            "protein_id": "ENSP00000368632",
+            "protein_end": 408,
+            "codons": "tcg/tcGg",
+            "domains": [
+                {
+                    "name": "PIRSF003027",
+                    "db": "PIRSF"
+                },
+                {
+                    "db": "PIRSF",
+                    "name": "PIRSF003027"
+                },
+                {
+                    "name": "PTHR10071",
+                    "db": "PANTHER"
+                },
+                {
+                    "db": "PANTHER",
+                    "name": "PTHR10071"
+                }
+            ],
+            "biotype": "protein_coding",
+            "amino_acids": "S/SX",
+            "hgvs_offset": 1,
+            "hgvsp": "ENSP00000368632.3:p.Pro409AlafsTer99",
+            "cds_end": 1224,
+            "hgvsc": "ENST00000379328.3:c.1224dup",
+            "exon": "6/6",
+            "gene_symbol": "GATA3",
+            "gene_id": "ENSG00000107485",
+            "cdna_start": 1791,
+            "gene_symbol_source": "HGNC",
+            "variant_allele": "G",
+            "hgvsg": "10:g.8115875dup",
+            "hgnc_id": 4172,
+            "uniparc": [
+                "UPI000002AA34"
+            ],
+            "strand": 1,
+            "protein_start": 408,
+            "consequence_terms": [
+                "frameshift_variant"
+            ],
+            "cdna_end": 1792,
+            "cds_start": 1223,
+            "ccds": "CCDS31143.1",
+            "impact": "HIGH"
+        },
+        {
+            "impact": "MODIFIER",
+            "gene_id": "ENSG00000107485",
+            "gene_symbol": "GATA3",
+            "cdna_end": 743,
+            "exon": "3/3",
+            "hgvsc": "ENST00000461472.1:n.743dup",
+            "consequence_terms": [
+                "non_coding_transcript_exon_variant"
+            ],
+            "strand": 1,
+            "hgnc_id": 4172,
+            "hgvsg": "10:g.8115875dup",
+            "hgvs_offset": 1,
+            "biotype": "processed_transcript",
+            "variant_allele": "G",
+            "gene_symbol_source": "HGNC",
+            "cdna_start": 742,
+            "transcript_id": "ENST00000461472"
+        }
+    ],
+    "variant_class": "insertion",
+    "strand": 1,
+    "allele_string": "-/G",
+    "seq_region_name": "10",
+    "most_severe_consequence": "frameshift_variant",
+    "id": "ENST00000346208.3:c.1221dup",
+    "assembly_name": "GRCh37",
+    "end": 8115874,
+    "start": 8115875,
+    "input": "ENST00000346208.3:c.1221dup"
+}

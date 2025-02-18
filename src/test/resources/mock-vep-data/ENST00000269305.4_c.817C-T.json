@@ -1,0 +1,835 @@
+{
+    "assembly_name": "GRCh37",
+    "allele_string": "C/T",
+    "id": "ENST00000269305.4:c.817C>T",
+    "strand": -1,
+    "end": 7577121,
+    "variant_class": "SNV",
+    "input": "ENST00000269305.4:c.817C>T",
+    "most_severe_consequence": "missense_variant",
+    "start": 7577121,
+    "transcript_consequences": [
+        {
+            "alphamissense": {
+                "am_class": "pathogenic",
+                "am_pathogenicity": 0.9945
+            },
+            "cds_start": 817,
+            "swissprot": [
+                "P53_HUMAN"
+            ],
+            "impact": "MODERATE",
+            "domains": [
+                {
+                    "db": "Gene3D",
+                    "name": 2
+                },
+                {
+                    "db": "Pfam",
+                    "name": "PF00870"
+                },
+                {
+                    "db": "Prints",
+                    "name": "PR00386"
+                },
+                {
+                    "db": "PANTHER",
+                    "name": "PTHR11447"
+                },
+                {
+                    "db": "PANTHER",
+                    "name": "PTHR11447"
+                },
+                {
+                    "db": "Superfamily",
+                    "name": "SSF49417"
+                }
+            ],
+            "hgvsg": "17:g.7577121G>A",
+            "sift_prediction": "deleterious",
+            "exon": "8/11",
+            "protein_end": 273,
+            "cdna_start": 1007,
+            "protein_id": "ENSP00000269305",
+            "codons": "Cgt/Tgt",
+            "canonical": 1,
+            "amino_acids": "R/C",
+            "protein_start": 273,
+            "cds_end": 817,
+            "trembl": [
+                "S5LQU8_HUMAN",
+                "Q761V2_HUMAN",
+                "Q6IT77_HUMAN",
+                "Q1HGV1_HUMAN",
+                "Q0PKT5_HUMAN",
+                "L0ES54_HUMAN",
+                "L0EQ05_HUMAN",
+                "K7PPA8_HUMAN",
+                "H2EHT1_HUMAN",
+                "G4Y083_HUMAN",
+                "E9PCY9_HUMAN",
+                "E7ESS1_HUMAN",
+                "E7EMR6_HUMAN",
+                "B5AKF6_HUMAN",
+                "B4DNI2_HUMAN",
+                "A4GWD0_HUMAN",
+                "A4GWB8_HUMAN",
+                "A4GWB5_HUMAN",
+                "A4GW97_HUMAN",
+                "A4GW76_HUMAN",
+                "A4GW75_HUMAN",
+                "A4GW74_HUMAN",
+                "A4GW67_HUMAN",
+                "A2I9Z1_HUMAN",
+                "A2I9Z0_HUMAN"
+            ],
+            "cdna_end": 1007,
+            "gene_id": "ENSG00000141510",
+            "ccds": "CCDS11118.1",
+            "uniparc": [
+                "UPI000002ED67"
+            ],
+            "transcript_id": "ENST00000269305",
+            "hgvsc": "ENST00000269305.4:c.817C>T",
+            "gene_symbol": "TP53",
+            "refseq_transcript_ids": [
+                "NM_001126112.2",
+                "NM_001276761.1",
+                "NM_001276760.1",
+                "NM_000546.5",
+                "NM_001126118.1"
+            ],
+            "gene_symbol_source": "HGNC",
+            "biotype": "protein_coding",
+            "consequence_terms": [
+                "missense_variant"
+            ],
+            "hgvsp": "ENSP00000269305.4:p.Arg273Cys",
+            "strand": -1,
+            "variant_allele": "T",
+            "sift_score": 0,
+            "hgnc_id": 11998
+        },
+        {
+            "gene_symbol": "TP53",
+            "hgvsc": "ENST00000359597.4:c.817C>T",
+            "polyphen_humdiv_score": 1,
+            "gene_symbol_source": "HGNC",
+            "uniparc": [
+                "UPI0002065363"
+            ],
+            "cdna_end": 817,
+            "gene_id": "ENSG00000141510",
+            "transcript_id": "ENST00000359597",
+            "variant_allele": "T",
+            "sift_score": 0,
+            "strand": -1,
+            "hgvsp": "ENSP00000352610.4:p.Arg273Cys",
+            "hgnc_id": 11998,
+            "biotype": "protein_coding",
+            "polyphen_score": 1,
+            "consequence_terms": [
+                "missense_variant"
+            ],
+            "hgvsg": "17:g.7577121G>A",
+            "sift_prediction": "deleterious",
+            "exon": "7/9",
+            "domains": [
+                {
+                    "name": 2,
+                    "db": "Gene3D"
+                },
+                {
+                    "db": "Pfam",
+                    "name": "PF00870"
+                },
+                {
+                    "db": "Prints",
+                    "name": "PR00386"
+                },
+                {
+                    "name": "PTHR11447",
+                    "db": "PANTHER"
+                },
+                {
+                    "name": "PTHR11447",
+                    "db": "PANTHER"
+                },
+                {
+                    "db": "Superfamily",
+                    "name": "SSF49417"
+                }
+            ],
+            "protein_end": 273,
+            "alphamissense": {
+                "am_pathogenicity": 0.9945,
+                "am_class": "pathogenic"
+            },
+            "polyphen_humdiv_pred": "probably_damaging",
+            "cds_start": 817,
+            "impact": "MODERATE",
+            "polyphen_prediction": "probably_damaging",
+            "trembl": [
+                "S5LQU8_HUMAN",
+                "Q761V2_HUMAN",
+                "Q6IT77_HUMAN",
+                "Q1HGV1_HUMAN",
+                "Q0PKT5_HUMAN",
+                "L0ES54_HUMAN",
+                "L0EQ05_HUMAN",
+                "J3KP33_HUMAN",
+                "G4Y083_HUMAN",
+                "E9PCY9_HUMAN",
+                "E7ESS1_HUMAN",
+                "E7EMR6_HUMAN",
+                "B5AKF6_HUMAN",
+                "A4GWD0_HUMAN",
+                "A4GWB8_HUMAN",
+                "A4GWB5_HUMAN",
+                "A4GW97_HUMAN",
+                "A4GW76_HUMAN",
+                "A4GW75_HUMAN",
+                "A4GW74_HUMAN",
+                "A4GW67_HUMAN",
+                "A2I9Z1_HUMAN",
+                "A2I9Z0_HUMAN"
+            ],
+            "cds_end": 817,
+            "cdna_start": 817,
+            "protein_id": "ENSP00000352610",
+            "amino_acids": "R/C",
+            "protein_start": 273,
+            "codons": "Cgt/Tgt"
+        },
+        {
+            "gene_symbol": "TP53",
+            "hgvsc": "ENST00000413465.2:c.782+378C>T",
+            "hgvsg": "17:g.7577121G>A",
+            "gene_symbol_source": "HGNC",
+            "gene_id": "ENSG00000141510",
+            "uniparc": [
+                "UPI0001AE664F"
+            ],
+            "impact": "MODIFIER",
+            "transcript_id": "ENST00000413465",
+            "strand": -1,
+            "variant_allele": "T",
+            "trembl": [
+                "Q761V2_HUMAN",
+                "Q6IT77_HUMAN",
+                "Q1HGV1_HUMAN",
+                "Q0PKT5_HUMAN",
+                "L0ES54_HUMAN",
+                "G4Y083_HUMAN",
+                "E9PCY9_HUMAN",
+                "E7EQX7_HUMAN",
+                "E7EMR6_HUMAN",
+                "B5AKF6_HUMAN",
+                "A4GWD0_HUMAN",
+                "A4GWB8_HUMAN",
+                "A4GWB5_HUMAN",
+                "A2I9Z0_HUMAN"
+            ],
+            "hgnc_id": 11998,
+            "intron": "6/6",
+            "protein_id": "ENSP00000410739",
+            "biotype": "protein_coding",
+            "consequence_terms": [
+                "intron_variant"
+            ]
+        },
+        {
+            "hgnc_id": 11998,
+            "strand": -1,
+            "hgvsp": "ENSP00000391127.2:p.Arg273Cys",
+            "sift_score": 0,
+            "variant_allele": "T",
+            "consequence_terms": [
+                "missense_variant"
+            ],
+            "biotype": "protein_coding",
+            "gene_symbol_source": "HGNC",
+            "refseq_transcript_ids": [
+                "NM_001126114.2",
+                "NM_001276696.1"
+            ],
+            "gene_symbol": "TP53",
+            "hgvsc": "ENST00000420246.2:c.817C>T",
+            "transcript_id": "ENST00000420246",
+            "ccds": "CCDS45606.1",
+            "gene_id": "ENSG00000141510",
+            "cdna_end": 950,
+            "uniparc": [
+                "UPI0000456A12"
+            ],
+            "cds_end": 817,
+            "trembl": [
+                "S5LQU8_HUMAN",
+                "Q761V2_HUMAN",
+                "Q6IT77_HUMAN",
+                "Q1HGV1_HUMAN",
+                "Q0PKT5_HUMAN",
+                "L0ES54_HUMAN",
+                "L0EQ05_HUMAN",
+                "G4Y083_HUMAN",
+                "E9PCY9_HUMAN",
+                "E7ESS1_HUMAN",
+                "E7EMR6_HUMAN",
+                "B5AKF6_HUMAN",
+                "A4GWD0_HUMAN",
+                "A4GWB8_HUMAN",
+                "A4GWB5_HUMAN",
+                "A4GW97_HUMAN",
+                "A4GW76_HUMAN",
+                "A4GW75_HUMAN",
+                "A4GW74_HUMAN",
+                "A4GW67_HUMAN",
+                "A2I9Z1_HUMAN",
+                "A2I9Z0_HUMAN"
+            ],
+            "codons": "Cgt/Tgt",
+            "amino_acids": "R/C",
+            "protein_start": 273,
+            "protein_id": "ENSP00000391127",
+            "cdna_start": 950,
+            "protein_end": 273,
+            "domains": [
+                {
+                    "db": "Gene3D",
+                    "name": 2
+                },
+                {
+                    "name": "PF00870",
+                    "db": "Pfam"
+                },
+                {
+                    "name": "PR00386",
+                    "db": "Prints"
+                },
+                {
+                    "db": "PANTHER",
+                    "name": "PTHR11447"
+                },
+                {
+                    "name": "PTHR11447",
+                    "db": "PANTHER"
+                },
+                {
+                    "name": "SSF49417",
+                    "db": "Superfamily"
+                }
+            ],
+            "exon": "8/12",
+            "sift_prediction": "deleterious",
+            "hgvsg": "17:g.7577121G>A",
+            "impact": "MODERATE",
+            "cds_start": 817,
+            "alphamissense": {
+                "am_class": "pathogenic",
+                "am_pathogenicity": 0.9945
+            },
+            "swissprot": [
+                "P53_HUMAN"
+            ]
+        },
+        {
+            "variant_allele": "T",
+            "sift_score": 0,
+            "hgvsp": "ENSP00000391478.2:p.Arg273Cys",
+            "strand": -1,
+            "hgnc_id": 11998,
+            "biotype": "protein_coding",
+            "consequence_terms": [
+                "missense_variant"
+            ],
+            "hgvsc": "ENST00000445888.2:c.817C>T",
+            "gene_symbol": "TP53",
+            "gene_symbol_source": "HGNC",
+            "uniparc": [
+                "UPI000002ED67"
+            ],
+            "cdna_end": 953,
+            "gene_id": "ENSG00000141510",
+            "ccds": "CCDS11118.1",
+            "transcript_id": "ENST00000445888",
+            "trembl": [
+                "S5LQU8_HUMAN",
+                "Q761V2_HUMAN",
+                "Q6IT77_HUMAN",
+                "Q1HGV1_HUMAN",
+                "Q0PKT5_HUMAN",
+                "L0ES54_HUMAN",
+                "L0EQ05_HUMAN",
+                "K7PPA8_HUMAN",
+                "H2EHT1_HUMAN",
+                "G4Y083_HUMAN",
+                "E9PCY9_HUMAN",
+                "E7ESS1_HUMAN",
+                "E7EMR6_HUMAN",
+                "B5AKF6_HUMAN",
+                "B4DNI2_HUMAN",
+                "A4GWD0_HUMAN",
+                "A4GWB8_HUMAN",
+                "A4GWB5_HUMAN",
+                "A4GW97_HUMAN",
+                "A4GW76_HUMAN",
+                "A4GW75_HUMAN",
+                "A4GW74_HUMAN",
+                "A4GW67_HUMAN",
+                "A2I9Z1_HUMAN",
+                "A2I9Z0_HUMAN"
+            ],
+            "cds_end": 817,
+            "cdna_start": 953,
+            "protein_id": "ENSP00000391478",
+            "amino_acids": "R/C",
+            "protein_start": 273,
+            "codons": "Cgt/Tgt",
+            "sift_prediction": "deleterious",
+            "hgvsg": "17:g.7577121G>A",
+            "exon": "8/11",
+            "domains": [
+                {
+                    "db": "Gene3D",
+                    "name": 2
+                },
+                {
+                    "db": "Pfam",
+                    "name": "PF00870"
+                },
+                {
+                    "name": "PR00386",
+                    "db": "Prints"
+                },
+                {
+                    "db": "PANTHER",
+                    "name": "PTHR11447"
+                },
+                {
+                    "name": "PTHR11447",
+                    "db": "PANTHER"
+                },
+                {
+                    "name": "SSF49417",
+                    "db": "Superfamily"
+                }
+            ],
+            "protein_end": 273,
+            "swissprot": [
+                "P53_HUMAN"
+            ],
+            "alphamissense": {
+                "am_pathogenicity": 0.9945,
+                "am_class": "pathogenic"
+            },
+            "cds_start": 817,
+            "impact": "MODERATE"
+        },
+        {
+            "protein_end": 273,
+            "domains": [
+                {
+                    "name": 2,
+                    "db": "Gene3D"
+                },
+                {
+                    "db": "Pfam",
+                    "name": "PF00870"
+                },
+                {
+                    "db": "Prints",
+                    "name": "PR00386"
+                },
+                {
+                    "name": "PTHR11447",
+                    "db": "PANTHER"
+                },
+                {
+                    "db": "PANTHER",
+                    "name": "PTHR11447"
+                },
+                {
+                    "name": "SSF49417",
+                    "db": "Superfamily"
+                }
+            ],
+            "hgvsg": "17:g.7577121G>A",
+            "sift_prediction": "deleterious",
+            "exon": "8/12",
+            "impact": "MODERATE",
+            "alphamissense": {
+                "am_pathogenicity": 0.9945,
+                "am_class": "pathogenic"
+            },
+            "cds_start": 817,
+            "swissprot": [
+                "P53_HUMAN"
+            ],
+            "cds_end": 817,
+            "trembl": [
+                "S5LQU8_HUMAN",
+                "Q761V2_HUMAN",
+                "Q6IT77_HUMAN",
+                "Q1HGV1_HUMAN",
+                "Q0PKT5_HUMAN",
+                "L0ES54_HUMAN",
+                "L0EQ05_HUMAN",
+                "G4Y083_HUMAN",
+                "E9PCY9_HUMAN",
+                "E7ESS1_HUMAN",
+                "E7EMR6_HUMAN",
+                "B5AKF6_HUMAN",
+                "A4GWD0_HUMAN",
+                "A4GWB8_HUMAN",
+                "A4GWB5_HUMAN",
+                "A4GW97_HUMAN",
+                "A4GW76_HUMAN",
+                "A4GW75_HUMAN",
+                "A4GW74_HUMAN",
+                "A4GW67_HUMAN",
+                "A2I9Z1_HUMAN",
+                "A2I9Z0_HUMAN"
+            ],
+            "codons": "Cgt/Tgt",
+            "protein_start": 273,
+            "amino_acids": "R/C",
+            "cdna_start": 950,
+            "protein_id": "ENSP00000398846",
+            "refseq_transcript_ids": [
+                "NM_001276695.1",
+                "NM_001126113.2"
+            ],
+            "gene_symbol_source": "HGNC",
+            "gene_symbol": "TP53",
+            "hgvsc": "ENST00000455263.2:c.817C>T",
+            "transcript_id": "ENST00000455263",
+            "cdna_end": 950,
+            "gene_id": "ENSG00000141510",
+            "ccds": "CCDS45605.1",
+            "uniparc": [
+                "UPI00005B7310"
+            ],
+            "hgnc_id": 11998,
+            "hgvsp": "ENSP00000398846.2:p.Arg273Cys",
+            "strand": -1,
+            "variant_allele": "T",
+            "sift_score": 0,
+            "consequence_terms": [
+                "missense_variant"
+            ],
+            "biotype": "protein_coding"
+        },
+        {
+            "consequence_terms": [
+                "downstream_gene_variant"
+            ],
+            "biotype": "protein_coding",
+            "protein_id": "ENSP00000426252",
+            "flags": [
+                "cds_end_NF"
+            ],
+            "trembl": [
+                "Q6IT77_HUMAN",
+                "Q0PKT5_HUMAN",
+                "L0ES54_HUMAN",
+                "G4Y083_HUMAN",
+                "E9PCY9_HUMAN"
+            ],
+            "hgnc_id": 11998,
+            "distance": 1426,
+            "variant_allele": "T",
+            "strand": -1,
+            "transcript_id": "ENST00000503591",
+            "impact": "MODIFIER",
+            "uniparc": [
+                "UPI0001D3B066"
+            ],
+            "gene_id": "ENSG00000141510",
+            "gene_symbol_source": "HGNC",
+            "hgvsg": "17:g.7577121G>A",
+            "gene_symbol": "TP53"
+        },
+        {
+            "hgnc_id": 11998,
+            "variant_allele": "T",
+            "strand": -1,
+            "consequence_terms": [
+                "non_coding_transcript_exon_variant"
+            ],
+            "biotype": "retained_intron",
+            "cdna_start": 699,
+            "gene_symbol_source": "HGNC",
+            "exon": "4/8",
+            "hgvsg": "17:g.7577121G>A",
+            "hgvsc": "ENST00000504290.1:n.699C>T",
+            "gene_symbol": "TP53",
+            "impact": "MODIFIER",
+            "transcript_id": "ENST00000504290",
+            "gene_id": "ENSG00000141510",
+            "cdna_end": 699
+        },
+        {
+            "gene_symbol_source": "HGNC",
+            "gene_symbol": "TP53",
+            "hgvsc": "ENST00000504937.1:n.699C>T",
+            "exon": "4/7",
+            "hgvsg": "17:g.7577121G>A",
+            "impact": "MODIFIER",
+            "transcript_id": "ENST00000504937",
+            "gene_id": "ENSG00000141510",
+            "cdna_end": 699,
+            "hgnc_id": 11998,
+            "strand": -1,
+            "variant_allele": "T",
+            "consequence_terms": [
+                "non_coding_transcript_exon_variant"
+            ],
+            "cdna_start": 699,
+            "biotype": "retained_intron"
+        },
+        {
+            "distance": 723,
+            "variant_allele": "T",
+            "strand": -1,
+            "hgnc_id": 11998,
+            "biotype": "retained_intron",
+            "consequence_terms": [
+                "downstream_gene_variant"
+            ],
+            "hgvsg": "17:g.7577121G>A",
+            "gene_symbol": "TP53",
+            "gene_symbol_source": "HGNC",
+            "gene_id": "ENSG00000141510",
+            "transcript_id": "ENST00000505014",
+            "impact": "MODIFIER"
+        },
+        {
+            "consequence_terms": [
+                "downstream_gene_variant"
+            ],
+            "protein_id": "ENSP00000424104",
+            "flags": [
+                "cds_end_NF"
+            ],
+            "biotype": "protein_coding",
+            "trembl": [
+                "Q6IT77_HUMAN",
+                "Q0PKT5_HUMAN",
+                "L0ES54_HUMAN",
+                "G4Y083_HUMAN",
+                "E9PCY9_HUMAN",
+                "E7EMR6_HUMAN"
+            ],
+            "hgnc_id": 11998,
+            "strand": -1,
+            "distance": 1313,
+            "variant_allele": "T",
+            "impact": "MODIFIER",
+            "transcript_id": "ENST00000508793",
+            "gene_id": "ENSG00000141510",
+            "uniparc": [
+                "UPI0001D3B065"
+            ],
+            "gene_symbol_source": "HGNC",
+            "gene_symbol": "TP53",
+            "hgvsg": "17:g.7577121G>A"
+        },
+        {
+            "protein_end": 141,
+            "exon": "5/6",
+            "hgvsg": "17:g.7577121G>A",
+            "sift_prediction": "deleterious_low_confidence",
+            "domains": [
+                {
+                    "name": 2,
+                    "db": "Gene3D"
+                },
+                {
+                    "db": "Pfam",
+                    "name": "PF00870"
+                },
+                {
+                    "name": "PR00386",
+                    "db": "Prints"
+                },
+                {
+                    "name": "PTHR11447",
+                    "db": "PANTHER"
+                },
+                {
+                    "name": "PTHR11447",
+                    "db": "PANTHER"
+                },
+                {
+                    "name": "SSF49417",
+                    "db": "Superfamily"
+                }
+            ],
+            "impact": "MODERATE",
+            "cds_start": 421,
+            "polyphen_humdiv_pred": "probably_damaging",
+            "trembl": [
+                "S5LQU8_HUMAN",
+                "Q1HGV1_HUMAN",
+                "L0EQ05_HUMAN",
+                "E7ESS1_HUMAN",
+                "B5AKF6_HUMAN",
+                "A4GW97_HUMAN",
+                "A4GW76_HUMAN",
+                "A4GW75_HUMAN",
+                "A4GW74_HUMAN",
+                "A4GW67_HUMAN",
+                "A2I9Z1_HUMAN",
+                "A2I9Z0_HUMAN"
+            ],
+            "cds_end": 421,
+            "protein_start": 141,
+            "amino_acids": "R/C",
+            "codons": "Cgt/Tgt",
+            "protein_id": "ENSP00000425104",
+            "flags": [
+                "cds_end_NF"
+            ],
+            "cdna_start": 553,
+            "polyphen_humdiv_score": 1,
+            "gene_symbol_source": "HGNC",
+            "hgvsc": "ENST00000509690.1:c.421C>T",
+            "gene_symbol": "TP53",
+            "transcript_id": "ENST00000509690",
+            "uniparc": [
+                "UPI0001D3B064"
+            ],
+            "gene_id": "ENSG00000141510",
+            "cdna_end": 553,
+            "hgnc_id": 11998,
+            "sift_score": 0,
+            "variant_allele": "T",
+            "hgvsp": "ENSP00000425104.1:p.Arg141Cys",
+            "strand": -1,
+            "consequence_terms": [
+                "missense_variant"
+            ],
+            "biotype": "protein_coding"
+        },
+        {
+            "cdna_end": 699,
+            "gene_id": "ENSG00000141510",
+            "transcript_id": "ENST00000510385",
+            "impact": "MODIFIER",
+            "hgvsg": "17:g.7577121G>A",
+            "exon": "4/8",
+            "gene_symbol": "TP53",
+            "hgvsc": "ENST00000510385.1:n.699C>T",
+            "gene_symbol_source": "HGNC",
+            "biotype": "retained_intron",
+            "cdna_start": 699,
+            "consequence_terms": [
+                "non_coding_transcript_exon_variant"
+            ],
+            "variant_allele": "T",
+            "strand": -1,
+            "hgnc_id": 11998
+        },
+        {
+            "gene_symbol": "TP53",
+            "hgvsg": "17:g.7577121G>A",
+            "gene_symbol_source": "HGNC",
+            "gene_id": "ENSG00000141510",
+            "uniparc": [
+                "UPI00015DFAB7"
+            ],
+            "transcript_id": "ENST00000514944",
+            "impact": "MODIFIER",
+            "strand": -1,
+            "distance": 414,
+            "variant_allele": "T",
+            "trembl": [
+                "Q761V2_HUMAN",
+                "Q1HGV1_HUMAN",
+                "E9PFT5_HUMAN",
+                "A4GWD0_HUMAN",
+                "A4GWB8_HUMAN",
+                "A4GWB5_HUMAN"
+            ],
+            "hgnc_id": 11998,
+            "protein_id": "ENSP00000423862",
+            "flags": [
+                "cds_end_NF"
+            ],
+            "biotype": "protein_coding",
+            "consequence_terms": [
+                "downstream_gene_variant"
+            ]
+        },
+        {
+            "biotype": "processed_transcript",
+            "consequence_terms": [
+                "downstream_gene_variant"
+            ],
+            "strand": -1,
+            "distance": 451,
+            "variant_allele": "T",
+            "hgnc_id": 11998,
+            "gene_id": "ENSG00000141510",
+            "impact": "MODIFIER",
+            "transcript_id": "ENST00000574684",
+            "gene_symbol": "TP53",
+            "hgvsg": "17:g.7577121G>A",
+            "gene_symbol_source": "HGNC"
+        },
+        {
+            "hgnc_id": 11998,
+            "strand": -1,
+            "variant_allele": "T",
+            "distance": 216,
+            "consequence_terms": [
+                "upstream_gene_variant"
+            ],
+            "flags": [
+                "cds_start_NF"
+            ],
+            "protein_id": "ENSP00000458393",
+            "biotype": "protein_coding",
+            "gene_symbol_source": "HGNC",
+            "gene_symbol": "TP53",
+            "hgvsg": "17:g.7577121G>A",
+            "impact": "MODIFIER",
+            "transcript_id": "ENST00000576024",
+            "gene_id": "ENSG00000141510",
+            "uniparc": [
+                "UPI00025A2CF1"
+            ]
+        },
+        {
+            "consequence_terms": [
+                "downstream_gene_variant"
+            ],
+            "biotype": "protein_coding",
+            "flags": [
+                "cds_end_NF"
+            ],
+            "protein_id": "ENSP00000473895",
+            "trembl": [
+                "S4R334_HUMAN",
+                "Q6IT77_HUMAN",
+                "Q0PKT5_HUMAN",
+                "L0ES54_HUMAN",
+                "G4Y083_HUMAN"
+            ],
+            "hgnc_id": 11998,
+            "variant_allele": "T",
+            "distance": 1359,
+            "strand": -1,
+            "transcript_id": "ENST00000604348",
+            "impact": "MODIFIER",
+            "uniparc": [
+                "UPI00033351E6"
+            ],
+            "gene_id": "ENSG00000141510",
+            "gene_symbol_source": "HGNC",
+            "hgvsg": "17:g.7577121G>A",
+            "gene_symbol": "TP53"
+        }
+    ],
+    "seq_region_name": "17"
+}

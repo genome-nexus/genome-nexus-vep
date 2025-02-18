@@ -1,0 +1,99 @@
+{
+    "variant_class": "SNV",
+    "id": "2:g.29474101C>G",
+    "input": "2:g.29474101C>G",
+    "start": 29474101,
+    "end": 29474101,
+    "transcript_consequences": [
+        {
+            "variant_allele": "G",
+            "cds_start": 2074,
+            "hgvsg": "2:g.29474101C>G",
+            "gene_symbol": "ALK",
+            "codons": "Ggg/Cgg",
+            "exon": "12/29",
+            "gene_id": "ENSG00000171094",
+            "biotype": "protein_coding",
+            "ccds": "CCDS33172.1",
+            "gene_symbol_source": "HGNC",
+            "polyphen_prediction": "probably_damaging",
+            "hgvsc": "ENST00000389048.3:c.2074G>C",
+            "cdna_start": 2981,
+            "domains": [
+                {
+                    "name": "PTHR24416",
+                    "db": "PANTHER"
+                },
+                {
+                    "db": "PANTHER",
+                    "name": "PTHR24416"
+                }
+            ],
+            "polyphen_score": 1,
+            "sift_prediction": "deleterious",
+            "sift_score": 0,
+            "strand": -1,
+            "swissprot": [
+                "ALK_HUMAN"
+            ],
+            "uniparc": [
+                "UPI00001684DA"
+            ],
+            "transcript_id": "ENST00000389048",
+            "alphamissense": {
+                "am_pathogenicity": 0.8991,
+                "am_class": "pathogenic"
+            },
+            "hgvsp": "ENSP00000373700.3:p.Gly692Arg",
+            "polyphen_humdiv_pred": "probably_damaging",
+            "protein_start": 692,
+            "protein_id": "ENSP00000373700",
+            "polyphen_humdiv_score": 1,
+            "canonical": 1,
+            "trembl": [
+                "Q580I3_HUMAN"
+            ],
+            "impact": "MODERATE",
+            "consequence_terms": [
+                "missense_variant"
+            ],
+            "amino_acids": "G/R",
+            "protein_end": 692,
+            "cds_end": 2074,
+            "hgnc_id": 427,
+            "refseq_transcript_ids": [
+                "NM_004304.4"
+            ],
+            "cdna_end": 2981
+        },
+        {
+            "hgvsc": "ENST00000431873.1:c.792-43190G>C",
+            "hgnc_id": 427,
+            "intron": "2/3",
+            "gene_symbol_source": "HGNC",
+            "consequence_terms": [
+                "intron_variant"
+            ],
+            "gene_id": "ENSG00000171094",
+            "trembl": [
+                "E7EPW7_HUMAN"
+            ],
+            "impact": "MODIFIER",
+            "biotype": "protein_coding",
+            "protein_id": "ENSP00000414027",
+            "gene_symbol": "ALK",
+            "hgvsg": "2:g.29474101C>G",
+            "uniparc": [
+                "UPI0001AE7676"
+            ],
+            "transcript_id": "ENST00000431873",
+            "strand": -1,
+            "variant_allele": "G"
+        }
+    ],
+    "allele_string": "C/G",
+    "strand": 1,
+    "most_severe_consequence": "missense_variant",
+    "assembly_name": "GRCh37",
+    "seq_region_name": "2"
+}

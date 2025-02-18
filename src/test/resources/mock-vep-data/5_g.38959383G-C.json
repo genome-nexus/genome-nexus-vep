@@ -1,0 +1,206 @@
+{
+    "end": 38959383,
+    "most_severe_consequence": "missense_variant",
+    "start": 38959383,
+    "allele_string": "G/C",
+    "assembly_name": "GRCh37",
+    "variant_class": "SNV",
+    "transcript_consequences": [
+        {
+            "protein_end": 698,
+            "sift_prediction": "deleterious_low_confidence",
+            "cds_end": 2092,
+            "swissprot": [
+                "RICTR_HUMAN"
+            ],
+            "biotype": "protein_coding",
+            "cdna_start": 2114,
+            "gene_id": "ENSG00000164327",
+            "cdna_end": 2114,
+            "hgnc_id": 28611,
+            "variant_allele": "C",
+            "ccds": "CCDS68861.1",
+            "transcript_id": "ENST00000296782",
+            "polyphen_score": 0.025,
+            "protein_id": "ENSP00000296782",
+            "alphamissense": {
+                "am_pathogenicity": 0.2042,
+                "am_class": "benign"
+            },
+            "domains": [
+                {
+                    "name": "PF14666",
+                    "db": "Pfam"
+                },
+                {
+                    "name": "PTHR13298",
+                    "db": "PANTHER"
+                },
+                {
+                    "name": "PTHR13298",
+                    "db": "PANTHER"
+                }
+            ],
+            "sift_score": 0,
+            "cds_start": 2092,
+            "polyphen_prediction": "benign",
+            "protein_start": 698,
+            "gene_symbol": "RICTOR",
+            "consequence_terms": [
+                "missense_variant"
+            ],
+            "polyphen_humdiv_pred": "benign",
+            "gene_symbol_source": "HGNC",
+            "hgvsp": "ENSP00000296782.5:p.Leu698Val",
+            "polyphen_humdiv_score": 0.039,
+            "strand": -1,
+            "exon": "22/39",
+            "amino_acids": "L/V",
+            "hgvsc": "ENST00000296782.5:c.2092C>G",
+            "impact": "MODERATE",
+            "refseq_transcript_ids": [
+                "NM_001285439.1"
+            ],
+            "uniparc": [
+                "UPI0000EE67F5"
+            ],
+            "codons": "Cta/Gta",
+            "hgvsg": "5:g.38959383G>C"
+        },
+        {
+            "ccds": "CCDS34148.1",
+            "transcript_id": "ENST00000357387",
+            "biotype": "protein_coding",
+            "cdna_start": 2123,
+            "gene_id": "ENSG00000164327",
+            "cdna_end": 2123,
+            "hgnc_id": 28611,
+            "canonical": 1,
+            "variant_allele": "C",
+            "polyphen_prediction": "benign",
+            "protein_start": 698,
+            "cds_start": 2092,
+            "protein_id": "ENSP00000349959",
+            "polyphen_score": 0.097,
+            "alphamissense": {
+                "am_class": "benign",
+                "am_pathogenicity": 0.2042
+            },
+            "domains": [
+                {
+                    "name": "SSF48371",
+                    "db": "Superfamily"
+                },
+                {
+                    "db": "Pfam",
+                    "name": "PF14666"
+                },
+                {
+                    "name": "PTHR13298",
+                    "db": "PANTHER"
+                },
+                {
+                    "db": "PANTHER",
+                    "name": "PTHR13298"
+                }
+            ],
+            "sift_score": 0,
+            "protein_end": 698,
+            "cds_end": 2092,
+            "sift_prediction": "deleterious_low_confidence",
+            "swissprot": [
+                "RICTR_HUMAN"
+            ],
+            "impact": "MODERATE",
+            "amino_acids": "L/V",
+            "hgvsc": "ENST00000357387.3:c.2092C>G",
+            "hgvsg": "5:g.38959383G>C",
+            "codons": "Cta/Gta",
+            "refseq_transcript_ids": [
+                "NM_152756.3"
+            ],
+            "uniparc": [
+                "UPI00003529F3"
+            ],
+            "consequence_terms": [
+                "missense_variant"
+            ],
+            "gene_symbol": "RICTOR",
+            "polyphen_humdiv_score": 0.049,
+            "strand": -1,
+            "exon": "22/38",
+            "polyphen_humdiv_pred": "benign",
+            "gene_symbol_source": "HGNC",
+            "hgvsp": "ENSP00000349959.3:p.Leu698Val"
+        },
+        {
+            "consequence_terms": [
+                "non_coding_transcript_exon_variant"
+            ],
+            "gene_symbol": "RICTOR",
+            "exon": "1/6",
+            "strand": -1,
+            "gene_symbol_source": "HGNC",
+            "impact": "MODIFIER",
+            "transcript_id": "ENST00000503698",
+            "hgvsc": "ENST00000503698.1:n.52C>G",
+            "variant_allele": "C",
+            "cdna_end": 52,
+            "gene_id": "ENSG00000164327",
+            "hgnc_id": 28611,
+            "cdna_start": 52,
+            "biotype": "processed_transcript",
+            "hgvsg": "5:g.38959383G>C"
+        },
+        {
+            "variant_allele": "C",
+            "hgnc_id": 28611,
+            "gene_id": "ENSG00000164327",
+            "biotype": "processed_transcript",
+            "impact": "MODIFIER",
+            "transcript_id": "ENST00000509567",
+            "hgvsg": "5:g.38959383G>C",
+            "gene_symbol": "RICTOR",
+            "consequence_terms": [
+                "downstream_gene_variant"
+            ],
+            "distance": 3670,
+            "gene_symbol_source": "HGNC",
+            "strand": -1
+        },
+        {
+            "hgvsg": "5:g.38959383G>C",
+            "uniparc": [
+                "UPI000020C9D4"
+            ],
+            "refseq_transcript_ids": [
+                "NM_001285440.1"
+            ],
+            "protein_id": "ENSP00000423019",
+            "impact": "MODIFIER",
+            "transcript_id": "ENST00000511516",
+            "hgvsc": "ENST00000511516.1:c.*1316C>G",
+            "variant_allele": "C",
+            "hgnc_id": 28611,
+            "gene_id": "ENSG00000164327",
+            "cdna_end": 2102,
+            "cdna_start": 2102,
+            "biotype": "nonsense_mediated_decay",
+            "exon": "22/38",
+            "strand": -1,
+            "gene_symbol_source": "HGNC",
+            "consequence_terms": [
+                "3_prime_UTR_variant",
+                "NMD_transcript_variant"
+            ],
+            "swissprot": [
+                "RICTR_HUMAN"
+            ],
+            "gene_symbol": "RICTOR"
+        }
+    ],
+    "seq_region_name": "5",
+    "input": "5:g.38959383G>C",
+    "id": "5:g.38959383G>C",
+    "strand": 1
+}

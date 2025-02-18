@@ -1,0 +1,939 @@
+{
+    "most_severe_consequence": "missense_variant",
+    "variant_class": "substitution",
+    "transcript_consequences": [
+        {
+            "swissprot": [
+                "PAX5_HUMAN"
+            ],
+            "consequence_terms": [
+                "missense_variant"
+            ],
+            "cds_start": 161,
+            "hgvsg": "9:g.37020683_37020684delinsTT",
+            "protein_start": 54,
+            "sift_score": 0,
+            "protein_end": 54,
+            "exon": "2/10",
+            "refseq_transcript_ids": [
+                "NM_001280556.1",
+                "NM_001280547.1",
+                "NM_001280548.1",
+                "NM_001280554.1",
+                "NM_016734.2"
+            ],
+            "uniparc": [
+                "UPI000013136C"
+            ],
+            "strand": -1,
+            "impact": "MODERATE",
+            "amino_acids": "I/K",
+            "hgvsc": "ENST00000358127.4:c.161_162delinsAA",
+            "gene_id": "ENSG00000196092",
+            "ccds": "CCDS6607.1",
+            "domains": [
+                {
+                    "db": "PANTHER",
+                    "name": "PTHR24329"
+                },
+                {
+                    "db": "PANTHER",
+                    "name": "PTHR24329"
+                },
+                {
+                    "name": "PS51057",
+                    "db": "PROSITE_profiles"
+                },
+                {
+                    "name": "SM00351",
+                    "db": "SMART"
+                },
+                {
+                    "name": 1,
+                    "db": "Gene3D"
+                },
+                {
+                    "name": "SSF46689",
+                    "db": "Superfamily"
+                },
+                {
+                    "db": "Pfam",
+                    "name": "PF00292"
+                },
+                {
+                    "name": "PS00034",
+                    "db": "PROSITE_patterns"
+                },
+                {
+                    "name": "PR00027",
+                    "db": "Prints"
+                }
+            ],
+            "transcript_id": "ENST00000358127",
+            "protein_id": "ENSP00000350844",
+            "trembl": [
+                "E7ERK2_HUMAN",
+                "C0KTE1_HUMAN"
+            ],
+            "canonical": 1,
+            "cds_end": 162,
+            "hgnc_id": 8619,
+            "cdna_start": 236,
+            "biotype": "protein_coding",
+            "cdna_end": 237,
+            "sift_prediction": "deleterious_low_confidence",
+            "gene_symbol_source": "HGNC",
+            "hgvsp": "ENSP00000350844.4:p.Ile54Lys",
+            "codons": "aTC/aAA",
+            "variant_allele": "TT",
+            "gene_symbol": "PAX5"
+        },
+        {
+            "trembl": [
+                "C0KTE4_HUMAN"
+            ],
+            "cds_end": 162,
+            "protein_id": "ENSP00000367071",
+            "variant_allele": "TT",
+            "codons": "aTC/aAA",
+            "gene_symbol": "PAX5",
+            "hgnc_id": 8619,
+            "cdna_start": 171,
+            "biotype": "nonsense_mediated_decay",
+            "cdna_end": 172,
+            "hgvsp": "ENSP00000367071.2:p.Ile54Lys",
+            "gene_symbol_source": "HGNC",
+            "sift_prediction": "deleterious_low_confidence",
+            "exon": "2/9",
+            "uniparc": [
+                "UPI0000227D53"
+            ],
+            "impact": "MODERATE",
+            "strand": -1,
+            "consequence_terms": [
+                "missense_variant",
+                "NMD_transcript_variant"
+            ],
+            "swissprot": [
+                "PAX5_HUMAN"
+            ],
+            "cds_start": 161,
+            "hgvsg": "9:g.37020683_37020684delinsTT",
+            "protein_start": 54,
+            "sift_score": 0,
+            "protein_end": 54,
+            "gene_id": "ENSG00000196092",
+            "transcript_id": "ENST00000377840",
+            "domains": [
+                {
+                    "db": "Gene3D",
+                    "name": 1
+                },
+                {
+                    "db": "Pfam",
+                    "name": "PF00292"
+                },
+                {
+                    "db": "Prints",
+                    "name": "PR00027"
+                },
+                {
+                    "db": "PROSITE_patterns",
+                    "name": "PS00034"
+                },
+                {
+                    "name": "PS51057",
+                    "db": "PROSITE_profiles"
+                },
+                {
+                    "db": "PANTHER",
+                    "name": "PTHR24329"
+                },
+                {
+                    "db": "PANTHER",
+                    "name": "PTHR24329"
+                },
+                {
+                    "db": "SMART",
+                    "name": "SM00351"
+                },
+                {
+                    "db": "Superfamily",
+                    "name": "SSF46689"
+                }
+            ],
+            "amino_acids": "I/K",
+            "hgvsc": "ENST00000377840.2:c.161_162delinsAA"
+        },
+        {
+            "cdna_start": 161,
+            "hgnc_id": 8619,
+            "gene_symbol_source": "HGNC",
+            "sift_prediction": "deleterious_low_confidence",
+            "hgvsp": "ENSP00000367078.2:p.Ile54Lys",
+            "biotype": "protein_coding",
+            "cdna_end": 162,
+            "codons": "aTC/aAA",
+            "variant_allele": "TT",
+            "gene_symbol": "PAX5",
+            "protein_id": "ENSP00000367078",
+            "trembl": [
+                "E7ES87_HUMAN",
+                "C0KTE5_HUMAN"
+            ],
+            "cds_end": 162,
+            "amino_acids": "I/K",
+            "polyphen_prediction": "possibly_damaging",
+            "hgvsc": "ENST00000377847.2:c.161_162delinsAA",
+            "polyphen_score": 0.896,
+            "transcript_id": "ENST00000377847",
+            "domains": [
+                {
+                    "name": 1,
+                    "db": "Gene3D"
+                },
+                {
+                    "db": "Pfam",
+                    "name": "PF00292"
+                },
+                {
+                    "db": "Prints",
+                    "name": "PR00027"
+                },
+                {
+                    "db": "PROSITE_patterns",
+                    "name": "PS00034"
+                },
+                {
+                    "name": "PS51057",
+                    "db": "PROSITE_profiles"
+                },
+                {
+                    "name": "PTHR24329",
+                    "db": "PANTHER"
+                },
+                {
+                    "db": "PANTHER",
+                    "name": "PTHR24329"
+                },
+                {
+                    "name": "SM00351",
+                    "db": "SMART"
+                },
+                {
+                    "name": "SSF46689",
+                    "db": "Superfamily"
+                }
+            ],
+            "ccds": "CCDS65046.1",
+            "gene_id": "ENSG00000196092",
+            "cds_start": 161,
+            "consequence_terms": [
+                "missense_variant"
+            ],
+            "swissprot": [
+                "PAX5_HUMAN"
+            ],
+            "protein_start": 54,
+            "sift_score": 0,
+            "protein_end": 54,
+            "hgvsg": "9:g.37020683_37020684delinsTT",
+            "exon": "2/8",
+            "refseq_transcript_ids": [
+                "NM_001280552.1"
+            ],
+            "impact": "MODERATE",
+            "strand": -1,
+            "uniparc": [
+                "UPI0001931310"
+            ]
+        },
+        {
+            "domains": [
+                {
+                    "db": "Gene3D",
+                    "name": 1
+                },
+                {
+                    "name": "PF00292",
+                    "db": "Pfam"
+                },
+                {
+                    "db": "Prints",
+                    "name": "PR00027"
+                },
+                {
+                    "name": "PS00034",
+                    "db": "PROSITE_patterns"
+                },
+                {
+                    "db": "PROSITE_profiles",
+                    "name": "PS51057"
+                },
+                {
+                    "db": "PANTHER",
+                    "name": "PTHR24329"
+                },
+                {
+                    "name": "PTHR24329",
+                    "db": "PANTHER"
+                },
+                {
+                    "name": "SM00351",
+                    "db": "SMART"
+                },
+                {
+                    "name": "SSF46689",
+                    "db": "Superfamily"
+                }
+            ],
+            "transcript_id": "ENST00000377852",
+            "gene_id": "ENSG00000196092",
+            "ccds": "CCDS65047.1",
+            "hgvsc": "ENST00000377852.2:c.161_162delinsAA",
+            "amino_acids": "I/K",
+            "impact": "MODERATE",
+            "strand": -1,
+            "uniparc": [
+                "UPI0000227D54"
+            ],
+            "exon": "2/9",
+            "sift_score": 0,
+            "protein_start": 54,
+            "protein_end": 54,
+            "hgvsg": "9:g.37020683_37020684delinsTT",
+            "cds_start": 161,
+            "consequence_terms": [
+                "missense_variant"
+            ],
+            "swissprot": [
+                "PAX5_HUMAN"
+            ],
+            "polyphen_humdiv_pred": "possibly_damaging",
+            "gene_symbol": "PAX5",
+            "codons": "aTC/aAA",
+            "variant_allele": "TT",
+            "gene_symbol_source": "HGNC",
+            "hgvsp": "ENSP00000367083.2:p.Ile54Lys",
+            "sift_prediction": "deleterious_low_confidence",
+            "biotype": "protein_coding",
+            "cdna_end": 172,
+            "cdna_start": 171,
+            "hgnc_id": 8619,
+            "polyphen_humdiv_score": 0.887,
+            "cds_end": 162,
+            "trembl": [
+                "C0KTE3_HUMAN"
+            ],
+            "protein_id": "ENSP00000367083"
+        },
+        {
+            "cdna_start": 171,
+            "hgnc_id": 8619,
+            "sift_prediction": "deleterious_low_confidence",
+            "gene_symbol_source": "HGNC",
+            "hgvsp": "ENSP00000367084.2:p.Ile54Lys",
+            "biotype": "protein_coding",
+            "cdna_end": 172,
+            "variant_allele": "TT",
+            "codons": "aTC/aAA",
+            "gene_symbol": "PAX5",
+            "protein_id": "ENSP00000367084",
+            "cds_end": 162,
+            "amino_acids": "I/K",
+            "hgvsc": "ENST00000377853.2:c.161_162delinsAA",
+            "transcript_id": "ENST00000377853",
+            "domains": [
+                {
+                    "name": 1,
+                    "db": "Gene3D"
+                },
+                {
+                    "name": "PF00292",
+                    "db": "Pfam"
+                },
+                {
+                    "name": "PR00027",
+                    "db": "Prints"
+                },
+                {
+                    "name": "PS00034",
+                    "db": "PROSITE_patterns"
+                },
+                {
+                    "name": "PS51057",
+                    "db": "PROSITE_profiles"
+                },
+                {
+                    "name": "PTHR24329",
+                    "db": "PANTHER"
+                },
+                {
+                    "name": "PTHR24329",
+                    "db": "PANTHER"
+                },
+                {
+                    "name": "SM00351",
+                    "db": "SMART"
+                },
+                {
+                    "db": "Superfamily",
+                    "name": "SSF46689"
+                }
+            ],
+            "gene_id": "ENSG00000196092",
+            "ccds": "CCDS65048.1",
+            "cds_start": 161,
+            "consequence_terms": [
+                "missense_variant"
+            ],
+            "swissprot": [
+                "PAX5_HUMAN"
+            ],
+            "sift_score": 0,
+            "protein_end": 54,
+            "protein_start": 54,
+            "hgvsg": "9:g.37020683_37020684delinsTT",
+            "exon": "2/9",
+            "impact": "MODERATE",
+            "strand": -1,
+            "uniparc": [
+                "UPI0000227D55"
+            ]
+        },
+        {
+            "variant_allele": "TT",
+            "codons": "aTC/aAA",
+            "gene_symbol": "PAX5",
+            "hgnc_id": 8619,
+            "cdna_start": 161,
+            "biotype": "protein_coding",
+            "cdna_end": 162,
+            "gene_symbol_source": "HGNC",
+            "hgvsp": "ENSP00000412188.1:p.Ile54Lys",
+            "sift_prediction": "deleterious_low_confidence",
+            "cds_end": 162,
+            "protein_id": "ENSP00000412188",
+            "ccds": "CCDS65043.1",
+            "gene_id": "ENSG00000196092",
+            "domains": [
+                {
+                    "name": "PR00027",
+                    "db": "Prints"
+                },
+                {
+                    "name": "SSF46689",
+                    "db": "Superfamily"
+                },
+                {
+                    "name": "SM00351",
+                    "db": "SMART"
+                },
+                {
+                    "name": "PF00292",
+                    "db": "Pfam"
+                },
+                {
+                    "db": "Gene3D",
+                    "name": 1
+                },
+                {
+                    "name": "PS00034",
+                    "db": "PROSITE_patterns"
+                },
+                {
+                    "name": "PTHR24329",
+                    "db": "PANTHER"
+                },
+                {
+                    "name": "PTHR24329",
+                    "db": "PANTHER"
+                },
+                {
+                    "db": "PROSITE_profiles",
+                    "name": "PS51057"
+                }
+            ],
+            "transcript_id": "ENST00000414447",
+            "amino_acids": "I/K",
+            "hgvsc": "ENST00000414447.1:c.161_162delinsAA",
+            "exon": "2/9",
+            "uniparc": [
+                "UPI0001931311"
+            ],
+            "strand": -1,
+            "impact": "MODERATE",
+            "consequence_terms": [
+                "missense_variant"
+            ],
+            "swissprot": [
+                "PAX5_HUMAN"
+            ],
+            "cds_start": 161,
+            "hgvsg": "9:g.37020683_37020684delinsTT",
+            "sift_score": 0,
+            "protein_end": 54,
+            "protein_start": 54
+        },
+        {
+            "gene_symbol": "PAX5",
+            "polyphen_humdiv_pred": "probably_damaging",
+            "variant_allele": "TT",
+            "codons": "aTC/aAA",
+            "cdna_start": 161,
+            "hgnc_id": 8619,
+            "polyphen_humdiv_score": 1,
+            "gene_symbol_source": "HGNC",
+            "hgvsp": "ENSP00000404687.1:p.Ile54Lys",
+            "sift_prediction": "deleterious",
+            "biotype": "protein_coding",
+            "cdna_end": 162,
+            "trembl": [
+                "C0KTE3_HUMAN"
+            ],
+            "cds_end": 162,
+            "protein_id": "ENSP00000404687",
+            "polyphen_score": 0.997,
+            "domains": [
+                {
+                    "name": 1,
+                    "db": "Gene3D"
+                },
+                {
+                    "name": "PF00292",
+                    "db": "Pfam"
+                },
+                {
+                    "name": "PR00027",
+                    "db": "Prints"
+                },
+                {
+                    "name": "PS00034",
+                    "db": "PROSITE_patterns"
+                },
+                {
+                    "name": "PS51057",
+                    "db": "PROSITE_profiles"
+                },
+                {
+                    "name": "PTHR24329",
+                    "db": "PANTHER"
+                },
+                {
+                    "db": "PANTHER",
+                    "name": "PTHR24329"
+                },
+                {
+                    "name": "SM00351",
+                    "db": "SMART"
+                },
+                {
+                    "db": "Superfamily",
+                    "name": "SSF46689"
+                }
+            ],
+            "transcript_id": "ENST00000446742",
+            "gene_id": "ENSG00000196092",
+            "ccds": "CCDS65041.1",
+            "amino_acids": "I/K",
+            "polyphen_prediction": "probably_damaging",
+            "hgvsc": "ENST00000446742.1:c.161_162delinsAA",
+            "exon": "2/8",
+            "refseq_transcript_ids": [
+                "NM_001280555.1"
+            ],
+            "strand": -1,
+            "impact": "MODERATE",
+            "uniparc": [
+                "UPI0001931313"
+            ],
+            "cds_start": 161,
+            "swissprot": [
+                "PAX5_HUMAN"
+            ],
+            "consequence_terms": [
+                "missense_variant"
+            ],
+            "sift_score": 0,
+            "protein_end": 54,
+            "protein_start": 54,
+            "hgvsg": "9:g.37020683_37020684delinsTT"
+        },
+        {
+            "cdna_start": 171,
+            "hgnc_id": 8619,
+            "sift_prediction": "deleterious_low_confidence",
+            "gene_symbol_source": "HGNC",
+            "hgvsp": "ENSP00000429291.1:p.Ile54Lys",
+            "cdna_end": 172,
+            "biotype": "protein_coding",
+            "codons": "aTC/aAA",
+            "variant_allele": "TT",
+            "gene_symbol": "PAX5",
+            "protein_id": "ENSP00000429291",
+            "trembl": [
+                "E7ERW5_HUMAN"
+            ],
+            "cds_end": 162,
+            "amino_acids": "I/K",
+            "polyphen_prediction": "benign",
+            "hgvsc": "ENST00000520154.1:c.161_162delinsAA",
+            "polyphen_score": 0.001,
+            "transcript_id": "ENST00000520154",
+            "domains": [
+                {
+                    "db": "PROSITE_profiles",
+                    "name": "PS51057"
+                },
+                {
+                    "name": "PTHR24329",
+                    "db": "PANTHER"
+                },
+                {
+                    "name": "PTHR24329",
+                    "db": "PANTHER"
+                },
+                {
+                    "db": "PROSITE_patterns",
+                    "name": "PS00034"
+                },
+                {
+                    "name": "PF00292",
+                    "db": "Pfam"
+                },
+                {
+                    "name": 1,
+                    "db": "Gene3D"
+                },
+                {
+                    "name": "SM00351",
+                    "db": "SMART"
+                },
+                {
+                    "db": "Superfamily",
+                    "name": "SSF46689"
+                },
+                {
+                    "name": "PR00027",
+                    "db": "Prints"
+                }
+            ],
+            "gene_id": "ENSG00000196092",
+            "ccds": "CCDS65044.1",
+            "cds_start": 161,
+            "consequence_terms": [
+                "missense_variant"
+            ],
+            "sift_score": 0,
+            "protein_end": 54,
+            "protein_start": 54,
+            "hgvsg": "9:g.37020683_37020684delinsTT",
+            "refseq_transcript_ids": [
+                "NM_001280550.1"
+            ],
+            "exon": "2/7",
+            "strand": -1,
+            "impact": "MODERATE",
+            "uniparc": [
+                "UPI0000417C14"
+            ]
+        },
+        {
+            "cds_start": 161,
+            "swissprot": [
+                "PAX5_HUMAN"
+            ],
+            "consequence_terms": [
+                "missense_variant"
+            ],
+            "sift_score": 0,
+            "protein_start": 54,
+            "protein_end": 54,
+            "hgvsg": "9:g.37020683_37020684delinsTT",
+            "refseq_transcript_ids": [
+                "NM_001280553.1"
+            ],
+            "exon": "2/8",
+            "strand": -1,
+            "impact": "MODERATE",
+            "uniparc": [
+                "UPI0001931312"
+            ],
+            "amino_acids": "I/K",
+            "polyphen_prediction": "probably_damaging",
+            "hgvsc": "ENST00000520281.1:c.161_162delinsAA",
+            "polyphen_score": 0.996,
+            "transcript_id": "ENST00000520281",
+            "domains": [
+                {
+                    "name": "PR00027",
+                    "db": "Prints"
+                },
+                {
+                    "db": "Superfamily",
+                    "name": "SSF46689"
+                },
+                {
+                    "db": "SMART",
+                    "name": "SM00351"
+                },
+                {
+                    "name": 1,
+                    "db": "Gene3D"
+                },
+                {
+                    "name": "PF00292",
+                    "db": "Pfam"
+                },
+                {
+                    "db": "PROSITE_patterns",
+                    "name": "PS00034"
+                },
+                {
+                    "db": "PANTHER",
+                    "name": "PTHR24329"
+                },
+                {
+                    "db": "PANTHER",
+                    "name": "PTHR24329"
+                },
+                {
+                    "name": "PS51057",
+                    "db": "PROSITE_profiles"
+                }
+            ],
+            "gene_id": "ENSG00000196092",
+            "ccds": "CCDS65042.1",
+            "protein_id": "ENSP00000430773",
+            "cds_end": 162,
+            "cdna_start": 161,
+            "polyphen_humdiv_score": 0.653,
+            "hgnc_id": 8619,
+            "gene_symbol_source": "HGNC",
+            "hgvsp": "ENSP00000430773.1:p.Ile54Lys",
+            "sift_prediction": "deleterious_low_confidence",
+            "cdna_end": 162,
+            "biotype": "protein_coding",
+            "codons": "aTC/aAA",
+            "variant_allele": "TT",
+            "gene_symbol": "PAX5",
+            "polyphen_humdiv_pred": "possibly_damaging"
+        },
+        {
+            "hgnc_id": 8619,
+            "gene_symbol_source": "HGNC",
+            "hgvsc": "ENST00000522003.1:c.-112-5493_-112-5492delinsAA",
+            "biotype": "protein_coding",
+            "gene_symbol": "PAX5",
+            "variant_allele": "TT",
+            "transcript_id": "ENST00000522003",
+            "ccds": "CCDS65040.1",
+            "gene_id": "ENSG00000196092",
+            "protein_id": "ENSP00000429359",
+            "intron": "1/8",
+            "consequence_terms": [
+                "intron_variant"
+            ],
+            "hgvsg": "9:g.37020683_37020684delinsTT",
+            "trembl": [
+                "E7ERK2_HUMAN",
+                "C0KTE1_HUMAN"
+            ],
+            "strand": -1,
+            "impact": "MODIFIER",
+            "uniparc": [
+                "UPI0001E8F501"
+            ]
+        },
+        {
+            "gene_symbol_source": "HGNC",
+            "hgvsc": "ENST00000523145.1:c.-112-5493_-112-5492delinsAA",
+            "biotype": "protein_coding",
+            "hgnc_id": 8619,
+            "transcript_id": "ENST00000523145",
+            "ccds": "CCDS65039.1",
+            "gene_id": "ENSG00000196092",
+            "gene_symbol": "PAX5",
+            "variant_allele": "TT",
+            "hgvsg": "9:g.37020683_37020684delinsTT",
+            "protein_id": "ENSP00000429197",
+            "intron": "1/6",
+            "consequence_terms": [
+                "intron_variant"
+            ],
+            "strand": -1,
+            "impact": "MODIFIER",
+            "uniparc": [
+                "UPI0001E8F4FF"
+            ],
+            "trembl": [
+                "E7ES87_HUMAN",
+                "C0KTE5_HUMAN"
+            ],
+            "refseq_transcript_ids": [
+                "NM_001280551.1"
+            ]
+        },
+        {
+            "amino_acids": "I/K",
+            "hgvsc": "ENST00000523241.1:c.161_162delinsAA",
+            "transcript_id": "ENST00000523241",
+            "domains": [
+                {
+                    "db": "Gene3D",
+                    "name": 1
+                },
+                {
+                    "name": "PF00292",
+                    "db": "Pfam"
+                },
+                {
+                    "db": "Prints",
+                    "name": "PR00027"
+                },
+                {
+                    "name": "PS00034",
+                    "db": "PROSITE_patterns"
+                },
+                {
+                    "name": "PS51057",
+                    "db": "PROSITE_profiles"
+                },
+                {
+                    "db": "PANTHER",
+                    "name": "PTHR24329"
+                },
+                {
+                    "name": "PTHR24329",
+                    "db": "PANTHER"
+                },
+                {
+                    "db": "SMART",
+                    "name": "SM00351"
+                },
+                {
+                    "db": "Superfamily",
+                    "name": "SSF46689"
+                }
+            ],
+            "gene_id": "ENSG00000196092",
+            "ccds": "CCDS65045.1",
+            "cds_start": 161,
+            "consequence_terms": [
+                "missense_variant"
+            ],
+            "protein_end": 54,
+            "protein_start": 54,
+            "sift_score": 0,
+            "hgvsg": "9:g.37020683_37020684delinsTT",
+            "exon": "2/8",
+            "refseq_transcript_ids": [
+                "NM_001280549.1"
+            ],
+            "impact": "MODERATE",
+            "strand": -1,
+            "uniparc": [
+                "UPI0000417C13"
+            ],
+            "cdna_start": 171,
+            "hgnc_id": 8619,
+            "sift_prediction": "deleterious_low_confidence",
+            "gene_symbol_source": "HGNC",
+            "hgvsp": "ENSP00000429637.1:p.Ile54Lys",
+            "cdna_end": 172,
+            "biotype": "protein_coding",
+            "variant_allele": "TT",
+            "codons": "aTC/aAA",
+            "gene_symbol": "PAX5",
+            "protein_id": "ENSP00000429637",
+            "trembl": [
+                "E7EQT0_HUMAN"
+            ],
+            "cds_end": 162
+        },
+        {
+            "protein_id": "ENSP00000431038",
+            "cds_end": 162,
+            "polyphen_humdiv_score": 0.998,
+            "hgnc_id": 8619,
+            "cdna_start": 161,
+            "cdna_end": 162,
+            "biotype": "nonsense_mediated_decay",
+            "gene_symbol_source": "HGNC",
+            "hgvsp": "ENSP00000431038.1:p.Ile54Lys",
+            "sift_prediction": "deleterious_low_confidence",
+            "variant_allele": "TT",
+            "codons": "aTC/aAA",
+            "polyphen_humdiv_pred": "probably_damaging",
+            "gene_symbol": "PAX5",
+            "swissprot": [
+                "PAX5_HUMAN"
+            ],
+            "consequence_terms": [
+                "missense_variant",
+                "NMD_transcript_variant"
+            ],
+            "cds_start": 161,
+            "hgvsg": "9:g.37020683_37020684delinsTT",
+            "sift_score": 0,
+            "protein_end": 54,
+            "protein_start": 54,
+            "exon": "2/10",
+            "uniparc": [
+                "UPI0001931314"
+            ],
+            "strand": -1,
+            "impact": "MODERATE",
+            "amino_acids": "I/K",
+            "hgvsc": "ENST00000523493.1:c.161_162delinsAA",
+            "gene_id": "ENSG00000196092",
+            "transcript_id": "ENST00000523493",
+            "domains": [
+                {
+                    "db": "PROSITE_profiles",
+                    "name": "PS51057"
+                },
+                {
+                    "db": "PANTHER",
+                    "name": "PTHR24329"
+                },
+                {
+                    "name": "PTHR24329",
+                    "db": "PANTHER"
+                },
+                {
+                    "db": "PROSITE_patterns",
+                    "name": "PS00034"
+                },
+                {
+                    "db": "Pfam",
+                    "name": "PF00292"
+                },
+                {
+                    "name": 1,
+                    "db": "Gene3D"
+                },
+                {
+                    "name": "SM00351",
+                    "db": "SMART"
+                },
+                {
+                    "db": "Superfamily",
+                    "name": "SSF46689"
+                },
+                {
+                    "name": "PR00027",
+                    "db": "Prints"
+                }
+            ]
+        }
+    ],
+    "strand": 1,
+    "assembly_name": "GRCh37",
+    "allele_string": "GA/TT",
+    "start": 37020683,
+    "input": "9:g.37020683_37020684delinsTT",
+    "seq_region_name": "9",
+    "end": 37020684,
+    "id": "9:g.37020683_37020684delinsTT"
+}
