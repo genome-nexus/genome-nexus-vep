@@ -1,0 +1,95 @@
+{
+    "input": "4:g.187584540C>G",
+    "end": 187584540,
+    "seq_region_name": "4",
+    "most_severe_consequence": "missense_variant",
+    "strand": 1,
+    "start": 187584540,
+    "variant_class": "SNV",
+    "id": "4:g.187584540C>G",
+    "transcript_consequences": [
+        {
+            "cdna_end": 3703,
+            "ccds": "CCDS47177.1",
+            "exon": "3/27",
+            "hgvsp": "ENSP00000406229.2:p.Asp1165His",
+            "uniparc": [
+                "UPI000051946B"
+            ],
+            "hgvsg": "4:g.187584540C>G",
+            "polyphen_prediction": "probably_damaging",
+            "consequence_terms": [
+                "missense_variant"
+            ],
+            "sift_score": 0,
+            "biotype": "protein_coding",
+            "gene_symbol_source": "HGNC",
+            "codons": "Gat/Cat",
+            "sift_prediction": "deleterious_low_confidence",
+            "transcript_id": "ENST00000441802",
+            "polyphen_humdiv_pred": "probably_damaging",
+            "gene_symbol": "FAT1",
+            "hgvsc": "ENST00000441802.2:c.3493G>C",
+            "swissprot": [
+                "FAT1_HUMAN"
+            ],
+            "cds_end": 3493,
+            "variant_allele": "G",
+            "alphamissense": {
+                "am_class": "pathogenic",
+                "am_pathogenicity": 0.8816
+            },
+            "hgnc_id": 3595,
+            "refseq_transcript_ids": [
+                "NM_005245.3"
+            ],
+            "trembl": [
+                "D6RCE4_HUMAN"
+            ],
+            "domains": [
+                {
+                    "db": "Superfamily",
+                    "name": "SSF49313"
+                },
+                {
+                    "db": "PROSITE_profiles",
+                    "name": "PS50268"
+                },
+                {
+                    "db": "PANTHER",
+                    "name": "PTHR24026"
+                },
+                {
+                    "db": "PANTHER",
+                    "name": "PTHR24026"
+                },
+                {
+                    "name": "PF00028",
+                    "db": "Pfam"
+                },
+                {
+                    "db": "SMART",
+                    "name": "SM00112"
+                },
+                {
+                    "db": "Gene3D",
+                    "name": 2
+                }
+            ],
+            "polyphen_humdiv_score": 1,
+            "protein_end": 1165,
+            "protein_start": 1165,
+            "cds_start": 3493,
+            "gene_id": "ENSG00000083857",
+            "impact": "MODERATE",
+            "cdna_start": 3703,
+            "amino_acids": "D/H",
+            "strand": -1,
+            "protein_id": "ENSP00000406229",
+            "polyphen_score": 1,
+            "canonical": 1
+        }
+    ],
+    "allele_string": "C/G",
+    "assembly_name": "GRCh37"
+}

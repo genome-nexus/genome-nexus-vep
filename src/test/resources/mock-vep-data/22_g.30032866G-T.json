@@ -1,0 +1,370 @@
+{
+    "id": "22:g.30032866G>T",
+    "most_severe_consequence": "splice_donor_variant",
+    "strand": 1,
+    "allele_string": "G/T",
+    "start": 30032866,
+    "variant_class": "SNV",
+    "seq_region_name": "22",
+    "assembly_name": "GRCh37",
+    "transcript_consequences": [
+        {
+            "impact": "MODIFIER",
+            "swissprot": [
+                "MERL_HUMAN"
+            ],
+            "consequence_terms": [
+                "intron_variant"
+            ],
+            "variant_allele": "T",
+            "hgvsc": "ENST00000334961.7:c.115-5325G>T",
+            "transcript_id": "ENST00000334961",
+            "trembl": [
+                "Q9NRW8_HUMAN"
+            ],
+            "biotype": "protein_coding",
+            "protein_id": "ENSP00000335652",
+            "uniparc": [
+                "UPI0000072477"
+            ],
+            "hgvsg": "22:g.30032866G>T",
+            "refseq_transcript_ids": [
+                "NM_181831.2"
+            ],
+            "gene_id": "ENSG00000186575",
+            "hgnc_id": 7773,
+            "gene_symbol_source": "HGNC",
+            "ccds": "CCDS13865.1",
+            "strand": 1,
+            "intron": "1/14",
+            "gene_symbol": "NF2"
+        },
+        {
+            "canonical": 1,
+            "swissprot": [
+                "MERL_HUMAN"
+            ],
+            "variant_allele": "T",
+            "consequence_terms": [
+                "splice_donor_variant"
+            ],
+            "transcript_id": "ENST00000338641",
+            "hgvsc": "ENST00000338641.4:c.240+1G>T",
+            "trembl": [
+                "Q9NRW8_HUMAN"
+            ],
+            "impact": "HIGH",
+            "strand": 1,
+            "ccds": "CCDS13861.1",
+            "gene_symbol_source": "HGNC",
+            "intron": "2/15",
+            "gene_symbol": "NF2",
+            "protein_id": "ENSP00000344666",
+            "uniparc": [
+                "UPI000012EF27"
+            ],
+            "biotype": "protein_coding",
+            "refseq_transcript_ids": [
+                "NM_000268.3",
+                "NM_016418.5",
+                "NM_181832.2"
+            ],
+            "gene_id": "ENSG00000186575",
+            "hgvsg": "22:g.30032866G>T",
+            "hgnc_id": 7773
+        },
+        {
+            "impact": "MODIFIER",
+            "variant_allele": "T",
+            "consequence_terms": [
+                "intron_variant"
+            ],
+            "swissprot": [
+                "MERL_HUMAN"
+            ],
+            "trembl": [
+                "Q9NRW8_HUMAN"
+            ],
+            "transcript_id": "ENST00000347330",
+            "hgvsc": "ENST00000347330.5:c.115-5325G>T",
+            "gene_id": "ENSG00000186575",
+            "hgvsg": "22:g.30032866G>T",
+            "uniparc": [
+                "UPI0000072437"
+            ],
+            "protein_id": "ENSP00000335160",
+            "biotype": "protein_coding",
+            "hgnc_id": 7773,
+            "strand": 1,
+            "gene_symbol_source": "HGNC",
+            "gene_symbol": "NF2",
+            "intron": "1/9"
+        },
+        {
+            "consequence_terms": [
+                "intron_variant"
+            ],
+            "variant_allele": "T",
+            "swissprot": [
+                "MERL_HUMAN"
+            ],
+            "trembl": [
+                "Q9NRW8_HUMAN"
+            ],
+            "hgvsc": "ENST00000353887.4:c.115-5325G>T",
+            "transcript_id": "ENST00000353887",
+            "impact": "MODIFIER",
+            "ccds": "CCDS13865.1",
+            "gene_symbol_source": "HGNC",
+            "strand": 1,
+            "gene_symbol": "NF2",
+            "intron": "1/14",
+            "gene_id": "ENSG00000186575",
+            "hgvsg": "22:g.30032866G>T",
+            "protein_id": "ENSP00000340626",
+            "uniparc": [
+                "UPI0000072477"
+            ],
+            "biotype": "protein_coding",
+            "hgnc_id": 7773
+        },
+        {
+            "impact": "HIGH",
+            "variant_allele": "T",
+            "consequence_terms": [
+                "splice_donor_variant"
+            ],
+            "swissprot": [
+                "MERL_HUMAN"
+            ],
+            "trembl": [
+                "Q9NRW8_HUMAN"
+            ],
+            "transcript_id": "ENST00000361166",
+            "hgvsc": "ENST00000361166.4:c.240+1G>T",
+            "gene_id": "ENSG00000186575",
+            "hgvsg": "22:g.30032866G>T",
+            "protein_id": "ENSP00000354529",
+            "uniparc": [
+                "UPI0000072457"
+            ],
+            "biotype": "protein_coding",
+            "hgnc_id": 7773,
+            "strand": 1,
+            "gene_symbol_source": "HGNC",
+            "ccds": "CCDS13862.1",
+            "gene_symbol": "NF2",
+            "intron": "2/16"
+        },
+        {
+            "impact": "HIGH",
+            "trembl": [
+                "Q9NRW8_HUMAN"
+            ],
+            "transcript_id": "ENST00000361452",
+            "hgvsc": "ENST00000361452.4:c.240+1G>T",
+            "variant_allele": "T",
+            "consequence_terms": [
+                "splice_donor_variant"
+            ],
+            "swissprot": [
+                "MERL_HUMAN"
+            ],
+            "hgnc_id": 7773,
+            "hgvsg": "22:g.30032866G>T",
+            "refseq_transcript_ids": [
+                "NM_181830.2",
+                "NM_181829.2"
+            ],
+            "gene_id": "ENSG00000186575",
+            "protein_id": "ENSP00000354897",
+            "biotype": "protein_coding",
+            "uniparc": [
+                "UPI0000072BC8"
+            ],
+            "gene_symbol": "NF2",
+            "intron": "2/15",
+            "strand": 1,
+            "gene_symbol_source": "HGNC",
+            "ccds": "CCDS13864.1"
+        },
+        {
+            "strand": 1,
+            "gene_symbol_source": "HGNC",
+            "ccds": "CCDS13863.1",
+            "intron": "1/15",
+            "gene_symbol": "NF2",
+            "uniparc": [
+                "UPI000006E68B"
+            ],
+            "protein_id": "ENSP00000355183",
+            "biotype": "protein_coding",
+            "gene_id": "ENSG00000186575",
+            "refseq_transcript_ids": [
+                "NM_181828.2"
+            ],
+            "hgvsg": "22:g.30032866G>T",
+            "hgnc_id": 7773,
+            "swissprot": [
+                "MERL_HUMAN"
+            ],
+            "variant_allele": "T",
+            "consequence_terms": [
+                "intron_variant"
+            ],
+            "transcript_id": "ENST00000361676",
+            "hgvsc": "ENST00000361676.4:c.115-2213G>T",
+            "trembl": [
+                "Q9NRW8_HUMAN"
+            ],
+            "impact": "MODIFIER"
+        },
+        {
+            "gene_symbol": "NF2",
+            "intron": "2/16",
+            "strand": 1,
+            "gene_symbol_source": "HGNC",
+            "ccds": "CCDS13862.1",
+            "hgnc_id": 7773,
+            "gene_id": "ENSG00000186575",
+            "hgvsg": "22:g.30032866G>T",
+            "protein_id": "ENSP00000380891",
+            "uniparc": [
+                "UPI0000072457"
+            ],
+            "biotype": "protein_coding",
+            "trembl": [
+                "Q9NRW8_HUMAN"
+            ],
+            "transcript_id": "ENST00000397789",
+            "hgvsc": "ENST00000397789.3:c.240+1G>T",
+            "variant_allele": "T",
+            "consequence_terms": [
+                "splice_donor_variant"
+            ],
+            "swissprot": [
+                "MERL_HUMAN"
+            ],
+            "impact": "HIGH"
+        },
+        {
+            "hgnc_id": 7773,
+            "gene_id": "ENSG00000186575",
+            "hgvsg": "22:g.30032866G>T",
+            "protein_id": "ENSP00000384029",
+            "uniparc": [
+                "UPI00001833C2"
+            ],
+            "biotype": "protein_coding",
+            "gene_symbol": "NF2",
+            "intron": "2/16",
+            "gene_symbol_source": "HGNC",
+            "strand": 1,
+            "impact": "HIGH",
+            "trembl": [
+                "Q9NRW8_HUMAN"
+            ],
+            "hgvsc": "ENST00000403435.1:c.240+1G>T",
+            "transcript_id": "ENST00000403435",
+            "consequence_terms": [
+                "splice_donor_variant"
+            ],
+            "variant_allele": "T",
+            "swissprot": [
+                "MERL_HUMAN"
+            ]
+        },
+        {
+            "hgnc_id": 7773,
+            "protein_id": "ENSP00000384797",
+            "biotype": "protein_coding",
+            "uniparc": [
+                "UPI0000072457"
+            ],
+            "hgvsg": "22:g.30032866G>T",
+            "gene_id": "ENSG00000186575",
+            "refseq_transcript_ids": [
+                "NM_181825.2"
+            ],
+            "intron": "2/15",
+            "gene_symbol": "NF2",
+            "gene_symbol_source": "HGNC",
+            "ccds": "CCDS13862.1",
+            "strand": 1,
+            "impact": "HIGH",
+            "hgvsc": "ENST00000403999.3:c.240+1G>T",
+            "transcript_id": "ENST00000403999",
+            "trembl": [
+                "Q9NRW8_HUMAN"
+            ],
+            "swissprot": [
+                "MERL_HUMAN"
+            ],
+            "consequence_terms": [
+                "splice_donor_variant"
+            ],
+            "variant_allele": "T"
+        },
+        {
+            "trembl": [
+                "Q9NRW8_HUMAN"
+            ],
+            "hgvsc": "ENST00000413209.2:c.240+1G>T",
+            "transcript_id": "ENST00000413209",
+            "consequence_terms": [
+                "splice_donor_variant"
+            ],
+            "variant_allele": "T",
+            "swissprot": [
+                "MERL_HUMAN"
+            ],
+            "impact": "HIGH",
+            "gene_symbol": "NF2",
+            "intron": "2/4",
+            "ccds": "CCDS54516.1",
+            "gene_symbol_source": "HGNC",
+            "strand": 1,
+            "hgnc_id": 7773,
+            "refseq_transcript_ids": [
+                "NM_181833.2"
+            ],
+            "gene_id": "ENSG00000186575",
+            "hgvsg": "22:g.30032866G>T",
+            "biotype": "protein_coding",
+            "protein_id": "ENSP00000409921",
+            "uniparc": [
+                "UPI0000072DE9"
+            ]
+        },
+        {
+            "impact": "MODIFIER",
+            "trembl": [
+                "Q9NRW8_HUMAN"
+            ],
+            "hgvsc": "ENST00000432151.1:c.115-5325G>T",
+            "transcript_id": "ENST00000432151",
+            "consequence_terms": [
+                "intron_variant",
+                "NMD_transcript_variant"
+            ],
+            "variant_allele": "T",
+            "swissprot": [
+                "MERL_HUMAN"
+            ],
+            "hgnc_id": 7773,
+            "gene_id": "ENSG00000186575",
+            "hgvsg": "22:g.30032866G>T",
+            "protein_id": "ENSP00000395885",
+            "biotype": "nonsense_mediated_decay",
+            "uniparc": [
+                "UPI0000072437"
+            ],
+            "gene_symbol": "NF2",
+            "intron": "1/7",
+            "gene_symbol_source": "HGNC",
+            "strand": 1
+        }
+    ],
+    "input": "22:g.30032866G>T",
+    "end": 30032866
+}

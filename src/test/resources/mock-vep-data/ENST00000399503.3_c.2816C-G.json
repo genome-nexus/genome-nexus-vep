@@ -1,0 +1,88 @@
+{
+    "variant_class": "SNV",
+    "assembly_name": "GRCh37",
+    "input": "ENST00000399503.3:c.2816C>G",
+    "id": "ENST00000399503.3:c.2816C>G",
+    "start": 56177843,
+    "transcript_consequences": [
+        {
+            "transcript_id": "ENST00000399503",
+            "variant_allele": "G",
+            "strand": 1,
+            "uniparc": [
+                "UPI000015153B"
+            ],
+            "cdna_end": 2816,
+            "gene_symbol_source": "HGNC",
+            "alphamissense": {
+                "am_class": "benign",
+                "am_pathogenicity": 0.0783
+            },
+            "domains": [
+                {
+                    "name": "PTHR24361",
+                    "db": "PANTHER"
+                },
+                {
+                    "db": "PANTHER",
+                    "name": "PTHR24361"
+                }
+            ],
+            "sift_prediction": "tolerated_low_confidence",
+            "canonical": 1,
+            "protein_end": 939,
+            "cds_start": 2816,
+            "gene_id": "ENSG00000095015",
+            "refseq_transcript_ids": [
+                "NM_005921.1"
+            ],
+            "cdna_start": 2816,
+            "biotype": "protein_coding",
+            "sift_score": 0.18,
+            "ccds": "CCDS43318.1",
+            "exon": "14/20",
+            "polyphen_humdiv_pred": "probably_damaging",
+            "amino_acids": "S/C",
+            "hgvsp": "ENSP00000382423.3:p.Ser939Cys",
+            "polyphen_score": 0.003,
+            "consequence_terms": [
+                "missense_variant"
+            ],
+            "hgvsg": "5:g.56177843C>G",
+            "hgvsc": "ENST00000399503.3:c.2816C>G",
+            "gene_symbol": "MAP3K1",
+            "hgnc_id": 6848,
+            "polyphen_prediction": "benign",
+            "swissprot": [
+                "M3K1_HUMAN"
+            ],
+            "cds_end": 2816,
+            "protein_id": "ENSP00000382423",
+            "codons": "tCt/tGt",
+            "impact": "MODERATE",
+            "polyphen_humdiv_score": 1,
+            "protein_start": 939
+        },
+        {
+            "impact": "MODIFIER",
+            "strand": 1,
+            "variant_allele": "G",
+            "biotype": "retained_intron",
+            "gene_id": "ENSG00000095015",
+            "transcript_id": "ENST00000469188",
+            "gene_symbol_source": "HGNC",
+            "gene_symbol": "MAP3K1",
+            "hgnc_id": 6848,
+            "distance": 3937,
+            "consequence_terms": [
+                "upstream_gene_variant"
+            ],
+            "hgvsg": "5:g.56177843C>G"
+        }
+    ],
+    "most_severe_consequence": "missense_variant",
+    "end": 56177843,
+    "allele_string": "C/G",
+    "seq_region_name": "5",
+    "strand": 1
+}

@@ -1,14 +1,12 @@
 package org.genomenexus.vep_wrapper;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -18,85 +16,16 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
 
-@RestController
-public class VEPController {
-
-    @Value("${app.version}")
-    private String serverVersion;
+@Service
+public class VEPService {
 
     @Autowired
     private VEPConfiguration vepConfiguration;
 
-    @GetMapping("/vep/human/hgvs/{variant}")
-    public ResponseEntity<String> annotateHGVS(@PathVariable String variant) {
-        List<List<String>> variantChunks = new ArrayList<>();
-        variantChunks.add(Arrays.asList(variant));
-        try {
-            return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(annotateVariants(variantChunks, "hgvs"));
-        } catch (Exception e) {
-            return ResponseEntity.internalServerError().body(e.getMessage());
-        }
-    }
-
-    @PostMapping("/vep/human/hgvs")
-    public ResponseEntity<String> annotateHGVS(@RequestBody HashMap<String, List<String>> variants) {
-        List<String> variantList = variants.get("hgvs_notations");
-        if (variantList == null) {
-            return ResponseEntity.badRequest().body(("Missing key: 'hgvs_notations'"));
-        }
-
-        List<List<String>> variantChunks = getVariantChunks(variantList, 10);
-        try {
-            return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(annotateVariants(variantChunks, "hgvs"));
-        } catch (Exception e) {
-            return ResponseEntity.internalServerError().body(e.getMessage());
-        }
-    }
-
-    @GetMapping("/vep/human/region/{*variant}")
-    public ResponseEntity<String> annotateRegion(@PathVariable String variant) {
-        List<List<String>> variantChunks = new ArrayList<>();       
-        variantChunks.add(Arrays.asList(variant.substring(1)));
-        try {
-            return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(annotateVariants(variantChunks, "region"));
-        } catch (Exception e) {
-            return ResponseEntity.internalServerError().body(e.getMessage());
-        }
-    }
-
-    @PostMapping("/vep/human/region")
-    public ResponseEntity<String> annotateRegion(@RequestBody List<String> variants) {
-        List<List<String>> variantChunks = getVariantChunksByChromosome(variants);
-        try {
-            return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(annotateVariants(variantChunks, "region"));
-        } catch (Exception e) {
-            return ResponseEntity.internalServerError().body(e.getMessage());
-        }
-    }
-
-    @GetMapping("/info/software")
-    public ResponseEntity<Object> getVEPSoftwareVersion() {
-        try {
-            Map<String, Object> response = new HashMap<>();
-            response.put("server", serverVersion);
-            response.put("release", getVEPVersion());
-            return ResponseEntity.ok().body(response);
-        } catch (Exception e) {
-            return ResponseEntity.internalServerError().body(e.getMessage());
-        }
-    }
-
-    private String annotateVariants(List<List<String>> variantChunks, String format) throws Exception {
+    public String annotateVariants(List<List<String>> variantChunks, String format) throws Exception {
         List<Callable<VEPResult>> wrappers = new ArrayList<>();
         for (List<String> chunk : variantChunks) {
             List<String> flags = new ArrayList<>();
@@ -142,7 +71,7 @@ public class VEPController {
         return "[" + output.replace("\n{", ",{") + "]";
     }
 
-    private List<List<String>> getVariantChunks(List<String> variants, int chunkSize) {
+    public List<List<String>> getVariantChunks(List<String> variants, int chunkSize) {
         List<List<String>> variantChunks = new ArrayList<>();
         int numVariants = variants.size();
         int maxThreads = vepConfiguration.getHgvsMaxThreads();
@@ -160,7 +89,7 @@ public class VEPController {
         return variantChunks;
     }
 
-    private List<List<String>> getVariantChunksByChromosome(List<String> variants) {
+    public List<List<String>> getVariantChunksByChromosome(List<String> variants) {
         List<List<String>> variantChunks = new ArrayList<>();
         for (int i = 0; i < 25; i++) {
             variantChunks.add(new ArrayList<>());
@@ -179,7 +108,7 @@ public class VEPController {
         return variantChunks.stream().filter(chunk -> chunk.size() > 0).collect(Collectors.toList());
     }
 
-    private int getVEPVersion() throws Exception {
+    public int getVEPVersion() throws Exception {
         VEPResult result = runVEP(new ArrayList<>()).call();
         if (result.getExitCode() == 1) {
             throw new Exception(result.getOutput());
@@ -195,7 +124,7 @@ public class VEPController {
         }
     }
 
-    private Callable<VEPResult> runVEP(List<String> flags) {
+    public Callable<VEPResult> runVEP(List<String> flags) {
         return new Callable<VEPResult>() {
             @Override
             public VEPResult call() throws Exception {
