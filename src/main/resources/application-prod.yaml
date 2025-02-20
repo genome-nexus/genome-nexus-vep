@@ -1,11 +1,11 @@
 app:
   version: "@project.version@"
 vep:
-  port: 3306
+  port: ${MYSQL_PORT}
   forks: 4
-  host: 127.0.0.1
+  host: ${MYSQL_HOST}
   username: ${MYSQL_USER}
   password: ${MYSQL_PASSWORD}
   hgvs-max-threads: 75
-  polyphen-sift-filename: homo_sapiens_pangenome_PolyPhen_SIFT_20240502.db
-  alpha-missense-filename: AlphaMissense_hg19.tsv.gz 
+  polyphen-sift-filename:
+  alpha-missense-filename:

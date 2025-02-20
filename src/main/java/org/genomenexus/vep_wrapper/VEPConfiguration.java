@@ -13,7 +13,6 @@ public class VEPConfiguration {
     private String username;
     private String password;
     private int forks;
-    private int version;
     private int hgvsMaxThreads;
 
     @Nullable
@@ -59,14 +58,6 @@ public class VEPConfiguration {
 
     public void setForks(int forks) {
         this.forks = forks;
-    }
-
-    public int getVersion() {
-        return version;
-    }
-
-    public void setVersion(int version) {
-        this.version = version;
     }
 
     public int getHgvsMaxThreads() {
