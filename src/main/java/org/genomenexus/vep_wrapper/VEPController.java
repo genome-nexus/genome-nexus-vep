@@ -24,49 +24,49 @@ public class VEPController {
     private VEPService vepService;
 
     @GetMapping("/vep/human/hgvs/{variant}")
-    public ResponseEntity<String> annotateHGVS(@PathVariable String variant) {
+    public ResponseEntity<Object> annotateHGVS(@PathVariable String variant) {
         List<List<String>> variantChunks = new ArrayList<>();
         variantChunks.add(Arrays.asList(variant));
         try {
             return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(vepService.annotateVariants(variantChunks, "hgvs"));
         } catch (Exception e) {
-            return ResponseEntity.internalServerError().body(e.getMessage());
+            return ResponseEntity.internalServerError().body(constructErrorMessage(e));
         }
     }
 
     @PostMapping("/vep/human/hgvs")
-    public ResponseEntity<String> annotateHGVS(@RequestBody Map<String, List<String>> variants) {
+    public ResponseEntity<Object> annotateHGVS(@RequestBody Map<String, List<String>> variants) {
         List<String> variantList = variants.get("hgvs_notations");
         if (variantList == null) {
             return ResponseEntity.badRequest().body(("Missing key: 'hgvs_notations'"));
         }
 
-        List<List<String>> variantChunks = vepService.getVariantChunks(variantList, 10);
+        List<List<String>> variantChunks = vepService.getVariantChunks(variantList, 1);
         try {
             return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(vepService.annotateVariants(variantChunks, "hgvs"));
         } catch (Exception e) {
-            return ResponseEntity.internalServerError().body(e.getMessage());
+            return ResponseEntity.internalServerError().body(constructErrorMessage(e));
         }
     }
 
     @GetMapping("/vep/human/region/{*variant}")
-    public ResponseEntity<String> annotateRegion(@PathVariable String variant) {
+    public ResponseEntity<Object> annotateRegion(@PathVariable String variant) {
         List<List<String>> variantChunks = new ArrayList<>();       
         variantChunks.add(Arrays.asList(variant.substring(1)));
         try {
             return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(vepService.annotateVariants(variantChunks, "region"));
         } catch (Exception e) {
-            return ResponseEntity.internalServerError().body(e.getMessage());
+            return ResponseEntity.internalServerError().body(constructErrorMessage(e));
         }
     }
 
     @PostMapping("/vep/human/region")
-    public ResponseEntity<String> annotateRegion(@RequestBody List<String> variants) {
+    public ResponseEntity<Object> annotateRegion(@RequestBody List<String> variants) {
         List<List<String>> variantChunks = vepService.getVariantChunksByChromosome(variants);
         try {
             return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(vepService.annotateVariants(variantChunks, "region"));
         } catch (Exception e) {
-            return ResponseEntity.internalServerError().body(e.getMessage());
+            return ResponseEntity.internalServerError().body(constructErrorMessage(e));
         }
     }
 
@@ -78,7 +78,11 @@ public class VEPController {
             response.put("release", vepService.getVEPVersion());
             return ResponseEntity.ok().body(response);
         } catch (Exception e) {
-            return ResponseEntity.internalServerError().body(e.getMessage());
+            return ResponseEntity.internalServerError().body(constructErrorMessage(e));
         }
+    }
+
+    private Map<String, String> constructErrorMessage(Exception e) {
+        return Map.of("error", e.getMessage());
     }
 }
