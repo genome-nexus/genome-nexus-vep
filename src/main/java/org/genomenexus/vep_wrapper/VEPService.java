@@ -39,6 +39,7 @@ public class VEPService {
                 "--format=" + format,
                 "--input_data=" + chunk.stream().collect(Collectors.joining("\n")),
                 "--output_file=STDOUT",
+                "--warning_file=STDERR",
                 "--everything",
                 "--hgvsg",
                 "--no_stats",
@@ -57,12 +58,21 @@ public class VEPService {
         String output = "";
         ExecutorService threadPool = Executors.newCachedThreadPool();
         List<Future<VEPResult>> resultFutures = threadPool.invokeAll(wrappers);
+
+        Exception exception = null;
+        boolean allFailed = true;
         for (Future<VEPResult> resultFuture : resultFutures) {
             VEPResult result = resultFuture.get();
-            if (result.getExitCode() != 0) {
-                throw new Exception(result.getOutput());
+            if (result.getExitCode() == 0) {
+                output += result.getOutput();
+                allFailed = false;
+            } else if (exception == null) { // Ensembl VEP API only returns first error, so copying behavior
+                exception = new Exception(result.getOutput());
             }
-            output += result.getOutput();
+        }
+
+        if (allFailed) {
+            throw exception;
         }
 
         output = output.replace("sift_pred", "sift_prediction");
@@ -153,11 +163,11 @@ public class VEPService {
                     stdin.close();
                     stderr.close();
 
-                    exitCode = process.waitFor(); 
-                    if (exitCode == 0) {
-                        output = outputBuilder.toString();
-                    } else {
-                        output = errorBuilder.toString();
+                    output = outputBuilder.toString();
+                    String error = errorBuilder.toString();
+                    if (!StringUtils.hasText(output) && StringUtils.hasText(error)) {
+                        output = parseVepError(error);
+                        exitCode = 500;
                     }
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -166,5 +176,35 @@ public class VEPService {
                 return new VEPResult(output, exitCode);
             }
         };
+    }
+
+    private String parseVepError(String error) {
+        String warning = null;
+        String message = null;
+
+        String warningRegex = "WARNING:\\s(.*)\\n";
+        Pattern pattern = Pattern.compile(warningRegex);
+        Matcher matcher = pattern.matcher(error);
+        if (matcher.find()) {
+            warning = matcher.group(1);
+        }
+
+        String messageRegex =  "MSG:\\s(.*)\\n";
+        pattern = Pattern.compile(messageRegex);
+        matcher = pattern.matcher(error);
+        if (matcher.find()) {
+            message = matcher.group(1);
+        }
+
+        String output = "";
+        if (warning != null) {
+            output += warning;
+        } 
+        if (message != null) {
+            output += message;
+        } else {
+            output += "Error annotating variant";
+        }
+        return output;
     }
 }
