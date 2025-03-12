@@ -13,7 +13,7 @@
 	<version>2.0.0</version>
 	<packaging>war</packaging>
 	<name>vep_wrapper</name>
-	<description>Demo project for Spring Boot</description>
+	<description>Java REST API wrapper around Ensembl VEP</description>
 	<url/>
 	<licenses>
 		<license/>
@@ -55,6 +55,12 @@
 				<artifactId>spring-boot-maven-plugin</artifactId>
 			</plugin>
 		</plugins>
+		<resources>
+			<resource>
+				<directory>src/main/resources</directory>
+				<filtering>true</filtering>
+			</resource>
+		</resources>
 	</build>
 
 	<profiles>
