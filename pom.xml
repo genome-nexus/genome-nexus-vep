@@ -62,10 +62,38 @@
 			<id>dev</id>
 			<activation>
 				<activeByDefault>true</activeByDefault>
-			</activation>                
+			</activation>
+			<properties>
+				<spring-boot.run.profiles>dev</spring-boot.run.profiles>
+				<spring.profiles.active>dev</spring.profiles.active>                
+			</properties>
+			<build>
+				<resources>
+					<resource>
+						<directory>src/main/resources</directory>
+						<includes>
+                        	<include>application-dev.yaml</include>
+                    	</includes>
+					</resource>
+				</resources>
+			</build>
 		</profile>
 		<profile>
 			<id>prod</id>
+			<properties>
+				<spring-boot.run.profiles>prod</spring-boot.run.profiles>
+				<spring.profiles.active>prod</spring.profiles.active>                
+			</properties>
+			<build>
+				<resources>
+					<resource>
+						<directory>src/main/resources</directory>
+						<includes>
+                        	<include>application-prod.yaml</include>
+                    	</includes>
+					</resource>
+				</resources>
+			</build>
 		</profile>
 	</profiles>
 

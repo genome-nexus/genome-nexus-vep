@@ -43,7 +43,7 @@ Make sure you fave the following installed
 
 1. Run `./scripts/init_vep.sh <ensemblorg/ensembl-vep:tag>` to install and run a VEP docker image, specifying the tag you wish to use. This will also generate a script to be used by the application, `./scripts/vep`, which should not be modified.
 2. Set your VEP configuration in [application-dev.yaml](/src/main/resources/application-dev.yaml).
-3. Run `mvn spring-boot:run -Dspring-boot.run.profiles=dev`
+3. Run `mvn spring-boot:run`
 
 # Building for Production
 
