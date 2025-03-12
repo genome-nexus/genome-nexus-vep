@@ -2,7 +2,7 @@ FROM maven:3.9.5 AS builder
 RUN mkdir /genome-nexus-vep
 ADD . /genome-nexus-vep
 WORKDIR /genome-nexus-vep
-RUN mvn -DskipTests clean install
+RUN mvn -DskipTests -Pprod clean install
 
 FROM ensemblorg/ensembl-vep:release_112.0
 USER root
