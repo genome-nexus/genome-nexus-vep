@@ -21,7 +21,7 @@ Make sure you fave the following installed
 
 ## Download the core database (Required)
 
-1. Download the core database for the ensembl data version you wish to install. The URL containing the data files should be of the format `https://ftp.ensembl.org/pub/release-112/mysql/homo_sapiens_core_XXX_<ASSEMBLY_VERSION>/`.
+1. Download the core database for the ensembl data version you wish to install. The URL containing the data files should be of the format `https://ftp.ensembl.org/pub/release-XXX/mysql/homo_sapiens_core_XXX_<ASSEMBLY_VERSION>/`.
 2. Follow the [installation instructions](https://useast.ensembl.org/info/docs/webcode/mirror/install/ensembl-data.html#:~:text=To%20install%20the%20Ensembl%20Data,separate%20directories%20for%20each%20database.) to set up your database.
 3. Point the VEP at your database in your application properties.
 
