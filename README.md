@@ -64,24 +64,26 @@ Make sure you fave the following installed
 
 1. Run `./scripts/init_vep.sh <tag for ensemblorg/ensembl-vep image>` to install and run a VEP docker image, specifying the tag you wish to use. This will also generate a script to be used by the application, `./scripts/vep`, which should not be modified.
 
-   ```sh
-   ./scripts/vep \
-       --database \
-       --host=host.docker.internal \
-       --port=3306 \
-       --user=<db-username> \
-       --password=<db-password> \
-       --fork=1 \
-       --format=hgvs \
-       --input_data="7:g.55249071T>C" \
-       --output_file=STDOUT \
-       --warning_file=STDERR \
-       --everything \
-       --hgvsg \
-       --no_stats \
-       --xref_refseq \
-       --json
-   ```
+   - If you want to test the VEP command to see if it's working. Run the following:
+
+       ```sh
+       ./scripts/vep \
+           --database \
+           --host=host.docker.internal \
+           --port=3306 \
+           --user=<db-username> \
+           --password=<db-password> \
+           --fork=1 \
+           --format=hgvs \
+           --input_data="7:g.55249071T>C" \
+           --output_file=STDOUT \
+           --warning_file=STDERR \
+           --everything \
+           --hgvsg \
+           --no_stats \
+           --xref_refseq \
+           --json
+       ```
 
 2. Set your VEP configuration in [application-dev.yaml](/src/main/resources/application-dev.yaml).
    - Make sure you have `host.docker.internal` set as the VEP host (if running `./script/vep`)
