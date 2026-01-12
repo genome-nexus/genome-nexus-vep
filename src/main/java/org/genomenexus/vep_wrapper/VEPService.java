@@ -7,6 +7,7 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -19,11 +20,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 @Service
 public class VEPService {
 
     @Autowired
     private VEPConfiguration vepConfiguration;
+
+    private final ObjectMapper objectMapper = new ObjectMapper();
 
     public String annotateVariants(List<List<String>> variantChunks, String format) throws Exception {
         List<Callable<VEPResult>> wrappers = new ArrayList<>();
@@ -42,6 +48,7 @@ public class VEPService {
                 "--warning_file=STDERR",
                 "--everything",
                 "--hgvsg",
+                "--transcript_version",
                 "--no_stats",
                 "--xref_refseq",
                 "--json"
@@ -78,7 +85,11 @@ public class VEPService {
         output = output.replace("sift_pred", "sift_prediction");
         output = output.replace("polyphen_humvar_pred", "polyphen_prediction");
         output = output.replace("polyphen_humvar_score", "polyphen_score");
-        return "[" + output.replace("\n{", ",{") + "]";
+
+        // Process transcript versions
+        output = processTranscriptVersions("[" + output.replace("\n{", ",{") + "]");
+
+        return output;
     }
 
     public List<List<String>> getVariantChunks(List<String> variants, int chunkSize) {
@@ -199,12 +210,88 @@ public class VEPService {
         String output = "";
         if (warning != null) {
             output += warning;
-        } 
+        }
         if (message != null) {
             output += message;
         } else {
             output += "Error annotating variant";
         }
         return output;
+    }
+
+    private String processTranscriptVersions(String jsonOutput) {
+        try {
+            // Parse JSON array
+            List<Map<String, Object>> variants = objectMapper.readValue(
+                jsonOutput,
+                new TypeReference<List<Map<String, Object>>>() {}
+            );
+
+            // Process each variant
+            for (Map<String, Object> variant : variants) {
+                // Check if variant has transcript_consequences
+                if (variant.containsKey("transcript_consequences")) {
+                    @SuppressWarnings("unchecked")
+                    List<Map<String, Object>> transcripts = (List<Map<String, Object>>) variant.get("transcript_consequences");
+
+                    for (Map<String, Object> transcript : transcripts) {
+                        splitTranscriptIdVersion(transcript);
+                    }
+                }
+
+                // Check if variant has intergenic_consequences
+                if (variant.containsKey("intergenic_consequences")) {
+                    @SuppressWarnings("unchecked")
+                    List<Map<String, Object>> transcripts = (List<Map<String, Object>>) variant.get("intergenic_consequences");
+
+                    for (Map<String, Object> transcript : transcripts) {
+                        splitTranscriptIdVersion(transcript);
+                    }
+                }
+
+                // Check other consequence types that might have transcript_id
+                String[] consequenceTypes = {
+                    "regulatory_feature_consequences",
+                    "motif_feature_consequences"
+                };
+
+                for (String consequenceType : consequenceTypes) {
+                    if (variant.containsKey(consequenceType)) {
+                        @SuppressWarnings("unchecked")
+                        List<Map<String, Object>> consequences = (List<Map<String, Object>>) variant.get(consequenceType);
+
+                        for (Map<String, Object> consequence : consequences) {
+                            splitTranscriptIdVersion(consequence);
+                        }
+                    }
+                }
+            }
+
+            // Convert back to JSON string
+            return objectMapper.writeValueAsString(variants);
+        } catch (Exception e) {
+            // If JSON processing fails, return original output
+            e.printStackTrace();
+            return jsonOutput;
+        }
+    }
+
+    private void splitTranscriptIdVersion(Map<String, Object> transcript) {
+        if (transcript.containsKey("transcript_id")) {
+            String transcriptId = (String) transcript.get("transcript_id");
+
+            // Check if transcript_id contains a version (format: ID.version)
+            if (transcriptId != null && transcriptId.contains(".")) {
+                String[] parts = transcriptId.split("\\.", 2);
+                String baseId = parts[0];
+                String version = parts[1];
+
+                // Update transcript_id to only contain the base ID
+                transcript.put("transcript_id", baseId);
+
+                // Add new field transcript_version with just the version number
+                transcript.put("transcript_version", version);
+            }
+        }
     }
 }
