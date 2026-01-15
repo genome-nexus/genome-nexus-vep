@@ -5,7 +5,7 @@ import org.springframework.context.annotation.Configuration;
 
 import io.micrometer.common.lang.Nullable;
 
-@Configuration 
+@Configuration
 @ConfigurationProperties(prefix = "vep")
 public class VEPConfiguration {
     private int port;
@@ -19,6 +19,8 @@ public class VEPConfiguration {
     private String polyphenSiftFilename;
     @Nullable
     private String alphaMissenseFilename;
+
+    private int chunkSize = 200; // Default chunk size for batch processing
 
     public int getPort() {
         return port;
@@ -82,5 +84,13 @@ public class VEPConfiguration {
 
     public void setAlphaMissenseFilename(String alphaMissenseFilename) {
         this.alphaMissenseFilename = alphaMissenseFilename;
+    }
+
+    public int getChunkSize() {
+        return chunkSize;
+    }
+
+    public void setChunkSize(int chunkSize) {
+        this.chunkSize = chunkSize;
     }
 }
