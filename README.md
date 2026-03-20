@@ -9,6 +9,20 @@ POST /vep/human/hgvs
 
 Each endpoint expects variant(s) to be in [HGVS format](https://hgvs-nomenclature.org/stable/background/simple/). See the implementation [here](/src/main/java/org/genomenexus/vep_wrapper/HGVSController.java).
 
+VEP can run in either `database` mode or `cache` mode. The `VEP_DATA_SOURCE_MODE` environment variable controls which mode is used:
+
+- `database`: default, preserves the existing database-backed behavior
+- `cache`: uses `--cache` and converts genomic HGVS inputs on `/vep/human/hgvs` into VEP region input before invoking VEP
+
+Supported cache-mode genomic HGVS conversions currently include:
+
+- substitution: `7:g.55249071C>T` -> `7:55249071-55249071:1/T`
+- deletion: `17:g.7578503_7578518del` -> `17:7578503-7578518:1/-`
+- insertion: `10:g.8115874_8115875insG` -> `10:8115875-8115874:1/G`
+- delins: `9:g.37020683_37020684delinsTT` -> `9:37020683-37020684:1/TT`
+
+Unsupported genomic HGVS patterns fail fast in cache mode with a clear error response. Transcript and protein HGVS inputs continue to use the `hgvs` path in both modes.
+
 ## Software Requirements
 
 Make sure you fave the following installed
@@ -64,7 +78,9 @@ Make sure you fave the following installed
 
 1. Run `./scripts/init_vep.sh <tag for ensemblorg/ensembl-vep image>` to install and run a VEP docker image, specifying the tag you wish to use. This will also generate a script to be used by the application, `./scripts/vep`, which should not be modified.
 
-   - If you want to test the VEP command to see if it's working. Run the following:
+   - If you want to test the VEP command to see if it's working, use one of the following examples.
+
+     Database mode:
 
        ```sh
        ./scripts/vep \
@@ -85,8 +101,30 @@ Make sure you fave the following installed
            --json
        ```
 
+     Cache mode:
+
+       ```sh
+       ./scripts/vep \
+           --cache \
+           --fork=1 \
+           --format=region \
+           --input_data="7:55249071-55249071:1/C" \
+           --output_file=STDOUT \
+           --warning_file=STDERR \
+           --everything \
+           --hgvsg \
+           --no_stats \
+           --xref_refseq \
+           --json
+       ```
+
+   - The cache example corresponds to the genomic HGVS input `7:g.55249071T>C`, converted to the VEP region input `7:55249071-55249071:1/C`.
+   - For cache setup instructions, see the Ensembl VEP cache documentation: http://useast.ensembl.org/info/docs/tools/vep/script/vep_cache.html#pre
+   - Download the cache data into your host `"$HOME/.vep"` directory. The container startup script mounts that directory into `/opt/vep/.vep`.
+
 2. Set your VEP configuration in [application-dev.yaml](/src/main/resources/application-dev.yaml).
    - Make sure you have `host.docker.internal` set as the VEP host (if running `./script/vep`)
+   - Set `vep.data-source-mode` to `database` or `cache`
 3. Run `mvn spring-boot:run`
 
 ## Building for Production

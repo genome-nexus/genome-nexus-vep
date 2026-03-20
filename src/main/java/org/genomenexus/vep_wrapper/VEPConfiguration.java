@@ -1,19 +1,25 @@
 package org.genomenexus.vep_wrapper;
 
+import jakarta.annotation.PostConstruct;
+
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 
 import io.micrometer.common.lang.Nullable;
 
-@Configuration 
+@Configuration
 @ConfigurationProperties(prefix = "vep")
 public class VEPConfiguration {
+    public static final String DATA_SOURCE_MODE_DATABASE = "database";
+    public static final String DATA_SOURCE_MODE_CACHE = "cache";
+
     private int port;
     private String host;
     private String username;
     private String password;
     private int forks;
     private int hgvsMaxThreads;
+    private String dataSourceMode = DATA_SOURCE_MODE_DATABASE;
 
     @Nullable
     private String polyphenSiftFilename;
@@ -68,6 +74,18 @@ public class VEPConfiguration {
         this.hgvsMaxThreads = maxThreads;
     }
 
+    public String getDataSourceMode() {
+        return dataSourceMode;
+    }
+
+    public void setDataSourceMode(String dataSourceMode) {
+        this.dataSourceMode = normalizeDataSourceMode(dataSourceMode);
+    }
+
+    public boolean isCacheMode() {
+        return DATA_SOURCE_MODE_CACHE.equals(dataSourceMode);
+    }
+
     public String getPolyphenSiftFilename() {
         return polyphenSiftFilename;
     }
@@ -82,5 +100,22 @@ public class VEPConfiguration {
 
     public void setAlphaMissenseFilename(String alphaMissenseFilename) {
         this.alphaMissenseFilename = alphaMissenseFilename;
+    }
+
+    @PostConstruct
+    public void validate() {
+        dataSourceMode = normalizeDataSourceMode(dataSourceMode);
+    }
+
+    private String normalizeDataSourceMode(String dataSourceMode) {
+        String normalizedValue = dataSourceMode == null
+            ? DATA_SOURCE_MODE_DATABASE
+            : dataSourceMode.trim().toLowerCase();
+        if (!DATA_SOURCE_MODE_DATABASE.equals(normalizedValue) && !DATA_SOURCE_MODE_CACHE.equals(normalizedValue)) {
+            throw new IllegalArgumentException(
+                "Invalid VEP data source mode: '" + dataSourceMode + "'. Supported values: database, cache"
+            );
+        }
+        return normalizedValue;
     }
 }

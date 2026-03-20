@@ -7,5 +7,6 @@ vep:
   username: ${MYSQL_USER}
   password: ${MYSQL_PASSWORD}
   hgvs-max-threads: 75
+  data-source-mode: ${VEP_DATA_SOURCE_MODE:database}
   polyphen-sift-filename:
   alpha-missense-filename:
