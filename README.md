@@ -25,9 +25,30 @@ Database mode is the preferred way to use Genome Nexus VEP and provides the same
 
 ### Download the core database (Required)
 
+#### Option 1: Download from Ensembl (slower)
+
 1. Download the core database for the ensembl data version you wish to install. The URL containing the data files should be of the format `https://ftp.ensembl.org/pub/release-XXX/mysql/homo_sapiens_core_XXX_<ASSEMBLY_VERSION>/`.
 2. Follow the [installation instructions](https://useast.ensembl.org/info/docs/webcode/mirror/install/ensembl-data.html#:~:text=To%20install%20the%20Ensembl%20Data,separate%20directories%20for%20each%20database.) to set up your database.
-3. Point the VEP at your database in your application properties and set `mode` to database.
+3. Point the VEP at your database in your application properties.
+
+#### Option 2: Download from Genome Nexus S3 Bucket (faster)
+
+1. Download the SQL `homo_sapiens_core_XXX_<ASSEMBLY_VERSION>` SQL files from
+   the Genome Nexus S3 Bucket.
+2. Make sure you change you `my.cnf` file to support a larger packet size
+
+   ```cnf
+   [mysqld]
+   # Other configurations....
+   max_allowed_packet=1G
+   ```
+
+3. If you make a configuration change, then restart the mysql server
+4. Add the data to the database
+
+   ```sh
+   mysql -u <username> -p homo_sapiens_core_XXX_<ASSEMBLY_VERSION> < homo_sapiens_core_XXX_<ASSEMBLY_VERSION>.sql
+   ```
 
 ## Cache Mode
 
