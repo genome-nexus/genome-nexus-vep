@@ -19,13 +19,25 @@ Make sure you fave the following installed
 
 ## Download the Ensembl Data
 
-### Download the core database (Required)
+## Database Mode (Preferred)
 
-#### Option 1: Download from Ensembl (slower)
+Database mode is the preferred way to use Genome Nexus VEP and provides the same functionality as the public Ensembl REST API.
+
+### Download the core database (Required)
 
 1. Download the core database for the ensembl data version you wish to install. The URL containing the data files should be of the format `https://ftp.ensembl.org/pub/release-XXX/mysql/homo_sapiens_core_XXX_<ASSEMBLY_VERSION>/`.
 2. Follow the [installation instructions](https://useast.ensembl.org/info/docs/webcode/mirror/install/ensembl-data.html#:~:text=To%20install%20the%20Ensembl%20Data,separate%20directories%20for%20each%20database.) to set up your database.
-3. Point the VEP at your database in your application properties.
+3. Point the VEP at your database in your application properties and set `mode` to database.
+
+## Cache Mode
+
+Cache mode is intended for users who cannot support the database. However, the functionality of VEP is limited if you choose to use cache mode. You will not be able to annotate variants whose coordinates are non-genomic, and you will not be able to annotate HGVSg inversions and duplications.
+
+### Download the cache files
+
+1. Download the VEP cache file and FASTA file for the ensembl data version you wish to install. Follow Ensembl's [installation instructions](ensebml.org/info/docs/tools/vep/script/vep_cache.html)
+2. Place both your VEP cache file and the FASTA in the [plugin-data](/plugin-data) directory
+3. Set the `fasta-filename` property in your application properties to the name of the installed FASTA file and set `mode` to cache.
 
 #### Option 2: Download from Genome Nexus S3 Bucket (faster)
 

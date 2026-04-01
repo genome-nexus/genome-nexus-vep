@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.Callable;
@@ -27,32 +28,50 @@ public class VEPService {
 
     public String annotateVariants(List<List<String>> variantChunks, String format) throws Exception {
         List<Callable<VEPResult>> wrappers = new ArrayList<>();
-        for (List<String> chunk : variantChunks) {
-            List<String> flags = new ArrayList<>();
-            Collections.addAll(flags,
-                "--database",
-                "--host=" + vepConfiguration.getHost(),
-                "--port=" + vepConfiguration.getPort(),
-                "--user=" + vepConfiguration.getUsername(),
-                "--password=" + vepConfiguration.getPassword(),
-                "--fork=" + vepConfiguration.getForks(),
-                "--format=" + format,
-                "--input_data=" + chunk.stream().collect(Collectors.joining("\n")),
-                "--output_file=STDOUT",
+
+        List<String> flags = new ArrayList<>(Arrays.asList(
+            "--output_file=STDOUT",
                 "--warning_file=STDERR",
                 "--everything",
                 "--hgvsg",
                 "--no_stats",
                 "--xref_refseq",
-                "--json"
-            );
-            if (StringUtils.hasText(vepConfiguration.getPolyphenSiftFilename())) {
-                flags.add("--plugin=PolyPhen_SIFT,db=/plugin-data/" + vepConfiguration.getPolyphenSiftFilename());
+                "--json",
+                "--format=" + format
+        ));
+        switch (vepConfiguration.dataConfiguration) {
+			case VEPConfiguration.DatabaseConfiguration(int port, String host, String username, String password) -> {
+                Collections.addAll(
+                    flags,
+                    "--database",
+                    "--host=" + host,
+                    "--port=" + port,
+                    "--user=" + username,
+                    "--password=" + password
+                );
             }
-            if (StringUtils.hasText(vepConfiguration.getAlphaMissenseFilename())) {
-                flags.add("--plugin=AlphaMissense,file=/plugin-data/" + vepConfiguration.getAlphaMissenseFilename());
+			case VEPConfiguration.CacheConfiguration(String fastaFilename) -> {
+                Collections.addAll(
+                    flags,
+                    "--cache",
+                    "--dir_cache=/plugin-data",
+                    "--assembly=GRCh37",
+                    "--fasta=/plugin-data/" + fastaFilename,
+                    "--offline"
+                );
             }
-            wrappers.add(runVEP(flags));
+        }
+        if (vepConfiguration.polyphenSiftFilename.isPresent()) {
+            flags.add("--plugin=PolyPhen_SIFT,db=/plugin-data/" + vepConfiguration.polyphenSiftFilename.get());
+        }
+        if (vepConfiguration.alphaMissenseFilename.isPresent()) {
+            flags.add("--plugin=AlphaMissense,file=/plugin-data/" + vepConfiguration.alphaMissenseFilename.get());
+        }
+
+        for (List<String> chunk : variantChunks) {
+            List<String> chunkFlags = new ArrayList<>(flags);
+            chunkFlags.add("--input_data=" + chunk.stream().collect(Collectors.joining("\n")));
+            wrappers.add(runVEP(chunkFlags));
         }
 
         String output = "";
@@ -84,7 +103,7 @@ public class VEPService {
     public List<List<String>> getVariantChunks(List<String> variants, int chunkSize) {
         List<List<String>> variantChunks = new ArrayList<>();
         int numVariants = variants.size();
-        int maxThreads = vepConfiguration.getHgvsMaxThreads();
+        int maxThreads = vepConfiguration.hgvsMaxThreads;
 
         if ((float)numVariants / (float)chunkSize > maxThreads) {
             chunkSize = numVariants / maxThreads;

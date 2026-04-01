@@ -1,11 +1,15 @@
 app:
-  version: ""
+  version: "@project.version@"
 vep:
-  port: 0
+  mode: database
+  database:
+    port: 0
+    host: "host"
+    username: "username"
+    password: "password"
+  cache: 
+    fasta-filename: "filename"
   forks: 0
-  host: ""
-  username: ""
-  password: ""
   hgvs-max-threads: 75
-  polyphen-sift-filename: ""
-  alpha-missense-filename: ""
+  polyphen-sift-filename: "filename"
+  alpha-missense-filename: "filename"
