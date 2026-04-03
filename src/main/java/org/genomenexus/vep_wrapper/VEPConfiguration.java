@@ -19,6 +19,8 @@ public class VEPConfiguration {
     private String polyphenSiftFilename;
     @Nullable
     private String alphaMissenseFilename;
+    @Nullable
+    private String dirPlugins;
 
     private int chunkSize = 200; // Default chunk size for batch processing
 
@@ -92,5 +94,13 @@ public class VEPConfiguration {
 
     public void setChunkSize(int chunkSize) {
         this.chunkSize = chunkSize;
+    }
+
+    public String getDirPlugins() {
+        return dirPlugins;
+    }
+
+    public void setDirPlugins(String dirPlugins) {
+        this.dirPlugins = dirPlugins;
     }
 }

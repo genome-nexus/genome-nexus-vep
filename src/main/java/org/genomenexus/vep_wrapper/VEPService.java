@@ -63,7 +63,9 @@ public class VEPService {
             if (StringUtils.hasText(vepConfiguration.getAlphaMissenseFilename())) {
                 flags.add("--plugin=AlphaMissense,file=/plugin-data/" + vepConfiguration.getAlphaMissenseFilename());
             }
-            flags.add("--dir_plugins=/opt/vep/plugins");
+            if (StringUtils.hasText(vepConfiguration.getDirPlugins())) {
+                flags.add("--dir_plugins=" + vepConfiguration.getDirPlugins());
+            }
             wrappers.add(runVEP(flags));
         }
 
