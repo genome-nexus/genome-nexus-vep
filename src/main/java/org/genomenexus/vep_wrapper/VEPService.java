@@ -7,6 +7,7 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -19,66 +20,86 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 @Service
 public class VEPService {
 
     @Autowired
     private VEPConfiguration vepConfiguration;
 
+    private final ObjectMapper objectMapper = new ObjectMapper();
+
+    public VEPConfiguration getVEPConfiguration() {
+        return vepConfiguration;
+    }
+
     public String annotateVariants(List<List<String>> variantChunks, String format) throws Exception {
         List<Callable<VEPResult>> wrappers = new ArrayList<>();
         for (List<String> chunk : variantChunks) {
             List<String> flags = new ArrayList<>();
             Collections.addAll(flags,
-                "--database",
-                "--host=" + vepConfiguration.getHost(),
-                "--port=" + vepConfiguration.getPort(),
-                "--user=" + vepConfiguration.getUsername(),
-                "--password=" + vepConfiguration.getPassword(),
-                "--fork=" + vepConfiguration.getForks(),
-                "--format=" + format,
-                "--input_data=" + chunk.stream().collect(Collectors.joining("\n")),
-                "--output_file=STDOUT",
-                "--warning_file=STDERR",
-                "--everything",
-                "--hgvsg",
-                "--no_stats",
-                "--xref_refseq",
-                "--json"
-            );
+                    "--database",
+                    "--host=" + vepConfiguration.getHost(),
+                    "--port=" + vepConfiguration.getPort(),
+                    "--user=" + vepConfiguration.getUsername(),
+                    "--password=" + vepConfiguration.getPassword(),
+                    "--fork=" + vepConfiguration.getForks(),
+                    "--format=" + format,
+                    "--input_data=" + chunk.stream().collect(Collectors.joining("\n")),
+                    "--output_file=STDOUT",
+                    "--warning_file=STDERR",
+                    "--everything",
+                    "--hgvsg",
+                    "--transcript_version",
+                    "--no_stats",
+                    "--xref_refseq",
+                    "--json");
             if (StringUtils.hasText(vepConfiguration.getPolyphenSiftFilename())) {
-                flags.add("--plugin=PolyPhen_SIFT,db=/plugin-data/" + vepConfiguration.getPolyphenSiftFilename());
+                flags.add("--plugin=PolyPhen_SIFT,db=/plugin-data/" + vepConfiguration.getPolyphenSiftFilename()
+                        + ",dir=/plugin-data/");
             }
             if (StringUtils.hasText(vepConfiguration.getAlphaMissenseFilename())) {
                 flags.add("--plugin=AlphaMissense,file=/plugin-data/" + vepConfiguration.getAlphaMissenseFilename());
+            }
+            if (StringUtils.hasText(vepConfiguration.getDirPlugins())) {
+                flags.add("--dir_plugins=" + vepConfiguration.getDirPlugins());
             }
             wrappers.add(runVEP(flags));
         }
 
         String output = "";
-        ExecutorService threadPool = Executors.newCachedThreadPool();
-        List<Future<VEPResult>> resultFutures = threadPool.invokeAll(wrappers);
+        // Use fixed thread pool instead of cached to prevent thread explosion
+        ExecutorService threadPool = Executors.newFixedThreadPool(vepConfiguration.getHgvsMaxThreads());
+        try {
+            List<Future<VEPResult>> resultFutures = threadPool.invokeAll(wrappers);
 
-        Exception exception = null;
-        boolean allFailed = true;
-        for (Future<VEPResult> resultFuture : resultFutures) {
-            VEPResult result = resultFuture.get();
-            if (result.getExitCode() == 0) {
-                output += result.getOutput();
-                allFailed = false;
-            } else if (exception == null) { // Ensembl VEP API only returns first error, so copying behavior
-                exception = new Exception(result.getOutput());
+            Exception exception = null;
+            boolean allFailed = true;
+            for (Future<VEPResult> resultFuture : resultFutures) {
+                VEPResult result = resultFuture.get();
+                if (result.getExitCode() == 0) {
+                    output += result.getOutput();
+                    allFailed = false;
+                } else if (exception == null) { // Ensembl VEP API only returns first error, so copying behavior
+                    exception = new Exception(result.getOutput());
+                }
             }
-        }
 
-        if (allFailed) {
-            throw exception;
+            if (allFailed) {
+                throw exception;
+            }
+        } finally {
+            threadPool.shutdown();
         }
 
         output = output.replace("sift_pred", "sift_prediction");
         output = output.replace("polyphen_humvar_pred", "polyphen_prediction");
         output = output.replace("polyphen_humvar_score", "polyphen_score");
-        return "[" + output.replace("\n{", ",{") + "]";
+        // Process transcript versions
+        String processedOutput = processTranscriptVersions("[" + output.replace("\n{", ",{") + "]");
+        return processedOutput;
     }
 
     public List<List<String>> getVariantChunks(List<String> variants, int chunkSize) {
@@ -86,7 +107,7 @@ public class VEPService {
         int numVariants = variants.size();
         int maxThreads = vepConfiguration.getHgvsMaxThreads();
 
-        if ((float)numVariants / (float)chunkSize > maxThreads) {
+        if ((float) numVariants / (float) chunkSize > maxThreads) {
             chunkSize = numVariants / maxThreads;
             if (numVariants % maxThreads != 0) {
                 chunkSize++;
@@ -109,7 +130,7 @@ public class VEPService {
             String chromosome = variant.split(":")[0];
             if (chromosome.toLowerCase().equals("x")) {
                 variantChunks.get(23).add(variant);
-            } else if (chromosome.toLowerCase().equals( "y")) {
+            } else if (chromosome.toLowerCase().equals("y")) {
                 variantChunks.get(24).add(variant);
             } else {
                 variantChunks.get(Integer.parseInt(chromosome)).add(variant);
@@ -145,21 +166,21 @@ public class VEPService {
                 try {
                     flags.add(0, path);
                     Process process = new ProcessBuilder().command(flags).start();
-                         
+
                     StringBuilder outputBuilder = new StringBuilder();
                     StringBuilder errorBuilder = new StringBuilder();
                     BufferedReader stdin = new BufferedReader(new InputStreamReader(process.getInputStream()));
                     BufferedReader stderr = new BufferedReader(new InputStreamReader(process.getErrorStream()));
 
                     String line = null;
-                    while ( (line = stdin.readLine()) != null) {
+                    while ((line = stdin.readLine()) != null) {
                         outputBuilder.append(line);
                         outputBuilder.append(System.getProperty("line.separator"));
                     }
-                    while ( (line = stderr.readLine()) != null) {
+                    while ((line = stderr.readLine()) != null) {
                         errorBuilder.append(line);
                         errorBuilder.append(System.getProperty("line.separator"));
-                    }    
+                    }
                     stdin.close();
                     stderr.close();
 
@@ -171,7 +192,7 @@ public class VEPService {
                     }
                 } catch (IOException e) {
                     e.printStackTrace();
-                } 
+                }
 
                 return new VEPResult(output, exitCode);
             }
@@ -189,7 +210,7 @@ public class VEPService {
             warning = matcher.group(1);
         }
 
-        String messageRegex =  "MSG:\\s(.*)\\n";
+        String messageRegex = "MSG:\\s(.*)\\n";
         pattern = Pattern.compile(messageRegex);
         matcher = pattern.matcher(error);
         if (matcher.find()) {
@@ -199,12 +220,91 @@ public class VEPService {
         String output = "";
         if (warning != null) {
             output += warning;
-        } 
+        }
         if (message != null) {
             output += message;
         } else {
             output += "Error annotating variant";
         }
         return output;
+    }
+
+    private String processTranscriptVersions(String jsonOutput) {
+        try {
+            // Parse JSON array
+            List<Map<String, Object>> variants = objectMapper.readValue(
+                    jsonOutput,
+                    new TypeReference<List<Map<String, Object>>>() {
+                    });
+
+            // Process each variant
+            for (Map<String, Object> variant : variants) {
+                // Check if variant has transcript_consequences
+                if (variant.containsKey("transcript_consequences")) {
+                    @SuppressWarnings("unchecked")
+                    List<Map<String, Object>> transcripts = (List<Map<String, Object>>) variant
+                            .get("transcript_consequences");
+
+                    for (Map<String, Object> transcript : transcripts) {
+                        splitTranscriptIdVersion(transcript);
+                    }
+                }
+
+                // Check if variant has intergenic_consequences
+                if (variant.containsKey("intergenic_consequences")) {
+                    @SuppressWarnings("unchecked")
+                    List<Map<String, Object>> transcripts = (List<Map<String, Object>>) variant
+                            .get("intergenic_consequences");
+
+                    for (Map<String, Object> transcript : transcripts) {
+                        splitTranscriptIdVersion(transcript);
+                    }
+                }
+
+                // Check other consequence types that might have transcript_id
+                String[] consequenceTypes = {
+                        "regulatory_feature_consequences",
+                        "motif_feature_consequences"
+                };
+
+                for (String consequenceType : consequenceTypes) {
+                    if (variant.containsKey(consequenceType)) {
+                        @SuppressWarnings("unchecked")
+                        List<Map<String, Object>> consequences = (List<Map<String, Object>>) variant
+                                .get(consequenceType);
+
+                        for (Map<String, Object> consequence : consequences) {
+                            splitTranscriptIdVersion(consequence);
+                        }
+                    }
+                }
+            }
+
+            // Convert back to JSON string
+            return objectMapper.writeValueAsString(variants);
+        } catch (Exception e) {
+            // If JSON processing fails, return original output
+            e.printStackTrace();
+            return jsonOutput;
+        }
+    }
+
+    private void splitTranscriptIdVersion(Map<String, Object> transcript) {
+        if (transcript.containsKey("transcript_id")) {
+            String transcriptId = (String) transcript.get("transcript_id");
+
+            // Check if transcript_id contains a version (format: ID.version)
+            if (transcriptId != null && transcriptId.contains(".")) {
+                String[] parts = transcriptId.split("\\.", 2);
+                String baseId = parts[0];
+                String version = parts[1];
+
+                // Update transcript_id to only contain the base ID
+                transcript.put("transcript_id", baseId);
+
+                // Add new field transcript_id_version with just the version number
+                transcript.put("transcript_id_version", version);
+            }
+        }
     }
 }
