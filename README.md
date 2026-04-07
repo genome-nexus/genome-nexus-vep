@@ -60,33 +60,14 @@ Cache mode is intended for users who cannot support the database. However, the f
 2. Place both your VEP cache file and the FASTA in the [plugin-data](/plugin-data) directory
 3. Set the `fasta-filename` property in your application properties to the name of the installed FASTA file and set `mode` to cache.
 
-#### Option 2: Download from Genome Nexus S3 Bucket (faster)
-
-1. Download the SQL `homo_sapiens_core_XXX_<ASSEMBLY_VERSION>` SQL files from
-   the Genome Nexus S3 Bucket.
-2. Make sure you change you `my.cnf` file to support a larger packet size
-
-   ```cnf
-   [mysqld]
-   # Other configurations....
-   max_allowed_packet=1G
-   ```
-
-3. If you make a configuration change, then restart the mysql server
-4. Add the data to the database
-
-   ```sh
-   mysql -u <username> -p homo_sapiens_core_XXX_<ASSEMBLY_VERSION> < homo_sapiens_core_XXX_<ASSEMBLY_VERSION>.sql
-   ```
-
-### Supporting Polyphen & Sift Predictions (Optional)
+## Supporting Polyphen & Sift Predictions (Optional)
 
 1. Download the SQLite database corresponding to the data version pointed to by your application properties. The URL containing the database should be of the format `https://ftp.ensembl.org/pub/release-XXX/`.
 2. Download the PolyPhen_SIFT Perl Module corresponding to the data version pointed to by your application properties. The URL containing the file should be of the format `https://github.com/Ensembl/VEP_plugins/blob/release/XXX/PolyPhen_SIFT.pm`.
 3. Place both your installed database and the PolyPhen_SIFT Perl Module in the [plugin-data](/plugin-data) directory.
 4. Set the `polyphen-sift-filename` property in your application properties to the name of the installed database file.
 
-### Supporting AlphaMissense Pathogenicity Scores (Optional)
+## Supporting AlphaMissense Pathogenicity Scores (Optional)
 
 1. Download the [prediction score file](https://console.cloud.google.com/storage/browser/dm_alphamissense) corresponding to your assembly version (`AlphaMissense_hg19.tsv.gz` for GRCh37 or `AlphaMissense_hg38.tsv.gz` for GRCh38).
 2. Place the file in the [plugin-data](/plugin-data) directory.

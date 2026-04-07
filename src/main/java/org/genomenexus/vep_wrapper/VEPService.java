@@ -55,7 +55,6 @@ public class VEPService {
                     flags,
                     "--cache",
                     "--dir_cache=/plugin-data",
-                    "--assembly=GRCh37",
                     "--fasta=/plugin-data/" + fastaFilename,
                     "--offline"
                 );
