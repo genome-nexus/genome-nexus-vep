@@ -37,7 +37,8 @@ public class VEPService {
                 "--no_stats",
                 "--xref_refseq",
                 "--json",
-                "--format=" + format
+                "--format=" + format,
+                "--fork=" + vepConfiguration.forks
         ));
         switch (vepConfiguration.dataConfiguration) {
 			case VEPConfiguration.DatabaseConfiguration(int port, String host, String username, String password) -> {
