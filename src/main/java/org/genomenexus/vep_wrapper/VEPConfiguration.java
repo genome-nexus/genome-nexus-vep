@@ -1,86 +1,66 @@
 package org.genomenexus.vep_wrapper;
 
+import java.util.Optional;
+
 import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.context.annotation.Configuration;
+import org.springframework.validation.annotation.Validated;
 
-import io.micrometer.common.lang.Nullable;
-
-@Configuration 
 @ConfigurationProperties(prefix = "vep")
+@Validated
 public class VEPConfiguration {
-    private int port;
-    private String host;
-    private String username;
-    private String password;
-    private int forks;
-    private int hgvsMaxThreads;
+    
+    public final Mode mode;
+	public final int forks;
+    public final int hgvsMaxThreads;
+    public final Optional<String> polyphenSiftFilename;
+    public final Optional<String> alphaMissenseFilename;
+    public final DataConfiguration dataConfiguration;
 
-    @Nullable
-    private String polyphenSiftFilename;
-    @Nullable
-    private String alphaMissenseFilename;
-
-    public int getPort() {
-        return port;
+    public VEPConfiguration(
+        Mode mode,
+        DatabaseConfiguration database,
+        CacheConfiguration cache,
+        int forks,
+        int hgvsMaxThreads,
+        Optional<String> polyphenSiftFilename,
+        Optional<String> alphaMissenseFilename
+    ) {
+        this.mode = mode;
+        this.dataConfiguration = switch (ensurePresent(mode, "vep.mode")) {
+            case Database -> new DatabaseConfiguration(
+                ensurePresent(database.port, "vep.database.port"), 
+                ensurePresent(database.host, "vep.database.host"), 
+                ensurePresent(database.username, "vep.database.username"), 
+                ensurePresent(database.password, "vep.database.password")
+            );
+            case Cache -> new CacheConfiguration(ensurePresent(cache.fastaFilename, "vep.cache.fasta-filename"));
+        };
+        this.forks = ensurePresent(forks, "vep.forks");
+        this.hgvsMaxThreads = ensurePresent(hgvsMaxThreads, "vep.hgvs-max-threads");
+        this.polyphenSiftFilename = polyphenSiftFilename.filter(val -> !val.isBlank());
+        this.alphaMissenseFilename = alphaMissenseFilename.filter(val -> !val.isBlank());
     }
 
-    public void setPort(int port) {
-        this.port = port;
+    enum Mode {
+        Database,
+        Cache
     }
 
-    public String getHost() {
-        return host;
-    }
+    sealed interface DataConfiguration permits DatabaseConfiguration, CacheConfiguration {}
 
-    public void setHost(String host) {
-        this.host = host;
-    }
+    record DatabaseConfiguration(
+        int port,
+        String host, 
+        String username, 
+        String password
+    ) implements DataConfiguration {}
 
-    public String getUsername() {
-        return username;
-    }
+    record CacheConfiguration(String fastaFilename) implements DataConfiguration {}
 
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public int getForks() {
-        return forks;
-    }
-
-    public void setForks(int forks) {
-        this.forks = forks;
-    }
-
-    public int getHgvsMaxThreads() {
-        return hgvsMaxThreads;
-    }
-
-    public void setHgvsMaxThreads(int maxThreads) {
-        this.hgvsMaxThreads = maxThreads;
-    }
-
-    public String getPolyphenSiftFilename() {
-        return polyphenSiftFilename;
-    }
-
-    public void setPolyphenSiftFilename(String polyphenSiftFilename) {
-        this.polyphenSiftFilename = polyphenSiftFilename;
-    }
-
-    public String getAlphaMissenseFilename() {
-        return alphaMissenseFilename;
-    }
-
-    public void setAlphaMissenseFilename(String alphaMissenseFilename) {
-        this.alphaMissenseFilename = alphaMissenseFilename;
+    private static <T> T ensurePresent(T value, String path) {
+        if (value == null || value instanceof String s && s.isBlank()) {
+            throw new IllegalArgumentException("Missing required configuration: " + path);
+        } 
+        return value;
     }
 }

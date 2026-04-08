@@ -4,6 +4,9 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
@@ -23,12 +26,25 @@ public class VEPController {
     @Autowired
     private VEPService vepService;
 
+    @Autowired
+    private VEPConfiguration vepConfiguration;
+
     @GetMapping("/vep/human/hgvs/{variant}")
     public ResponseEntity<Object> annotateHGVS(@PathVariable String variant) {
+        String format = "hgvs";
+        if (vepConfiguration.mode == VEPConfiguration.Mode.Cache) {
+            try {
+                variant = hgvsgToRegion(variant);
+                format = "region";
+            } catch (IllegalArgumentException e) {
+                return ResponseEntity.badRequest().body(constructErrorMessage(e));
+            }
+        }
+
         List<List<String>> variantChunks = new ArrayList<>();
         variantChunks.add(Arrays.asList(variant));
         try {
-            return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(vepService.annotateVariants(variantChunks, "hgvs"));
+            return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(vepService.annotateVariants(variantChunks, format));
         } catch (Exception e) {
             return ResponseEntity.internalServerError().body(constructErrorMessage(e));
         }
@@ -41,9 +57,28 @@ public class VEPController {
             return ResponseEntity.badRequest().body(("Missing key: 'hgvs_notations'"));
         }
 
+        String format = "hgvs";
+        List<String> errors = new ArrayList<>();
+        if (vepConfiguration.mode == VEPConfiguration.Mode.Cache) {
+            format = "region";
+            for (int i = 0; i < variantList.size(); i++) {
+                try {
+                     variantList.set(i, hgvsgToRegion(variantList.get(i)));
+                } catch (IllegalArgumentException e) {
+                     errors.add(e.getMessage());
+                }
+            }
+        }
+
+        if (!errors.isEmpty()) {
+            Map<String, Object> body = new HashMap<>(constructErrorMessage(new Exception("Could not annotate variants")));
+            body.put("details", errors);
+            return ResponseEntity.internalServerError().body(body);
+        }
+
         List<List<String>> variantChunks = vepService.getVariantChunks(variantList, 1);
         try {
-            return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(vepService.annotateVariants(variantChunks, "hgvs"));
+            return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(vepService.annotateVariants(variantChunks, format));
         } catch (Exception e) {
             return ResponseEntity.internalServerError().body(constructErrorMessage(e));
         }
@@ -84,5 +119,21 @@ public class VEPController {
 
     private Map<String, String> constructErrorMessage(Exception e) {
         return Map.of("error", e.getMessage());
+    }
+
+    // As of 04/01/26, hgvs variants of types 'inv' and 'dup' will never be passed to VEP
+    public static String hgvsgToRegion(String variant) throws IllegalArgumentException {
+        Pattern hgvsPattern = Pattern.compile("^(.+):g\\.(\\d+)(?:_(\\d+))?(?:[A-Z]>|ins|delins|del)?([A-Z]*)$");
+        
+        Matcher matcher = hgvsPattern.matcher(variant);
+        if (matcher.find()) {
+            String chromosome = matcher.group(1);
+            String start = matcher.group(2);
+            String end = (matcher.group(3) != null) ? matcher.group(3) : start;
+            String altMatch = matcher.group(4);
+            String alt = (altMatch == null || altMatch.isEmpty()) ? "-" : altMatch;
+            return String.format("%s:%s-%s:1/%s", chromosome, start, end, alt);
+        }
+        throw new IllegalArgumentException("Invalid HGVSg format: " + variant);
     }
 }

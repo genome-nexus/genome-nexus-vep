@@ -19,6 +19,10 @@ Make sure you fave the following installed
 
 ## Download the Ensembl Data
 
+## Database Mode (Preferred)
+
+Database mode is the preferred way to use Genome Nexus VEP and provides the same functionality as the public Ensembl REST API.
+
 ### Download the core database (Required)
 
 #### Option 1: Download from Ensembl (slower)
@@ -46,14 +50,24 @@ Make sure you fave the following installed
    mysql -u <username> -p homo_sapiens_core_XXX_<ASSEMBLY_VERSION> < homo_sapiens_core_XXX_<ASSEMBLY_VERSION>.sql
    ```
 
-### Supporting Polyphen & Sift Predictions (Optional)
+## Cache Mode
+
+Cache mode is intended for users who cannot support the database. However, the functionality of VEP is limited if you choose to use cache mode. You will not be able to annotate variants whose coordinates are non-genomic, and you will not be able to annotate HGVSg inversions and duplications.
+
+### Download the cache files
+
+1. Download the VEP cache file and FASTA file for the ensembl data version you wish to install. Follow Ensembl's [installation instructions](ensebml.org/info/docs/tools/vep/script/vep_cache.html)
+2. Place both your VEP cache file and the FASTA in the [plugin-data](/plugin-data) directory
+3. Set the `fasta-filename` property in your application properties to the name of the installed FASTA file and set `mode` to cache.
+
+## Supporting Polyphen & Sift Predictions (Optional)
 
 1. Download the SQLite database corresponding to the data version pointed to by your application properties. The URL containing the database should be of the format `https://ftp.ensembl.org/pub/release-XXX/`.
 2. Download the PolyPhen_SIFT Perl Module corresponding to the data version pointed to by your application properties. The URL containing the file should be of the format `https://github.com/Ensembl/VEP_plugins/blob/release/XXX/PolyPhen_SIFT.pm`.
 3. Place both your installed database and the PolyPhen_SIFT Perl Module in the [plugin-data](/plugin-data) directory.
 4. Set the `polyphen-sift-filename` property in your application properties to the name of the installed database file.
 
-### Supporting AlphaMissense Pathogenicity Scores (Optional)
+## Supporting AlphaMissense Pathogenicity Scores (Optional)
 
 1. Download the [prediction score file](https://console.cloud.google.com/storage/browser/dm_alphamissense) corresponding to your assembly version (`AlphaMissense_hg19.tsv.gz` for GRCh37 or `AlphaMissense_hg38.tsv.gz` for GRCh38).
 2. Place the file in the [plugin-data](/plugin-data) directory.

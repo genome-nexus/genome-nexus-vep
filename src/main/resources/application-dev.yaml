@@ -1,11 +1,15 @@
 app:
   version: "@project.version@"
 vep:
-  port: 3306
+  mode: database
+  database:
+    port: 3306
+    host:
+    username:
+    password:
+  cache: 
+    fasta-filename:
   forks: 4
-  host:
-  username:
-  password:
   hgvs-max-threads: 75
   polyphen-sift-filename:
   alpha-missense-filename:

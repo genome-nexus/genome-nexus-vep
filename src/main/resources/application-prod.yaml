@@ -1,11 +1,15 @@
 app:
   version: "@project.version@"
 vep:
-  port: ${MYSQL_PORT}
+  mode: ${MODE}
+  database:
+    port: ${MYSQL_PORT}
+    host: ${MYSQL_HOST}
+    username: ${MYSQL_USER}
+    password: ${MYSQL_PASSWORD}
+  cache: 
+    fasta-filename: ${FASTA_FILENAME}
   forks: 4
-  host: ${MYSQL_HOST}
-  username: ${MYSQL_USER}
-  password: ${MYSQL_PASSWORD}
   hgvs-max-threads: 75
   polyphen-sift-filename:
   alpha-missense-filename:
