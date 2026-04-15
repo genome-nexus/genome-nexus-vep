@@ -12,5 +12,8 @@ COPY --from=builder /genome-nexus-vep/plugin-data/PolyPhen_SIFT.pm /plugins
 COPY --from=builder /genome-nexus-vep/plugin-data /plugin-data
 COPY --from=builder /genome-nexus-vep/target/vep_wrapper*.war /vep_wrapper.war
 RUN ln -s /opt/vep/src/ensembl-vep /scripts
+RUN mkdir /cache-data
+VOLUME ["/cache-data"]
 USER vep
+
 ENTRYPOINT ["java", "-jar", "vep_wrapper.war", "--spring.profiles.active=prod"]
