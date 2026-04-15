@@ -14,6 +14,7 @@ CONTAINER_NAME="vep-$TAG"
 docker run -dt \
     --name $CONTAINER_NAME \
     --mount type=bind,src=$PWD/plugin-data,dst=/plugin-data \
+    --mount type=bind,src=$PWD/cache-data,dst=/cache-data \
     $IMAGE_NAME \
     /bin/bash
 

@@ -55,8 +55,8 @@ public class VEPService {
                 Collections.addAll(
                     flags,
                     "--cache",
-                    "--dir_cache=/plugin-data",
-                    "--fasta=/plugin-data/" + fastaFilename,
+                    "--dir_cache=/cache-data",
+                    "--fasta=/cache-data/" + fastaFilename,
                     "--offline"
                 );
             }

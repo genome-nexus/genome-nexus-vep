@@ -3,12 +3,12 @@ app:
 vep:
   mode: ${MODE}
   database:
-    port: ${MYSQL_PORT}
-    host: ${MYSQL_HOST}
-    username: ${MYSQL_USER}
-    password: ${MYSQL_PASSWORD}
+    port: ${MYSQL_PORT:}
+    host: ${MYSQL_HOST:}
+    username: ${MYSQL_USER:}
+    password: ${MYSQL_PASSWORD:}
   cache: 
-    fasta-filename: ${FASTA_FILENAME}
+    fasta-filename: ${FASTA_FILENAME:}
   forks: 4
   hgvs-max-threads: 75
   polyphen-sift-filename:

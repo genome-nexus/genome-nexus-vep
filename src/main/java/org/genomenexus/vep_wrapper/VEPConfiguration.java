@@ -18,8 +18,8 @@ public class VEPConfiguration {
 
     public VEPConfiguration(
         Mode mode,
-        DatabaseConfiguration database,
-        CacheConfiguration cache,
+        DatabaseConfigurationOptional database,
+        CacheConfigurationOptional cache,
         int forks,
         int hgvsMaxThreads,
         Optional<String> polyphenSiftFilename,
@@ -57,10 +57,26 @@ public class VEPConfiguration {
 
     record CacheConfiguration(String fastaFilename) implements DataConfiguration {}
 
+    record DatabaseConfigurationOptional(
+        Optional<Integer> port,
+        Optional<String> host, 
+        Optional<String> username, 
+        Optional<String> password
+    ) {}
+
+    record CacheConfigurationOptional(Optional<String> fastaFilename) {}
+
     private static <T> T ensurePresent(T value, String path) {
         if (value == null || value instanceof String s && s.isBlank()) {
             throw new IllegalArgumentException("Missing required configuration: " + path);
         } 
         return value;
+    }
+
+    private static <T> T ensurePresent(Optional<T> value, String path) {
+        if (value.isEmpty()) {
+            throw new IllegalArgumentException("Missing required configuration: " + path);
+        }
+        return ensurePresent(value.get(), path);
     }
 }
