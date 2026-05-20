@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -31,11 +32,11 @@ public class VEPController {
 
     @GetMapping("/vep/human/hgvs/{variant}")
     public ResponseEntity<Object> annotateHGVS(@PathVariable String variant) {
-        String format = "hgvs";
+        Optional<String> format = Optional.of("hgvs");
         if (vepConfiguration.mode == VEPConfiguration.Mode.Cache) {
             try {
-                variant = hgvsgToRegion(variant);
-                format = "region";
+                variant = hgvsgToEnsembl(variant);
+                format = Optional.empty();
             } catch (IllegalArgumentException e) {
                 return ResponseEntity.badRequest().body(constructErrorMessage(e));
             }
@@ -57,13 +58,13 @@ public class VEPController {
             return ResponseEntity.badRequest().body(("Missing key: 'hgvs_notations'"));
         }
 
-        String format = "hgvs";
+        Optional<String> format = Optional.of("hgvs");
         List<String> errors = new ArrayList<>();
         if (vepConfiguration.mode == VEPConfiguration.Mode.Cache) {
-            format = "region";
+            format = Optional.empty();
             for (int i = 0; i < variantList.size(); i++) {
                 try {
-                     variantList.set(i, hgvsgToRegion(variantList.get(i)));
+                     variantList.set(i, hgvsgToEnsembl(variantList.get(i)));
                 } catch (IllegalArgumentException e) {
                      errors.add(e.getMessage());
                 }
@@ -89,7 +90,7 @@ public class VEPController {
         List<List<String>> variantChunks = new ArrayList<>();       
         variantChunks.add(Arrays.asList(variant.substring(1)));
         try {
-            return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(vepService.annotateVariants(variantChunks, "region"));
+            return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(vepService.annotateVariants(variantChunks, Optional.of("region")));
         } catch (Exception e) {
             return ResponseEntity.internalServerError().body(constructErrorMessage(e));
         }
@@ -99,7 +100,7 @@ public class VEPController {
     public ResponseEntity<Object> annotateRegion(@RequestBody List<String> variants) {
         List<List<String>> variantChunks = vepService.getVariantChunksByChromosome(variants);
         try {
-            return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(vepService.annotateVariants(variantChunks, "region"));
+            return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(vepService.annotateVariants(variantChunks, Optional.of("region")));
         } catch (Exception e) {
             return ResponseEntity.internalServerError().body(constructErrorMessage(e));
         }
@@ -122,17 +123,38 @@ public class VEPController {
     }
 
     // As of 04/01/26, hgvs variants of types 'inv' and 'dup' will never be passed to VEP
-    public static String hgvsgToRegion(String variant) throws IllegalArgumentException {
-        Pattern hgvsPattern = Pattern.compile("^(.+):g\\.(\\d+)(?:_(\\d+))?(?:[A-Z]>|ins|delins|del)?([A-Z]*)$");
+    public static String hgvsgToEnsembl(String variant) throws IllegalArgumentException {
+        Pattern hgvsPattern = Pattern.compile("^(.+):g\\.(\\d+)(?:_(\\d+))?([A-Z]>|ins|delins|del)?([A-Z]*)$");
         
         Matcher matcher = hgvsPattern.matcher(variant);
         if (matcher.find()) {
             String chromosome = matcher.group(1);
             String start = matcher.group(2);
             String end = (matcher.group(3) != null) ? matcher.group(3) : start;
-            String altMatch = matcher.group(4);
+            String ref = "N";
+            String variantType = matcher.group(4);
+            if (variantType.equals("ins")) {
+                int startInt;
+                int endInt;
+                try {
+                    startInt = Integer.parseInt(start);
+                    endInt = Integer.parseInt(end);
+                } catch (NumberFormatException e) {
+                    throw new IllegalArgumentException("Invalid HGVSg format: start and end must both be integers: " + variant);
+                }
+
+                if (startInt + 1 != endInt) {
+                    throw new IllegalArgumentException("Invalid HGVSg format: start + 1 must equal end for insertions: " + variant);
+                }
+
+                String t = start;
+                start = end;
+                end = t;
+                ref = "-";
+            }
+            String altMatch = matcher.group(5);
             String alt = (altMatch == null || altMatch.isEmpty()) ? "-" : altMatch;
-            return String.format("%s:%s-%s:1/%s", chromosome, start, end, alt);
+            return String.format("%s %s %s %s/%s + %s", chromosome, start, end, ref, alt, variant);
         }
         throw new IllegalArgumentException("Invalid HGVSg format: " + variant);
     }
