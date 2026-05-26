@@ -133,7 +133,7 @@ public class VEPController {
             String end = (matcher.group(3) != null) ? matcher.group(3) : start;
             String ref = "N";
             String variantType = matcher.group(4);
-            if (variantType.equals("ins")) {
+            if ("ins".equals(variantType)) {
                 int startInt;
                 int endInt;
                 try {
