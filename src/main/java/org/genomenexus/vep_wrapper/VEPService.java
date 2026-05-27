@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -26,7 +27,7 @@ public class VEPService {
     @Autowired
     private VEPConfiguration vepConfiguration;
 
-    public String annotateVariants(List<List<String>> variantChunks, String format) throws Exception {
+    public String annotateVariants(List<List<String>> variantChunks, Optional<String> format) throws Exception {
         List<Callable<VEPResult>> wrappers = new ArrayList<>();
 
         List<String> flags = new ArrayList<>(Arrays.asList(
@@ -37,9 +38,11 @@ public class VEPService {
                 "--no_stats",
                 "--xref_refseq",
                 "--json",
-                "--format=" + format,
                 "--fork=" + vepConfiguration.forks
         ));
+        if (format.isPresent()) { // vep breaks when the format is set to ensembl (even though it should be correct)
+            flags.add("--format=" + format.get());
+        }
         switch (vepConfiguration.dataConfiguration) {
 			case VEPConfiguration.DatabaseConfiguration(int port, String host, String username, String password) -> {
                 Collections.addAll(
@@ -57,6 +60,7 @@ public class VEPService {
                     "--cache",
                     "--dir_cache=/cache-data",
                     "--fasta=/cache-data/" + fastaFilename,
+                    "--lookup_ref",
                     "--offline"
                 );
             }
