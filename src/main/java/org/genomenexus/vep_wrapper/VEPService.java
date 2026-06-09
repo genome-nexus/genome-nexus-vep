@@ -21,11 +21,33 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
+import jakarta.annotation.PostConstruct;
+import jakarta.annotation.PreDestroy;
+
 @Service
 public class VEPService {
 
+    private static final Pattern VEP_VERSION_PATTERN = Pattern.compile("ensembl-vep\\s*:\\s*(\\d+)");
+    private static final Pattern VEP_WARNING_PATTERN = Pattern.compile("WARNING:\\s(.*)\\n");
+    private static final Pattern VEP_MESSAGE_PATTERN = Pattern.compile("MSG:\\s(.*)\\n");
+
     @Autowired
     private VEPConfiguration vepConfiguration;
+
+    private ExecutorService chunkExecutor;
+    private volatile Integer cachedVepVersion;
+
+    @PostConstruct
+    public void init() {
+        this.chunkExecutor = Executors.newFixedThreadPool(vepConfiguration.hgvsMaxThreads);
+    }
+
+    @PreDestroy
+    public void shutdown() {
+        if (chunkExecutor != null) {
+            chunkExecutor.shutdownNow();
+        }
+    }
 
     public String annotateVariants(List<List<String>> variantChunks, Optional<String> format) throws Exception {
         List<Callable<VEPResult>> wrappers = new ArrayList<>();
@@ -65,6 +87,9 @@ public class VEPService {
                 );
             }
         }
+        if (vepConfiguration.polyphenSiftFilename.isPresent() || vepConfiguration.alphaMissenseFilename.isPresent()) {
+            flags.add("--dir_plugins=/plugin-data");
+        }
         if (vepConfiguration.polyphenSiftFilename.isPresent()) {
             flags.add("--plugin=PolyPhen_SIFT,db=/plugin-data/" + vepConfiguration.polyphenSiftFilename.get());
         }
@@ -78,16 +103,15 @@ public class VEPService {
             wrappers.add(runVEP(chunkFlags));
         }
 
-        String output = "";
-        ExecutorService threadPool = Executors.newCachedThreadPool();
-        List<Future<VEPResult>> resultFutures = threadPool.invokeAll(wrappers);
+        StringBuilder outputBuilder = new StringBuilder();
+        List<Future<VEPResult>> resultFutures = chunkExecutor.invokeAll(wrappers);
 
         Exception exception = null;
         boolean allFailed = true;
         for (Future<VEPResult> resultFuture : resultFutures) {
             VEPResult result = resultFuture.get();
             if (result.getExitCode() == 0) {
-                output += result.getOutput();
+                outputBuilder.append(result.getOutput());
                 allFailed = false;
             } else if (exception == null) { // Ensembl VEP API only returns first error, so copying behavior
                 exception = new Exception(result.getOutput());
@@ -98,6 +122,7 @@ public class VEPService {
             throw exception;
         }
 
+        String output = outputBuilder.toString();
         output = output.replace("sift_pred", "sift_prediction");
         output = output.replace("polyphen_humvar_pred", "polyphen_prediction");
         output = output.replace("polyphen_humvar_score", "polyphen_score");
@@ -142,16 +167,20 @@ public class VEPService {
     }
 
     public int getVEPVersion() throws Exception {
+        Integer cached = cachedVepVersion;
+        if (cached != null) {
+            return cached;
+        }
         VEPResult result = runVEP(new ArrayList<>()).call();
         if (result.getExitCode() == 1) {
             throw new Exception(result.getOutput());
         }
 
-        String versionRegex = "ensembl-vep\\s*:\\s*(\\d+)";
-        Pattern pattern = Pattern.compile(versionRegex);
-        Matcher matcher = pattern.matcher(result.getOutput());
+        Matcher matcher = VEP_VERSION_PATTERN.matcher(result.getOutput());
         if (matcher.find()) {
-            return Integer.parseInt(matcher.group(1));
+            int version = Integer.parseInt(matcher.group(1));
+            cachedVepVersion = version;
+            return version;
         } else {
             throw new Exception("Version not found in VEP output");
         }
@@ -162,29 +191,38 @@ public class VEPService {
             @Override
             public VEPResult call() throws Exception {
                 String path = Paths.get("").toAbsolutePath().toString() + "/scripts/vep";
+                String lineSeparator = System.lineSeparator();
 
                 String output = "";
                 int exitCode = 0;
                 try {
                     flags.add(0, path);
                     Process process = new ProcessBuilder().command(flags).start();
-                         
+
                     StringBuilder outputBuilder = new StringBuilder();
                     StringBuilder errorBuilder = new StringBuilder();
-                    BufferedReader stdin = new BufferedReader(new InputStreamReader(process.getInputStream()));
-                    BufferedReader stderr = new BufferedReader(new InputStreamReader(process.getErrorStream()));
 
-                    String line = null;
-                    while ( (line = stdin.readLine()) != null) {
-                        outputBuilder.append(line);
-                        outputBuilder.append(System.getProperty("line.separator"));
+                    // Drain stderr on a separate thread so a full stderr pipe buffer
+                    // cannot deadlock VEP while we are still reading stdout.
+                    Thread stderrReader = new Thread(() -> {
+                        try (BufferedReader stderr = new BufferedReader(new InputStreamReader(process.getErrorStream()))) {
+                            String errLine;
+                            while ((errLine = stderr.readLine()) != null) {
+                                errorBuilder.append(errLine).append(lineSeparator);
+                            }
+                        } catch (IOException ignored) {
+                        }
+                    }, "vep-stderr-reader");
+                    stderrReader.setDaemon(true);
+                    stderrReader.start();
+
+                    try (BufferedReader stdin = new BufferedReader(new InputStreamReader(process.getInputStream()))) {
+                        String line;
+                        while ((line = stdin.readLine()) != null) {
+                            outputBuilder.append(line).append(lineSeparator);
+                        }
                     }
-                    while ( (line = stderr.readLine()) != null) {
-                        errorBuilder.append(line);
-                        errorBuilder.append(System.getProperty("line.separator"));
-                    }    
-                    stdin.close();
-                    stderr.close();
+                    stderrReader.join();
 
                     output = outputBuilder.toString();
                     String error = errorBuilder.toString();
@@ -194,7 +232,7 @@ public class VEPService {
                     }
                 } catch (IOException e) {
                     e.printStackTrace();
-                } 
+                }
 
                 return new VEPResult(output, exitCode);
             }
@@ -205,16 +243,12 @@ public class VEPService {
         String warning = null;
         String message = null;
 
-        String warningRegex = "WARNING:\\s(.*)\\n";
-        Pattern pattern = Pattern.compile(warningRegex);
-        Matcher matcher = pattern.matcher(error);
+        Matcher matcher = VEP_WARNING_PATTERN.matcher(error);
         if (matcher.find()) {
             warning = matcher.group(1);
         }
 
-        String messageRegex =  "MSG:\\s(.*)\\n";
-        pattern = Pattern.compile(messageRegex);
-        matcher = pattern.matcher(error);
+        matcher = VEP_MESSAGE_PATTERN.matcher(error);
         if (matcher.find()) {
             message = matcher.group(1);
         }
@@ -222,7 +256,7 @@ public class VEPService {
         String output = "";
         if (warning != null) {
             output += warning;
-        } 
+        }
         if (message != null) {
             output += message;
         } else {

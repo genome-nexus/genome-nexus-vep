@@ -77,7 +77,7 @@ public class VEPController {
             return ResponseEntity.internalServerError().body(body);
         }
 
-        List<List<String>> variantChunks = vepService.getVariantChunks(variantList, 1);
+        List<List<String>> variantChunks = vepService.getVariantChunks(variantList, 200);
         try {
             return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(vepService.annotateVariants(variantChunks, format));
         } catch (Exception e) {
