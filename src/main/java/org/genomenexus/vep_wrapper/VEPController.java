@@ -45,8 +45,20 @@ public class VEPController {
         List<List<String>> variantChunks = new ArrayList<>();
         variantChunks.add(Arrays.asList(variant));
         try {
-            return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(vepService.annotateVariants(variantChunks, format));
+            String result = vepService.annotateVariants(variantChunks, format);
+            // For single variant GET, check if result is only an error object
+            if (result.contains("\"successfully_annotated\":false") && !result.contains("\"successfully_annotated\":true")
+                && !result.contains("\"most_severe_consequence\"")) {
+                Map<String, String> errorBody = constructErrorMessage(new Exception(
+                    extractErrorFromResult(result)));
+                return ResponseEntity.badRequest().body(errorBody);
+            }
+            return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(result);
         } catch (Exception e) {
+            String msg = e.getMessage();
+            if (msg != null && (msg.contains("does not match reference allele") || msg.contains("Unable to parse"))) {
+                return ResponseEntity.badRequest().body(constructErrorMessage(e));
+            }
             return ResponseEntity.internalServerError().body(constructErrorMessage(e));
         }
     }
@@ -62,21 +74,24 @@ public class VEPController {
         List<String> errors = new ArrayList<>();
         if (vepConfiguration.mode == VEPConfiguration.Mode.Cache) {
             format = Optional.empty();
+            List<String> convertedVariants = new ArrayList<>();
             for (int i = 0; i < variantList.size(); i++) {
                 try {
-                     variantList.set(i, hgvsgToEnsembl(variantList.get(i)));
+                     convertedVariants.add(hgvsgToEnsembl(variantList.get(i)));
                 } catch (IllegalArgumentException e) {
                      errors.add(e.getMessage());
                 }
             }
+            variantList = convertedVariants;
         }
 
-        if (!errors.isEmpty()) {
-            Map<String, Object> body = new HashMap<>(constructErrorMessage(new Exception("Could not annotate variants")));
+        if (variantList.isEmpty()) {
+            // All variants failed conversion — return 400 with error details
+            Map<String, Object> body = new HashMap<>(constructErrorMessage(new Exception("Could not annotate any variants")));
             body.put("details", errors);
-            return ResponseEntity.internalServerError().body(body);
+            return ResponseEntity.badRequest().body(body);
         }
-
+        // set chunk size to 200, as 100-200 has the best balance between parallelism and per-process efficiency
         List<List<String>> variantChunks = vepService.getVariantChunks(variantList, 200);
         try {
             return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(vepService.annotateVariants(variantChunks, format));
@@ -120,6 +135,18 @@ public class VEPController {
 
     private Map<String, String> constructErrorMessage(Exception e) {
         return Map.of("error", e.getMessage());
+    }
+
+    /**
+     * Extract the error message from a VEP JSON result that contains only error objects.
+     */
+    private String extractErrorFromResult(String result) {
+        Pattern errorPattern = Pattern.compile("\"error\":\"([^\"]+)\"");
+        Matcher matcher = errorPattern.matcher(result);
+        if (matcher.find()) {
+            return matcher.group(1).replace("\\n", "\n").replace("\\\"", "\"");
+        }
+        return "Variant annotation failed";
     }
 
     // As of 04/01/26, hgvs variants of types 'inv' and 'dup' will never be passed to VEP

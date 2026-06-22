@@ -28,8 +28,11 @@ import jakarta.annotation.PreDestroy;
 public class VEPService {
 
     private static final Pattern VEP_VERSION_PATTERN = Pattern.compile("ensembl-vep\\s*:\\s*(\\d+)");
-    private static final Pattern VEP_WARNING_PATTERN = Pattern.compile("WARNING:\\s(.*)\\n");
-    private static final Pattern VEP_MESSAGE_PATTERN = Pattern.compile("MSG:\\s(.*)\\n");
+    private static final Pattern VEP_FAILED_HGVS_PATTERN = Pattern.compile("HGVS notation '([^']+)'");
+    private static final Pattern VEP_FAILED_REGION_PATTERN = Pattern.compile("\\+ (\\S+)$", Pattern.MULTILINE);
+    private static final Pattern REF_ALLELE_MISMATCH_PATTERN = Pattern.compile(
+        "Reference allele extracted from \\S+ \\(([^)]+)\\) does not match reference allele given by HGVS notation (\\S+) \\(([^)]+)\\)");
+    private static final Pattern COULD_NOT_PARSE_PATTERN = Pattern.compile("Could not parse.*HGVS notation (\\S+)");
 
     @Autowired
     private VEPConfiguration vepConfiguration;
@@ -50,8 +53,231 @@ public class VEPService {
     }
 
     public String annotateVariants(List<List<String>> variantChunks, Optional<String> format) throws Exception {
-        List<Callable<VEPResult>> wrappers = new ArrayList<>();
+        List<String> flags = buildBaseFlags(format);
 
+        StringBuilder outputBuilder = new StringBuilder();
+        List<FailedVariant> failedVariants = new ArrayList<>();
+
+        List<Callable<VEPResult>> wrappers = new ArrayList<>();
+        for (List<String> chunk : variantChunks) {
+            List<String> chunkFlags = new ArrayList<>(flags);
+            chunkFlags.add("--input_data=" + chunk.stream().collect(Collectors.joining("\n")));
+            wrappers.add(runVEP(chunkFlags));
+        }
+
+        List<Future<VEPResult>> resultFutures = chunkExecutor.invokeAll(wrappers);
+
+        List<List<String>> failedChunks = new ArrayList<>();
+        List<VEPResult> failedResults = new ArrayList<>();
+        for (int i = 0; i < resultFutures.size(); i++) {
+            VEPResult result = resultFutures.get(i).get();
+            if (result.getExitCode() == 0) {
+                outputBuilder.append(result.getOutput());
+            } else {
+                // Chunk failed — queue for retry with individual variant identification
+                failedChunks.add(variantChunks.get(i));
+                failedResults.add(result);
+            }
+        }
+
+        // For failed chunks, identify bad variants and retry good ones
+        for (int i = 0; i < failedChunks.size(); i++) {
+            retryFailedChunk(failedChunks.get(i), failedResults.get(i), flags, outputBuilder, failedVariants);
+        }
+
+        // Build final JSON array combining successful annotations and error objects
+        String output = outputBuilder.toString();
+        output = output.replace("sift_pred", "sift_prediction");
+        output = output.replace("polyphen_humvar_pred", "polyphen_prediction");
+        output = output.replace("polyphen_humvar_score", "polyphen_score");
+
+        StringBuilder result = new StringBuilder();
+        if (!output.isEmpty()) {
+            result.append(output.replace("\n{", ",{"));
+        }
+        // Append error objects for failed variants
+        for (FailedVariant failed : failedVariants) {
+            if (result.length() > 0) {
+                result.append(",");
+            }
+            String detailedError = formatVepErrorMessage(failed.input, failed.error);
+            result.append(String.format("{\"input\":\"%s\",\"error\":\"%s\",\"successfully_annotated\":false}",
+                escapeJson(failed.input), escapeJson(detailedError)));
+        }
+
+        if (result.length() == 0) {
+            throw new Exception("All variants failed annotation");
+        }
+
+        return "[" + result.toString() + "]";
+    }
+
+    // When a batch chunk fails, identify which variant(s) caused the failure, remove them, and retry the remaining good variants as a batch.
+    private void retryFailedChunk(List<String> chunk, VEPResult initialFailure, List<String> baseFlags,
+                                   StringBuilder outputBuilder, List<FailedVariant> failedVariants) throws Exception {
+        List<String> remaining = new ArrayList<>(chunk);
+        int maxSequentialRetries = 5;
+
+        // Sequential removal — peel off up to 5 bad variants one at a time
+        VEPResult currentFailure = initialFailure;
+        for (int attempt = 0; attempt < maxSequentialRetries && !remaining.isEmpty(); attempt++) {
+            String failedId = extractFailedVariantFromError(currentFailure.getOutput(), remaining);
+            if (failedId == null) {
+                // Can't identify bad variant — go straight to binary search
+                break;
+            }
+
+            failedVariants.add(new FailedVariant(failedId, currentFailure.getOutput()));
+            remaining = remaining.stream()
+                .filter(v -> !v.contains(failedId))
+                .collect(Collectors.toList());
+
+            if (remaining.isEmpty()) return;
+
+            // Retry batch without the removed bad variant(s)
+            VEPResult retryResult = runVEPForInput(remaining, baseFlags);
+            if (retryResult.getExitCode() == 0) {
+                outputBuilder.append(retryResult.getOutput());
+                return;
+            }
+            currentFailure = retryResult;
+        }
+
+        // Binary search to isolate remaining bad variants
+        // Only reached if >5 bad variants exist or can't identify from error message
+        if (!remaining.isEmpty()) {
+            binarySearchPartition(remaining, baseFlags, outputBuilder, failedVariants);
+        }
+    }
+
+    /**
+     * Binary search partition: recursively split the variant list in half, test each half as a batch.
+     * Halves that succeed get their output appended. Halves that fail are split again.
+     * Base case: single variant that fails → record as FailedVariant.
+     */
+    private void binarySearchPartition(List<String> variants, List<String> baseFlags,
+                                        StringBuilder outputBuilder, List<FailedVariant> failedVariants) throws Exception {
+        if (variants.isEmpty()) return;
+
+        // Base case: single variant
+        if (variants.size() == 1) {
+            VEPResult result = runVEPForInput(variants, baseFlags);
+            if (result.getExitCode() == 0) {
+                outputBuilder.append(result.getOutput());
+            } else {
+                String variantId = extractVariantIdFromInput(variants.get(0));
+                failedVariants.add(new FailedVariant(variantId, result.getOutput()));
+            }
+            return;
+        }
+
+        // Try the whole list as a batch first
+        VEPResult result = runVEPForInput(variants, baseFlags);
+        if (result.getExitCode() == 0) {
+            // All variants in this subset are good
+            outputBuilder.append(result.getOutput());
+            return;
+        }
+
+        // Split in half and recurse
+        int mid = variants.size() / 2;
+        List<String> left = variants.subList(0, mid);
+        List<String> right = variants.subList(mid, variants.size());
+
+        binarySearchPartition(left, baseFlags, outputBuilder, failedVariants);
+        binarySearchPartition(right, baseFlags, outputBuilder, failedVariants);
+    }
+
+    //run VEP with a list of input variants
+    private VEPResult runVEPForInput(List<String> inputs, List<String> baseFlags) throws Exception {
+        List<String> flags = new ArrayList<>(baseFlags);
+        flags.add("--input_data=" + inputs.stream().collect(Collectors.joining("\n")));
+        return runVEP(flags).call();
+    }
+
+    /**
+     * Extract the variant that caused a VEP failure from the error message.
+     * Looks for HGVS notation in the error, or falls back to matching region format input.
+     */
+    private String extractFailedVariantFromError(String error, List<String> inputVariants) {
+        // Try to find HGVS notation in error
+        Matcher matcher = VEP_FAILED_HGVS_PATTERN.matcher(error);
+        if (matcher.find()) {
+            return matcher.group(1);
+        }
+        // For region format inputs, the original HGVS is appended after "+"
+        // Try matching against the input list
+        for (String input : inputVariants) {
+            String variantId = extractVariantIdFromInput(input);
+            if (error.contains(variantId)) {
+                return variantId;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Extract variant ID from VEP input line.
+     * For region format: "1 1020385 1020385 N/A + 1:g.1020385C>A" → "1:g.1020385C>A"
+     * For hgvs format: "1:g.1020385C>A" → "1:g.1020385C>A"
+     */
+    private String extractVariantIdFromInput(String input) {
+        Matcher matcher = VEP_FAILED_REGION_PATTERN.matcher(input);
+        if (matcher.find()) {
+            return matcher.group(1);
+        }
+        return input.trim();
+    }
+
+    private String escapeJson(String value) {
+        if (value == null) return "";
+        return value.replace("\\", "\\\\").replace("\"", "\\\"").replace("\n", "\\n").replace("\r", "");
+    }
+
+    /**
+     * Format VEP error into a user-facing message.
+     */
+    private String formatVepErrorMessage(String variantInput, String rawError) {
+        if (rawError == null || rawError.isEmpty()) {
+            return "Unknown error annotating variant: " + variantInput;
+        }
+
+        // Reference allele mismatch — extract alleles from VEP's message
+        Matcher refMatcher = REF_ALLELE_MISMATCH_PATTERN.matcher(rawError);
+        if (refMatcher.find()) {
+            String genomeAllele = refMatcher.group(1);
+            String notation = refMatcher.group(2);
+            String inputAllele = refMatcher.group(3);
+            return String.format(
+                "%s: Reference allele extracted from input (%s) does not match reference allele from genome (%s)",
+                notation, inputAllele, genomeAllele);
+        }
+
+        // Could not parse HGVS notation
+        Matcher parseMatcher = COULD_NOT_PARSE_PATTERN.matcher(rawError);
+        if (parseMatcher.find()) {
+            String notation = parseMatcher.group(1);
+            return String.format(
+                "Invalid HGVS notation '%s': could not be parsed. ", notation);
+        }
+
+        // Contains HGVS notation reference but unknown sub-error
+        Matcher hgvsMatcher = VEP_FAILED_HGVS_PATTERN.matcher(rawError);
+        if (hgvsMatcher.find()) {
+            String notation = hgvsMatcher.group(1);
+            if (rawError.contains("not found in database") || rawError.contains("Could not find")
+                || rawError.contains("uninitialized value") || rawError.contains("Can't call method")) {
+                return String.format(
+                    "Chromosome or position not found: variant '%s' - chromosome or position does not exist in the genome assembly.", notation);
+            }
+        }
+
+        // Fallback: return raw error with variant context
+        return String.format("Error annotating variant '%s': %s",
+            variantInput, rawError.trim().replace("\n", " "));
+    }
+
+    private List<String> buildBaseFlags(Optional<String> format) {
         List<String> flags = new ArrayList<>(Arrays.asList(
             "--output_file=STDOUT",
                 "--warning_file=STDERR",
@@ -60,6 +286,7 @@ public class VEPService {
                 "--no_stats",
                 "--xref_refseq",
                 "--json",
+                "--shift_hgvs=1",
                 "--fork=" + vepConfiguration.forks
         ));
         if (format.isPresent()) { // vep breaks when the format is set to ensembl (even though it should be correct)
@@ -96,38 +323,10 @@ public class VEPService {
         if (vepConfiguration.alphaMissenseFilename.isPresent()) {
             flags.add("--plugin=AlphaMissense,file=/plugin-data/" + vepConfiguration.alphaMissenseFilename.get());
         }
-
-        for (List<String> chunk : variantChunks) {
-            List<String> chunkFlags = new ArrayList<>(flags);
-            chunkFlags.add("--input_data=" + chunk.stream().collect(Collectors.joining("\n")));
-            wrappers.add(runVEP(chunkFlags));
-        }
-
-        StringBuilder outputBuilder = new StringBuilder();
-        List<Future<VEPResult>> resultFutures = chunkExecutor.invokeAll(wrappers);
-
-        Exception exception = null;
-        boolean allFailed = true;
-        for (Future<VEPResult> resultFuture : resultFutures) {
-            VEPResult result = resultFuture.get();
-            if (result.getExitCode() == 0) {
-                outputBuilder.append(result.getOutput());
-                allFailed = false;
-            } else if (exception == null) { // Ensembl VEP API only returns first error, so copying behavior
-                exception = new Exception(result.getOutput());
-            }
-        }
-
-        if (allFailed) {
-            throw exception;
-        }
-
-        String output = outputBuilder.toString();
-        output = output.replace("sift_pred", "sift_prediction");
-        output = output.replace("polyphen_humvar_pred", "polyphen_prediction");
-        output = output.replace("polyphen_humvar_score", "polyphen_score");
-        return "[" + output.replace("\n{", ",{") + "]";
+        return flags;
     }
+
+    private record FailedVariant(String input, String error) {}
 
     public List<List<String>> getVariantChunks(List<String> variants, int chunkSize) {
         List<List<String>> variantChunks = new ArrayList<>();
@@ -240,28 +439,12 @@ public class VEPService {
     }
 
     private String parseVepError(String error) {
-        String warning = null;
-        String message = null;
-
-        Matcher matcher = VEP_WARNING_PATTERN.matcher(error);
-        if (matcher.find()) {
-            warning = matcher.group(1);
+        // Return the full stderr trimmed — formatVepErrorMessage will handle
+        // pattern matching and message formatting downstream.
+        String trimmed = error.trim();
+        if (trimmed.isEmpty()) {
+            return "Error annotating variant";
         }
-
-        matcher = VEP_MESSAGE_PATTERN.matcher(error);
-        if (matcher.find()) {
-            message = matcher.group(1);
-        }
-
-        String output = "";
-        if (warning != null) {
-            output += warning;
-        }
-        if (message != null) {
-            output += message;
-        } else {
-            output += "Error annotating variant";
-        }
-        return output;
+        return trimmed;
     }
 }
