@@ -47,8 +47,7 @@ public class VEPController {
         try {
             String result = vepService.annotateVariants(variantChunks, format);
             // For single variant GET, check if result is only an error object
-            if (result.contains("\"successfully_annotated\":false") && !result.contains("\"successfully_annotated\":true")
-                && !result.contains("\"most_severe_consequence\"")) {
+            if (result.contains("\"successfully_annotated\":false")) {
                 Map<String, String> errorBody = constructErrorMessage(new Exception(
                     extractErrorFromResult(result)));
                 return ResponseEntity.badRequest().body(errorBody);
@@ -67,9 +66,8 @@ public class VEPController {
     public ResponseEntity<Object> annotateHGVS(@RequestBody Map<String, List<String>> variants) {
         List<String> variantList = variants.get("hgvs_notations");
         if (variantList == null) {
-            return ResponseEntity.badRequest().body(("Missing key: 'hgvs_notations'"));
+            return ResponseEntity.badRequest().body(constructErrorMessage(new Exception("Missing key: 'hgvs_notations'")));
         }
-
         Optional<String> format = Optional.of("hgvs");
         List<String> errors = new ArrayList<>();
         if (vepConfiguration.mode == VEPConfiguration.Mode.Cache) {
@@ -87,14 +85,16 @@ public class VEPController {
 
         if (variantList.isEmpty()) {
             // All variants failed conversion — return 400 with error details
-            Map<String, Object> body = new HashMap<>(constructErrorMessage(new Exception("Could not annotate any variants")));
+            Map<String, Object> body = new HashMap<>();
+            body.put("error", "Could not annotate any variants");
             body.put("details", errors);
             return ResponseEntity.badRequest().body(body);
         }
         // set chunk size to 200, as 100-200 has the best balance between parallelism and per-process efficiency
         List<List<String>> variantChunks = vepService.getVariantChunks(variantList, 200);
         try {
-            return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(vepService.annotateVariants(variantChunks, format));
+            String result = vepService.annotateVariants(variantChunks, format);
+            return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(result);
         } catch (Exception e) {
             return ResponseEntity.internalServerError().body(constructErrorMessage(e));
         }
