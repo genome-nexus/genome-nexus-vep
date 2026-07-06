@@ -240,16 +240,16 @@ public class VepErrorMessageTest {
         // Check if any variant should trigger an error
         for (String variant : variants) {
             if (variant.contains("1:g.1020385C>A")) {
-                return () -> new VEPResult(REF_ALLELE_MISMATCH_ERROR, 1);
+                return () -> new VEPResult("", REF_ALLELE_MISMATCH_ERROR);
             }
             if (variant.contains("invalid_notation")) {
-                return () -> new VEPResult(COULD_NOT_PARSE_ERROR, 1);
+                return () -> new VEPResult("", COULD_NOT_PARSE_ERROR);
             }
             if (variant.contains("99:g.100A>T")) {
-                return () -> new VEPResult(NOT_FOUND_ERROR, 1);
+                return () -> new VEPResult("", NOT_FOUND_ERROR);
             }
             if (variant.contains("unknown_error_variant")) {
-                return () -> new VEPResult(UNKNOWN_ERROR, 1);
+                return () -> new VEPResult("", UNKNOWN_ERROR);
             }
         }
 
@@ -265,7 +265,7 @@ public class VepErrorMessageTest {
             }
         }
         String output = response.toString();
-        return () -> new VEPResult(output, 0);
+        return () -> new VEPResult(output, "");
     }
 
     private String readMockVariantDataFromFile(String variant) throws IOException {

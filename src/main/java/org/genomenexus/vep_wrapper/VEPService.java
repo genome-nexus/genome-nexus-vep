@@ -82,7 +82,7 @@ public class VEPService {
             for (String input : variantChunks.get(i)) {
                 String id = extractVariantIdFromInput(input);
                 if (!annotatedIds.contains(id)) {
-                    failedVariants.add(new FailedVariant(id, result.getStderr()));
+                    failedVariants.add(new FailedVariant(id, extractVariantError(id, result.getStderr())));
                 }
             }
         }
@@ -144,9 +144,21 @@ public class VEPService {
         return ids;
     }
 
-    /**
-     * Format VEP error into a user-facing message.
-     */
+    // Stderr for a failed chunk may contain errors for multiple variants. Split by
+    // "WARNING:" blocks and return the block that mentions variantId, so each
+    // failed variant gets its own specific error rather than the first one in the file.
+    private String extractVariantError(String variantId, String stderr) {
+        if (!StringUtils.hasText(stderr)) return "";
+        String[] blocks = stderr.split("(?=WARNING:)");
+        for (String block : blocks) {
+            if (block.contains(variantId)) {
+                return block.trim();
+            }
+        }
+        return stderr.trim();
+    }
+
+    // Format VEP error message
     private String formatVepErrorMessage(String variantInput, String rawError) {
         if (rawError == null || rawError.isEmpty()) {
             return "Unknown error annotating variant: " + variantInput;
