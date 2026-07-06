@@ -54,10 +54,6 @@ public class VEPController {
             }
             return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(result);
         } catch (Exception e) {
-            String msg = e.getMessage();
-            if (msg != null && (msg.contains("does not match reference allele") || msg.contains("Unable to parse"))) {
-                return ResponseEntity.badRequest().body(constructErrorMessage(e));
-            }
             return ResponseEntity.internalServerError().body(constructErrorMessage(e));
         }
     }

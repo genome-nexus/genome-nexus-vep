@@ -7,8 +7,10 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -30,6 +32,7 @@ public class VEPService {
     private static final Pattern VEP_VERSION_PATTERN = Pattern.compile("ensembl-vep\\s*:\\s*(\\d+)");
     private static final Pattern VEP_FAILED_HGVS_PATTERN = Pattern.compile("HGVS notation '([^']+)'");
     private static final Pattern VEP_FAILED_REGION_PATTERN = Pattern.compile("\\+ (\\S+)$", Pattern.MULTILINE);
+    private static final Pattern VEP_OUTPUT_INPUT_PATTERN = Pattern.compile("\"input\":\"([^\"]+)\"");
     private static final Pattern REF_ALLELE_MISMATCH_PATTERN = Pattern.compile(
         "Reference allele extracted from \\S+ \\(([^)]+)\\) does not match reference allele given by HGVS notation (\\S+) \\(([^)]+)\\)");
     private static final Pattern COULD_NOT_PARSE_PATTERN = Pattern.compile("Could not parse.*HGVS notation (\\S+)");
@@ -67,22 +70,21 @@ public class VEPService {
 
         List<Future<VEPResult>> resultFutures = chunkExecutor.invokeAll(wrappers);
 
-        List<List<String>> failedChunks = new ArrayList<>();
-        List<VEPResult> failedResults = new ArrayList<>();
         for (int i = 0; i < resultFutures.size(); i++) {
             VEPResult result = resultFutures.get(i).get();
-            if (result.getExitCode() == 0) {
+            if (StringUtils.hasText(result.getOutput())) {
                 outputBuilder.append(result.getOutput());
-            } else {
-                // Chunk failed — queue for retry with individual variant identification
-                failedChunks.add(variantChunks.get(i));
-                failedResults.add(result);
             }
-        }
-
-        // For failed chunks, identify bad variants and retry good ones
-        for (int i = 0; i < failedChunks.size(); i++) {
-            retryFailedChunk(failedChunks.get(i), failedResults.get(i), flags, outputBuilder, failedVariants);
+            // Find any input variants absent from VEP's output and record them as failures.
+            // This catches both the mixed case (VEP exits 0, bad variants silently skipped)
+            // and the all-bad case (VEP exits 0 with empty stdout).
+            Set<String> annotatedIds = extractAnnotatedIds(result.getOutput());
+            for (String input : variantChunks.get(i)) {
+                String id = extractVariantIdFromInput(input);
+                if (!annotatedIds.contains(id)) {
+                    failedVariants.add(new FailedVariant(id, result.getStderr()));
+                }
+            }
         }
 
         // Build final JSON array combining successful annotations and error objects
@@ -112,110 +114,6 @@ public class VEPService {
         return "[" + result.toString() + "]";
     }
 
-    // When a batch chunk fails, identify which variant(s) caused the failure, remove them, and retry the remaining good variants as a batch.
-    private void retryFailedChunk(List<String> chunk, VEPResult initialFailure, List<String> baseFlags,
-                                   StringBuilder outputBuilder, List<FailedVariant> failedVariants) throws Exception {
-        List<String> remaining = new ArrayList<>(chunk);
-        int maxSequentialRetries = 5;
-
-        // Sequential removal — peel off up to 5 bad variants one at a time
-        VEPResult currentFailure = initialFailure;
-        for (int attempt = 0; attempt < maxSequentialRetries && !remaining.isEmpty(); attempt++) {
-            String failedId = extractFailedVariantFromError(currentFailure.getOutput(), remaining);
-            if (failedId == null) {
-                // Can't identify bad variant — go straight to binary search
-                break;
-            }
-
-            failedVariants.add(new FailedVariant(failedId, currentFailure.getOutput()));
-            remaining = remaining.stream()
-                .filter(v -> !v.contains(failedId))
-                .collect(Collectors.toList());
-
-            if (remaining.isEmpty()) return;
-
-            // Retry batch without the removed bad variant(s)
-            VEPResult retryResult = runVEPForInput(remaining, baseFlags);
-            if (retryResult.getExitCode() == 0) {
-                outputBuilder.append(retryResult.getOutput());
-                return;
-            }
-            currentFailure = retryResult;
-        }
-
-        // Binary search to isolate remaining bad variants
-        // Only reached if >5 bad variants exist or can't identify from error message
-        if (!remaining.isEmpty()) {
-            binarySearchPartition(remaining, baseFlags, outputBuilder, failedVariants);
-        }
-    }
-
-    /**
-     * Binary search partition: recursively split the variant list in half, test each half as a batch.
-     * Halves that succeed get their output appended. Halves that fail are split again.
-     * Base case: single variant that fails → record as FailedVariant.
-     */
-    private void binarySearchPartition(List<String> variants, List<String> baseFlags,
-                                        StringBuilder outputBuilder, List<FailedVariant> failedVariants) throws Exception {
-        if (variants.isEmpty()) return;
-
-        // Base case: single variant
-        if (variants.size() == 1) {
-            VEPResult result = runVEPForInput(variants, baseFlags);
-            if (result.getExitCode() == 0) {
-                outputBuilder.append(result.getOutput());
-            } else {
-                String variantId = extractVariantIdFromInput(variants.get(0));
-                failedVariants.add(new FailedVariant(variantId, result.getOutput()));
-            }
-            return;
-        }
-
-        // Try the whole list as a batch first
-        VEPResult result = runVEPForInput(variants, baseFlags);
-        if (result.getExitCode() == 0) {
-            // All variants in this subset are good
-            outputBuilder.append(result.getOutput());
-            return;
-        }
-
-        // Split in half and recurse
-        int mid = variants.size() / 2;
-        List<String> left = variants.subList(0, mid);
-        List<String> right = variants.subList(mid, variants.size());
-
-        binarySearchPartition(left, baseFlags, outputBuilder, failedVariants);
-        binarySearchPartition(right, baseFlags, outputBuilder, failedVariants);
-    }
-
-    //run VEP with a list of input variants
-    private VEPResult runVEPForInput(List<String> inputs, List<String> baseFlags) throws Exception {
-        List<String> flags = new ArrayList<>(baseFlags);
-        flags.add("--input_data=" + inputs.stream().collect(Collectors.joining("\n")));
-        return runVEP(flags).call();
-    }
-
-    /**
-     * Extract the variant that caused a VEP failure from the error message.
-     * Looks for HGVS notation in the error, or falls back to matching region format input.
-     */
-    private String extractFailedVariantFromError(String error, List<String> inputVariants) {
-        // Try to find HGVS notation in error
-        Matcher matcher = VEP_FAILED_HGVS_PATTERN.matcher(error);
-        if (matcher.find()) {
-            return matcher.group(1);
-        }
-        // For region format inputs, the original HGVS is appended after "+"
-        // Try matching against the input list
-        for (String input : inputVariants) {
-            String variantId = extractVariantIdFromInput(input);
-            if (error.contains(variantId)) {
-                return variantId;
-            }
-        }
-        return null;
-    }
-
     /**
      * Extract variant ID from VEP input line.
      * For region format: "1 1020385 1020385 N/A + 1:g.1020385C>A" → "1:g.1020385C>A"
@@ -232,6 +130,18 @@ public class VEPService {
     private String escapeJson(String value) {
         if (value == null) return "";
         return value.replace("\\", "\\\\").replace("\"", "\\\"").replace("\n", "\\n").replace("\r", "");
+    }
+
+    private Set<String> extractAnnotatedIds(String stdout) {
+        Set<String> ids = new HashSet<>();
+        if (!StringUtils.hasText(stdout)) return ids;
+        for (String line : stdout.split("\n")) {
+            Matcher m = VEP_OUTPUT_INPUT_PATTERN.matcher(line);
+            if (m.find()) {
+                ids.add(extractVariantIdFromInput(m.group(1)));
+            }
+        }
+        return ids;
     }
 
     /**
@@ -371,11 +281,7 @@ public class VEPService {
             return cached;
         }
         VEPResult result = runVEP(new ArrayList<>()).call();
-        if (result.getExitCode() == 1) {
-            throw new Exception(result.getOutput());
-        }
-
-        Matcher matcher = VEP_VERSION_PATTERN.matcher(result.getOutput());
+        Matcher matcher = VEP_VERSION_PATTERN.matcher(result.getOutput() + result.getStderr());
         if (matcher.find()) {
             int version = Integer.parseInt(matcher.group(1));
             cachedVepVersion = version;
@@ -392,14 +298,11 @@ public class VEPService {
                 String path = Paths.get("").toAbsolutePath().toString() + "/scripts/vep";
                 String lineSeparator = System.lineSeparator();
 
-                String output = "";
-                int exitCode = 0;
+                StringBuilder outputBuilder = new StringBuilder();
+                StringBuilder errorBuilder = new StringBuilder();
                 try {
                     flags.add(0, path);
                     Process process = new ProcessBuilder().command(flags).start();
-
-                    StringBuilder outputBuilder = new StringBuilder();
-                    StringBuilder errorBuilder = new StringBuilder();
 
                     // Drain stderr on a separate thread so a full stderr pipe buffer
                     // cannot deadlock VEP while we are still reading stdout.
@@ -422,29 +325,12 @@ public class VEPService {
                         }
                     }
                     stderrReader.join();
-
-                    output = outputBuilder.toString();
-                    String error = errorBuilder.toString();
-                    if (!StringUtils.hasText(output) && StringUtils.hasText(error)) {
-                        output = parseVepError(error);
-                        exitCode = 500;
-                    }
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
 
-                return new VEPResult(output, exitCode);
+                return new VEPResult(outputBuilder.toString(), errorBuilder.toString());
             }
         };
-    }
-
-    private String parseVepError(String error) {
-        // Return the full stderr trimmed — formatVepErrorMessage will handle
-        // pattern matching and message formatting downstream.
-        String trimmed = error.trim();
-        if (trimmed.isEmpty()) {
-            return "Error annotating variant";
-        }
-        return trimmed;
     }
 }

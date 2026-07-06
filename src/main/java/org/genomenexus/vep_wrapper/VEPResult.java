@@ -2,18 +2,18 @@ package org.genomenexus.vep_wrapper;
 
 public class VEPResult {
     private String output;
-    private int exitCode;
+    private String stderr;
 
-    VEPResult(String output, int exitCode) {
+    VEPResult(String output, String stderr) {
         this.output = output;
-        this.exitCode = exitCode;
+        this.stderr = stderr;
     }
 
     public String getOutput() {
         return output;
     }
 
-    public int getExitCode() {
-        return exitCode;
+    public String getStderr() {
+        return stderr;
     }
 }
