@@ -30,12 +30,8 @@ import jakarta.annotation.PreDestroy;
 public class VEPService {
 
     private static final Pattern VEP_VERSION_PATTERN = Pattern.compile("ensembl-vep\\s*:\\s*(\\d+)");
-    private static final Pattern VEP_FAILED_HGVS_PATTERN = Pattern.compile("HGVS notation '([^']+)'");
     private static final Pattern VEP_FAILED_REGION_PATTERN = Pattern.compile("\\+ (\\S+)$", Pattern.MULTILINE);
-    private static final Pattern VEP_OUTPUT_INPUT_PATTERN = Pattern.compile("\"input\":\"([^\"]+)\"");
-    private static final Pattern REF_ALLELE_MISMATCH_PATTERN = Pattern.compile(
-        "Reference allele extracted from \\S+ \\(([^)]+)\\) does not match reference allele given by HGVS notation (\\S+) \\(([^)]+)\\)");
-    private static final Pattern COULD_NOT_PARSE_PATTERN = Pattern.compile("Could not parse.*HGVS notation (\\S+)");
+    private static final Pattern VEP_OUTPUT_INPUT_PATTERN = Pattern.compile("\"input\":\\s*\"([^\"]+)\"");
 
     @Autowired
     private VEPConfiguration vepConfiguration;
@@ -102,9 +98,9 @@ public class VEPService {
             if (result.length() > 0) {
                 result.append(",");
             }
-            String detailedError = formatVepErrorMessage(failed.input, failed.error);
+            String error = StringUtils.hasText(failed.error) ? failed.error : "Annotation failed";
             result.append(String.format("{\"input\":\"%s\",\"error\":\"%s\",\"successfully_annotated\":false}",
-                escapeJson(failed.input), escapeJson(detailedError)));
+                escapeJson(failed.input), escapeJson(error)));
         }
 
         if (result.length() == 0) {
@@ -156,47 +152,6 @@ public class VEPService {
             }
         }
         return stderr.trim();
-    }
-
-    // Format VEP error message
-    private String formatVepErrorMessage(String variantInput, String rawError) {
-        if (rawError == null || rawError.isEmpty()) {
-            return "Unknown error annotating variant: " + variantInput;
-        }
-
-        // Reference allele mismatch — extract alleles from VEP's message
-        Matcher refMatcher = REF_ALLELE_MISMATCH_PATTERN.matcher(rawError);
-        if (refMatcher.find()) {
-            String genomeAllele = refMatcher.group(1);
-            String notation = refMatcher.group(2);
-            String inputAllele = refMatcher.group(3);
-            return String.format(
-                "%s: Reference allele extracted from input (%s) does not match reference allele from genome (%s)",
-                notation, inputAllele, genomeAllele);
-        }
-
-        // Could not parse HGVS notation
-        Matcher parseMatcher = COULD_NOT_PARSE_PATTERN.matcher(rawError);
-        if (parseMatcher.find()) {
-            String notation = parseMatcher.group(1);
-            return String.format(
-                "Invalid HGVS notation '%s': could not be parsed. ", notation);
-        }
-
-        // Contains HGVS notation reference but unknown sub-error
-        Matcher hgvsMatcher = VEP_FAILED_HGVS_PATTERN.matcher(rawError);
-        if (hgvsMatcher.find()) {
-            String notation = hgvsMatcher.group(1);
-            if (rawError.contains("not found in database") || rawError.contains("Could not find")
-                || rawError.contains("uninitialized value") || rawError.contains("Can't call method")) {
-                return String.format(
-                    "Chromosome or position not found: variant '%s' - chromosome or position does not exist in the genome assembly.", notation);
-            }
-        }
-
-        // Fallback: return raw error with variant context
-        return String.format("Error annotating variant '%s': %s",
-            variantInput, rawError.trim().replace("\n", " "));
     }
 
     private List<String> buildBaseFlags(Optional<String> format) {
