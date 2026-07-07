@@ -32,6 +32,7 @@ public class VEPService {
     private static final Pattern VEP_VERSION_PATTERN = Pattern.compile("ensembl-vep\\s*:\\s*(\\d+)");
     private static final Pattern VEP_FAILED_REGION_PATTERN = Pattern.compile("\\+ (\\S+)$", Pattern.MULTILINE);
     private static final Pattern VEP_OUTPUT_INPUT_PATTERN = Pattern.compile("\"input\":\\s*\"([^\"]+)\"");
+    private static final Pattern VEP_MSG_PATTERN = Pattern.compile("MSG:\\s*(.*)");
 
     @Autowired
     private VEPConfiguration vepConfiguration;
@@ -72,8 +73,6 @@ public class VEPService {
                 outputBuilder.append(result.getOutput());
             }
             // Find any input variants absent from VEP's output and record them as failures.
-            // This catches both the mixed case (VEP exits 0, bad variants silently skipped)
-            // and the all-bad case (VEP exits 0 with empty stdout).
             Set<String> annotatedIds = extractAnnotatedIds(result.getOutput());
             for (String input : variantChunks.get(i)) {
                 String id = extractVariantIdFromInput(input);
@@ -110,11 +109,9 @@ public class VEPService {
         return "[" + result.toString() + "]";
     }
 
-    /**
-     * Extract variant ID from VEP input line.
-     * For region format: "1 1020385 1020385 N/A + 1:g.1020385C>A" → "1:g.1020385C>A"
-     * For hgvs format: "1:g.1020385C>A" → "1:g.1020385C>A"
-     */
+    // Extract variant ID from VEP input line.
+    // For region format: "1 1020385 1020385 N/A + 1:g.1020385C>A" → "1:g.1020385C>A"
+    // For hgvs format: "1:g.1020385C>A" → "1:g.1020385C>A"
     private String extractVariantIdFromInput(String input) {
         Matcher matcher = VEP_FAILED_REGION_PATTERN.matcher(input);
         if (matcher.find()) {
@@ -140,18 +137,31 @@ public class VEPService {
         return ids;
     }
 
-    // Stderr for a failed chunk may contain errors for multiple variants. Split by
-    // "WARNING:" blocks and return the block that mentions variantId, so each
-    // failed variant gets its own specific error rather than the first one in the file.
+    // Extracts the relevant error lines from VEP stderr for a specific variant.
+    // VEP writes one WARNING: line per failed variant containing the variant ID, and optionally a MSG: line with extra detail.
+    // db mode:    "WARNING: Unable to parse HGVS notation '<id>' Reference allele ... does not match ..."
+    //             "WARNING: Unable to parse HGVS notation '<id>'" (bad chromosome)
+    // cache mode: "WARNING: variant skipped (<ensembl-format> + <id>): Chromosome N not found ..."
+    //             wrong ref allele is silently corrected via --lookup_ref and does not appear in stderr
     private String extractVariantError(String variantId, String stderr) {
         if (!StringUtils.hasText(stderr)) return "";
-        String[] blocks = stderr.split("(?=WARNING:)");
-        for (String block : blocks) {
-            if (block.contains(variantId)) {
-                return block.trim();
-            }
+
+        String warning = null;
+        Matcher warningMatcher = Pattern.compile("WARNING:.*" + Pattern.quote(variantId) + ".*").matcher(stderr);
+        if (warningMatcher.find()) {
+            warning = warningMatcher.group();
         }
-        return stderr.trim();
+
+        String msg = null;
+        Matcher msgMatcher = VEP_MSG_PATTERN.matcher(stderr);
+        if (msgMatcher.find()) {
+            msg = msgMatcher.group(1);
+        }
+
+        if (warning != null && msg != null) return warning + " " + msg;
+        if (warning != null) return warning;
+        if (msg != null) return msg;
+        return "";
     }
 
     private List<String> buildBaseFlags(Optional<String> format) {
