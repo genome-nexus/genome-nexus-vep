@@ -99,7 +99,7 @@ public class VEPService {
             }
             String error = StringUtils.hasText(failed.error) ? failed.error : "Annotation failed";
             result.append(String.format("{\"input\":\"%s\",\"error\":\"%s\",\"successfully_annotated\":false}",
-                escapeJson(failed.input), escapeJson(error)));
+                encodeJsonValue(failed.input), encodeJsonValue(error)));
         }
 
         if (result.length() == 0) {
@@ -120,7 +120,7 @@ public class VEPService {
         return input.trim();
     }
 
-    private String escapeJson(String value) {
+    private String encodeJsonValue(String value) {
         if (value == null) return "";
         return value.replace("\\", "\\\\").replace("\"", "\\\"").replace("\n", "\\n").replace("\r", "");
     }
@@ -201,9 +201,6 @@ public class VEPService {
                 );
             }
         }
-        if (vepConfiguration.polyphenSiftFilename.isPresent() || vepConfiguration.alphaMissenseFilename.isPresent()) {
-            flags.add("--dir_plugins=/plugin-data");
-        }
         if (vepConfiguration.polyphenSiftFilename.isPresent()) {
             flags.add("--plugin=PolyPhen_SIFT,db=/plugin-data/" + vepConfiguration.polyphenSiftFilename.get());
         }
@@ -281,8 +278,7 @@ public class VEPService {
                     flags.add(0, path);
                     Process process = new ProcessBuilder().command(flags).start();
 
-                    // Drain stderr on a separate thread so a full stderr pipe buffer
-                    // cannot deadlock VEP while we are still reading stdout.
+                    // Drain stderr on a separate thread so a full stderr pipe buffer cannot deadlock VEP while we are still reading stdout.
                     Thread stderrReader = new Thread(() -> {
                         try (BufferedReader stderr = new BufferedReader(new InputStreamReader(process.getErrorStream()))) {
                             String errLine;

@@ -133,9 +133,7 @@ public class VEPController {
         return Map.of("error", e.getMessage());
     }
 
-    /**
-     * Extract the error message from a VEP JSON result that contains only error objects.
-     */
+    // Extract the error message from a VEP JSON result that contains only error objects.
     private String extractErrorFromResult(String result) {
         Pattern errorPattern = Pattern.compile("\"error\":\"([^\"]+)\"");
         Matcher matcher = errorPattern.matcher(result);
