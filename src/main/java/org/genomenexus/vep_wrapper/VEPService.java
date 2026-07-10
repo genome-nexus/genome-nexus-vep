@@ -7,8 +7,10 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -21,15 +23,148 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
+import jakarta.annotation.PostConstruct;
+import jakarta.annotation.PreDestroy;
+
 @Service
 public class VEPService {
+
+    private static final Pattern VEP_VERSION_PATTERN = Pattern.compile("ensembl-vep\\s*:\\s*(\\d+)");
+    private static final Pattern VEP_FAILED_REGION_PATTERN = Pattern.compile("\\+ (\\S+)$", Pattern.MULTILINE);
+    private static final Pattern VEP_OUTPUT_INPUT_PATTERN = Pattern.compile("\"input\":\\s*\"([^\"]+)\"");
+    private static final Pattern VEP_MSG_PATTERN = Pattern.compile("MSG:\\s*(.*)");
 
     @Autowired
     private VEPConfiguration vepConfiguration;
 
-    public String annotateVariants(List<List<String>> variantChunks, Optional<String> format) throws Exception {
-        List<Callable<VEPResult>> wrappers = new ArrayList<>();
+    private ExecutorService chunkExecutor;
+    private volatile Integer cachedVepVersion;
 
+    @PostConstruct
+    public void init() {
+        this.chunkExecutor = Executors.newFixedThreadPool(vepConfiguration.hgvsMaxThreads);
+    }
+
+    @PreDestroy
+    public void shutdown() {
+        if (chunkExecutor != null) {
+            chunkExecutor.shutdownNow();
+        }
+    }
+
+    public String annotateVariants(List<List<String>> variantChunks, Optional<String> format) throws Exception {
+        List<String> flags = buildBaseFlags(format);
+
+        StringBuilder outputBuilder = new StringBuilder();
+        List<FailedVariant> failedVariants = new ArrayList<>();
+
+        List<Callable<VEPResult>> wrappers = new ArrayList<>();
+        for (List<String> chunk : variantChunks) {
+            List<String> chunkFlags = new ArrayList<>(flags);
+            chunkFlags.add("--input_data=" + chunk.stream().collect(Collectors.joining("\n")));
+            wrappers.add(runVEP(chunkFlags));
+        }
+
+        List<Future<VEPResult>> resultFutures = chunkExecutor.invokeAll(wrappers);
+
+        for (int i = 0; i < resultFutures.size(); i++) {
+            VEPResult result = resultFutures.get(i).get();
+            if (StringUtils.hasText(result.getOutput())) {
+                outputBuilder.append(result.getOutput());
+            }
+            // Find any input variants absent from VEP's output and record them as failures.
+            Set<String> annotatedIds = extractAnnotatedIds(result.getOutput());
+            for (String input : variantChunks.get(i)) {
+                String id = extractVariantIdFromInput(input);
+                if (!annotatedIds.contains(id)) {
+                    failedVariants.add(new FailedVariant(id, extractVariantError(id, result.getStderr())));
+                }
+            }
+        }
+
+        // Build final JSON array combining successful annotations and error objects
+        String output = outputBuilder.toString();
+        output = output.replace("sift_pred", "sift_prediction");
+        output = output.replace("polyphen_humvar_pred", "polyphen_prediction");
+        output = output.replace("polyphen_humvar_score", "polyphen_score");
+
+        StringBuilder result = new StringBuilder();
+        if (!output.isEmpty()) {
+            result.append(output.replace("\n{", ",{"));
+        }
+        // Append error objects for failed variants
+        for (FailedVariant failed : failedVariants) {
+            if (result.length() > 0) {
+                result.append(",");
+            }
+            String error = StringUtils.hasText(failed.error) ? failed.error : "Annotation failed";
+            result.append(String.format("{\"input\":\"%s\",\"error\":\"%s\",\"successfully_annotated\":false}",
+                encodeJsonValue(failed.input), encodeJsonValue(error)));
+        }
+
+        if (result.length() == 0) {
+            throw new Exception("All variants failed annotation");
+        }
+
+        return "[" + result.toString() + "]";
+    }
+
+    // Extract variant ID from VEP input line.
+    // For region format: "1 1020385 1020385 N/A + 1:g.1020385C>A" → "1:g.1020385C>A"
+    // For hgvs format: "1:g.1020385C>A" → "1:g.1020385C>A"
+    private String extractVariantIdFromInput(String input) {
+        Matcher matcher = VEP_FAILED_REGION_PATTERN.matcher(input);
+        if (matcher.find()) {
+            return matcher.group(1);
+        }
+        return input.trim();
+    }
+
+    private String encodeJsonValue(String value) {
+        if (value == null) return "";
+        return value.replace("\\", "\\\\").replace("\"", "\\\"").replace("\n", "\\n").replace("\r", "");
+    }
+
+    private Set<String> extractAnnotatedIds(String stdout) {
+        Set<String> ids = new HashSet<>();
+        if (!StringUtils.hasText(stdout)) return ids;
+        for (String line : stdout.split("\n")) {
+            Matcher m = VEP_OUTPUT_INPUT_PATTERN.matcher(line);
+            if (m.find()) {
+                ids.add(extractVariantIdFromInput(m.group(1)));
+            }
+        }
+        return ids;
+    }
+
+    // Extracts the relevant error lines from VEP stderr for a specific variant.
+    // VEP writes one WARNING: line per failed variant containing the variant ID, and optionally a MSG: line with extra detail.
+    // db mode:    "WARNING: Unable to parse HGVS notation '<id>' Reference allele ... does not match ..."
+    //             "WARNING: Unable to parse HGVS notation '<id>'" (bad chromosome)
+    // cache mode: "WARNING: variant skipped (<ensembl-format> + <id>): Chromosome N not found ..."
+    //             wrong ref allele is silently corrected via --lookup_ref and does not appear in stderr
+    private String extractVariantError(String variantId, String stderr) {
+        if (!StringUtils.hasText(stderr)) return "";
+
+        String warning = null;
+        Matcher warningMatcher = Pattern.compile("WARNING:.*" + Pattern.quote(variantId) + ".*").matcher(stderr);
+        if (warningMatcher.find()) {
+            warning = warningMatcher.group();
+        }
+
+        String msg = null;
+        Matcher msgMatcher = VEP_MSG_PATTERN.matcher(stderr);
+        if (msgMatcher.find()) {
+            msg = msgMatcher.group(1);
+        }
+
+        if (warning != null && msg != null) return warning + " " + msg;
+        if (warning != null) return warning;
+        if (msg != null) return msg;
+        return "";
+    }
+
+    private List<String> buildBaseFlags(Optional<String> format) {
         List<String> flags = new ArrayList<>(Arrays.asList(
             "--output_file=STDOUT",
                 "--warning_file=STDERR",
@@ -38,6 +173,7 @@ public class VEPService {
                 "--no_stats",
                 "--xref_refseq",
                 "--json",
+                "--shift_hgvs=1",
                 "--fork=" + vepConfiguration.forks
         ));
         if (format.isPresent()) { // vep breaks when the format is set to ensembl (even though it should be correct)
@@ -71,38 +207,10 @@ public class VEPService {
         if (vepConfiguration.alphaMissenseFilename.isPresent()) {
             flags.add("--plugin=AlphaMissense,file=/plugin-data/" + vepConfiguration.alphaMissenseFilename.get());
         }
-
-        for (List<String> chunk : variantChunks) {
-            List<String> chunkFlags = new ArrayList<>(flags);
-            chunkFlags.add("--input_data=" + chunk.stream().collect(Collectors.joining("\n")));
-            wrappers.add(runVEP(chunkFlags));
-        }
-
-        String output = "";
-        ExecutorService threadPool = Executors.newCachedThreadPool();
-        List<Future<VEPResult>> resultFutures = threadPool.invokeAll(wrappers);
-
-        Exception exception = null;
-        boolean allFailed = true;
-        for (Future<VEPResult> resultFuture : resultFutures) {
-            VEPResult result = resultFuture.get();
-            if (result.getExitCode() == 0) {
-                output += result.getOutput();
-                allFailed = false;
-            } else if (exception == null) { // Ensembl VEP API only returns first error, so copying behavior
-                exception = new Exception(result.getOutput());
-            }
-        }
-
-        if (allFailed) {
-            throw exception;
-        }
-
-        output = output.replace("sift_pred", "sift_prediction");
-        output = output.replace("polyphen_humvar_pred", "polyphen_prediction");
-        output = output.replace("polyphen_humvar_score", "polyphen_score");
-        return "[" + output.replace("\n{", ",{") + "]";
+        return flags;
     }
+
+    private record FailedVariant(String input, String error) {}
 
     public List<List<String>> getVariantChunks(List<String> variants, int chunkSize) {
         List<List<String>> variantChunks = new ArrayList<>();
@@ -142,16 +250,16 @@ public class VEPService {
     }
 
     public int getVEPVersion() throws Exception {
-        VEPResult result = runVEP(new ArrayList<>()).call();
-        if (result.getExitCode() == 1) {
-            throw new Exception(result.getOutput());
+        Integer cached = cachedVepVersion;
+        if (cached != null) {
+            return cached;
         }
-
-        String versionRegex = "ensembl-vep\\s*:\\s*(\\d+)";
-        Pattern pattern = Pattern.compile(versionRegex);
-        Matcher matcher = pattern.matcher(result.getOutput());
+        VEPResult result = runVEP(new ArrayList<>()).call();
+        Matcher matcher = VEP_VERSION_PATTERN.matcher(result.getOutput() + result.getStderr());
         if (matcher.find()) {
-            return Integer.parseInt(matcher.group(1));
+            int version = Integer.parseInt(matcher.group(1));
+            cachedVepVersion = version;
+            return version;
         } else {
             throw new Exception("Version not found in VEP output");
         }
@@ -162,72 +270,40 @@ public class VEPService {
             @Override
             public VEPResult call() throws Exception {
                 String path = Paths.get("").toAbsolutePath().toString() + "/scripts/vep";
+                String lineSeparator = System.lineSeparator();
 
-                String output = "";
-                int exitCode = 0;
+                StringBuilder outputBuilder = new StringBuilder();
+                StringBuilder errorBuilder = new StringBuilder();
                 try {
                     flags.add(0, path);
                     Process process = new ProcessBuilder().command(flags).start();
-                         
-                    StringBuilder outputBuilder = new StringBuilder();
-                    StringBuilder errorBuilder = new StringBuilder();
-                    BufferedReader stdin = new BufferedReader(new InputStreamReader(process.getInputStream()));
-                    BufferedReader stderr = new BufferedReader(new InputStreamReader(process.getErrorStream()));
 
-                    String line = null;
-                    while ( (line = stdin.readLine()) != null) {
-                        outputBuilder.append(line);
-                        outputBuilder.append(System.getProperty("line.separator"));
-                    }
-                    while ( (line = stderr.readLine()) != null) {
-                        errorBuilder.append(line);
-                        errorBuilder.append(System.getProperty("line.separator"));
-                    }    
-                    stdin.close();
-                    stderr.close();
+                    // Drain stderr on a separate thread so a full stderr pipe buffer cannot deadlock VEP while we are still reading stdout.
+                    Thread stderrReader = new Thread(() -> {
+                        try (BufferedReader stderr = new BufferedReader(new InputStreamReader(process.getErrorStream()))) {
+                            String errLine;
+                            while ((errLine = stderr.readLine()) != null) {
+                                errorBuilder.append(errLine).append(lineSeparator);
+                            }
+                        } catch (IOException ignored) {
+                        }
+                    }, "vep-stderr-reader");
+                    stderrReader.setDaemon(true);
+                    stderrReader.start();
 
-                    output = outputBuilder.toString();
-                    String error = errorBuilder.toString();
-                    if (!StringUtils.hasText(output) && StringUtils.hasText(error)) {
-                        output = parseVepError(error);
-                        exitCode = 500;
+                    try (BufferedReader stdin = new BufferedReader(new InputStreamReader(process.getInputStream()))) {
+                        String line;
+                        while ((line = stdin.readLine()) != null) {
+                            outputBuilder.append(line).append(lineSeparator);
+                        }
                     }
+                    stderrReader.join();
                 } catch (IOException e) {
                     e.printStackTrace();
-                } 
+                }
 
-                return new VEPResult(output, exitCode);
+                return new VEPResult(outputBuilder.toString(), errorBuilder.toString());
             }
         };
-    }
-
-    private String parseVepError(String error) {
-        String warning = null;
-        String message = null;
-
-        String warningRegex = "WARNING:\\s(.*)\\n";
-        Pattern pattern = Pattern.compile(warningRegex);
-        Matcher matcher = pattern.matcher(error);
-        if (matcher.find()) {
-            warning = matcher.group(1);
-        }
-
-        String messageRegex =  "MSG:\\s(.*)\\n";
-        pattern = Pattern.compile(messageRegex);
-        matcher = pattern.matcher(error);
-        if (matcher.find()) {
-            message = matcher.group(1);
-        }
-
-        String output = "";
-        if (warning != null) {
-            output += warning;
-        } 
-        if (message != null) {
-            output += message;
-        } else {
-            output += "Error annotating variant";
-        }
-        return output;
     }
 }

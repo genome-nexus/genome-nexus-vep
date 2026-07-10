@@ -127,7 +127,7 @@ public class VepServiceTest {
         return new Callable<VEPResult>() {
             @Override
             public VEPResult call() throws Exception {
-                return new VEPResult(response.toString(), 0);
+                return new VEPResult(response.toString(), "");
             }
         };
     }
